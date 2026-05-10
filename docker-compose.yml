@@ -1,15 +1,20 @@
 name: ie_network_2027
 services:
   db:
+    container_name: db
     image: postgres:18-alpine
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ienetwork
+      - TZ=Asia/Bangkok
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_APP_USER=${POSTGRES_APP_USER}
+      - POSTGRES_APP_PASSWORD=${POSTGRES_APP_PASSWORD}
     ports:
-      - "5432:5432"
+      - 5432:${POSTGRES_PORT}
     volumes:
+      - ./_entrypoint:/docker-entrypoint-initdb.d
       - db_data:/var/lib/postgresql/data
     networks:
       - ie_network_2027
