@@ -10,7 +10,7 @@
     "db:generate": "cross-env NODE_OPTIONS='--import tsx' drizzle-kit generate",
     "db:push": "cross-env NODE_OPTIONS='--import tsx' drizzle-kit push",
     "db:migrate": "cross-env NODE_OPTIONS='--import tsx' drizzle-kit migrate",
-    "db:prototype": "tsx ./db/prototype.ts",
+    "db:prototype": "tsx ./src/db/prototype.ts",
     "eol": "eolConverter _entrypoint/*.sh"
   },
   "dependencies": {
