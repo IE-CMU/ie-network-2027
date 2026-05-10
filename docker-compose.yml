@@ -1,9 +1,20 @@
 name: ie_network_2027
 services:
-  web:
-    build: .
-    ports:
-      - "8080:80"
-    restart: unless-stopped
+  db:
+    image: postgres:18-alpine
+    restart: always
     environment:
-      - NODE_ENV=production
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ienetwork
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - ie_network_2027
+volumes:
+  db_data:
+networks:
+  ie_network_2027:
+    driver: bridge

@@ -1,0 +1,9 @@
+name: ie_network_2027
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
