@@ -26,3 +26,9 @@ docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie
 
 ## Generate secret for better-auth
 `npx auth secret`
+
+## Todo
+- Internationalization (i18n)
+- Gmail integration
+- Magic link login
+- Email queue for sending emails
