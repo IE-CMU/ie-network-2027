@@ -1,17 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro'
-// import { authClient } from '../utils/auth-client'
+import { auth } from '../utils/auth'
 // import { actions } from "astro:actions";
-
-// Enable prerendering for this page
-export const prerender = false
 
 // Call the getGreeting action and pass a name parameter
 // const res = await Astro.callAction(actions.getGreeting, { name: "IE Network" });
-// console.log('Auth Client:', authClient)
-const session = Astro.locals.session
-console.log('Session:', session)
-// console.log('User:', Astro.locals.user)
+let session = null
+try {
+  session = await auth.api.getSession({
+    headers: Astro.request.headers,
+  })
+  console.log('Session:', session)
+} catch (error) {
+  console.error('Error fetching session:', error)
+}
+
+// Enable prerendering for this page
+export const prerender = false
 ---
 
 <Layout title="Home">

@@ -24,10 +24,12 @@
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@types/node": "^25.6.2",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
     "eol-converter-cli": "^1.1.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   }
 }
