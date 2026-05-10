@@ -1,10 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { auth } from '../utils/auth'
-// import { actions } from "astro:actions";
 
-// Call the getGreeting action and pass a name parameter
-// const res = await Astro.callAction(actions.getGreeting, { name: "IE Network" });
+import { auth } from '../utils/auth'
 let session = null
 try {
   session = await auth.api.getSession({
@@ -14,6 +11,10 @@ try {
 } catch (error) {
   console.error('Error fetching session:', error)
 }
+
+// import { actions } from "astro:actions";
+// Call the getGreeting action and pass a name parameter
+// const res = await Astro.callAction(actions.getGreeting, { name: "IE Network" });
 
 // Enable prerendering for this page
 export const prerender = false

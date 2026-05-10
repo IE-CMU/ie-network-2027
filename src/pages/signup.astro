@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro'
+
+// Disable prerendering for this page
+export const prerender = false
+---
+
+<Layout title="Sign Up">
+  <main>
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold mb-4">Sign Up</h1>
+      <p class="mb-4">Please sign up to access the conference dashboard.</p>
+
+      <form id="signupForm">
+        <input
+          type="text"
+          placeholder="Name"
+          required
+          id="name"
+          class="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          id="email"
+          class="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          minlength="8"
+          required
+          id="password"
+          class="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          type="password"
+          minlength="8"
+          placeholder="Confirm Password"
+          required
+          id="confirmPassword"
+          class="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          id="btn"
+          type="submit"
+          class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
+        >
+          Sign Up
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    import { authClient } from '@/utils/auth-client'
+
+    authClient
+      .getSession()
+      .then((session) => {
+        console.log('Client-side session:', session)
+      })
+      .catch((error) => {
+        console.error('Error fetching client-side session:', error)
+      })
+
+    const form = document.getElementById('signupForm') as HTMLFormElement | null
+    form &&
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        // Trigger built-in HTML validation messages before custom logic.
+        if (!form.reportValidity()) {
+          return
+        }
+
+        const nameObject = document.getElementById('name') as HTMLInputElement
+        const emailObject = document.getElementById('email') as HTMLInputElement
+        const passwordObject = document.getElementById(
+          'password'
+        ) as HTMLInputElement
+        const confirmPasswordObject = document.getElementById(
+          'confirmPassword'
+        ) as HTMLInputElement
+        const name = nameObject?.value ?? ''
+        const email = emailObject?.value ?? ''
+        const password = passwordObject?.value ?? ''
+        const confirmPassword = confirmPasswordObject?.value ?? ''
+        if (password !== confirmPassword) {
+          alert('Passwords do not match!')
+          return
+        }
+        try {
+          const { data, error } = await authClient.signUp.email({
+            name: name,
+            email: email,
+            password: password,
+          })
+          if (error) {
+            console.error('Sign up error:', error)
+          } else {
+            console.log('Sign up successful, session:', data)
+            // Optionally, redirect to the dashboard or another page
+            // window.location.href = '/dashboard'
+          }
+        } catch (error) {
+          console.error('Unexpected error during sign up:', error)
+        }
+      })
+  </script>
+</Layout>

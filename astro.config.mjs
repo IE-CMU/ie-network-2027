@@ -10,7 +10,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  output: 'static',
+  output: 'server', // Need to use "server" insteald of "static" because of catch-all routes for auth.
   adapter: node({
     mode: 'standalone',
   }),
