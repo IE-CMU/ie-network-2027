@@ -1,7 +1,7 @@
 name: ie_network_2027
 services:
   db:
-    container_name: db
+    # container_name: db
     image: postgres:18-alpine
     restart: always
     environment:
