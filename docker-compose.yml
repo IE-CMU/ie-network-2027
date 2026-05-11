@@ -1,7 +1,7 @@
 name: ie_network_2027
 services:
   db:
-    # container_name: db
+    container_name: db_ien
     image: postgres:18-alpine
     restart: always
     environment:
@@ -12,14 +12,36 @@ services:
       - POSTGRES_APP_USER=${POSTGRES_APP_USER}
       - POSTGRES_APP_PASSWORD=${POSTGRES_APP_PASSWORD}
     ports:
-      - 5432:${POSTGRES_PORT}
+      - ${POSTGRES_PORT}:5432
     volumes:
       - ./_entrypoint:/docker-entrypoint-initdb.d
       - db_data:/var/lib/postgresql/data
     networks:
       - ie_network_2027
+  redis:
+    container_name: redis_ien
+    image: redis:8-alpine
+    restart: always
+    ports:
+      - ${REDIS_PORT}:6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - ie_network_2027
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight_ien
+    restart: always
+    ports:
+      - '5540:5540'
+    volumes:
+      - redisinsight_data:/data
+    networks:
+      - ie_network_2027
 volumes:
   db_data:
+  redis_data:
+  redisinsight_data:
 networks:
   ie_network_2027:
     driver: bridge
