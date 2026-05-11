@@ -32,3 +32,6 @@ docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie
 - Gmail integration
 - Magic link login
 - Email queue for sending emails
+
+# Note on Email Sending
+- My mistake was using the OAuth Playground, but it was created with Gmail API read/send scopes rather than https://mail.google.com/, so the token works for some API calls but fails for SMTP login.

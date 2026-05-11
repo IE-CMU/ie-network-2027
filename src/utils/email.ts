@@ -5,72 +5,17 @@ import {
   googleClientSecret,
   googleRefreshToken,
 } from '@utils/env'
-// import { google } from 'googleapis'
 
-// const OAuth2 = google.auth.OAuth2
-
-export const createTransporter = async () => {
-  // const oauth2Client = new OAuth2(
-  //   googleClientId,
-  //   googleClientSecret,
-  //   'https://developers.google.com/oauthplayground'
-  // )
-
-  // oauth2Client.setCredentials({
-  //   refresh_token: googleRefreshToken,
-  // })
-
-  // const accessToken = await new Promise((resolve, reject) => {
-  //   oauth2Client.getAccessToken((err, token) => {
-  //     if (err) {
-  //       console.error('Failed to create access token :(', err)
-  //       reject('Failed to create access token :(')
-  //     }
-  //     resolve(token)
-  //   })
-  // })
-
-  // console.log('Access Token:', accessToken)
-
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      type: 'OAuth2',
-      user: gmailUser,
-      // accessToken,
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
-      refreshToken: googleRefreshToken,
-    },
-  })
-
-  // const transporter = nodemailer.createTransport({
-  //   host: 'smtp.gmail.com',
-  //   port: 465,
-  //   secure: true,
-  //   auth: {
-  //     type: 'OAuth2',
-  //     user: gmailUser,
-  //     clientId: googleClientId,
-  //     clientSecret: googleClientSecret,
-  //     refreshToken: googleRefreshToken,
-  //     accessToken: accessToken,
-  //   },
-  // })
-
-  return transporter
-}
-
-// export const transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     type: 'OAuth2',
-//     user: gmailUser,
-//     clientId: googleClientId,
-//     clientSecret: googleClientSecret,
-//     refreshToken: googleRefreshToken,
-//   },
-// })
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    type: 'OAuth2',
+    user: gmailUser,
+    clientId: googleClientId,
+    clientSecret: googleClientSecret,
+    refreshToken: googleRefreshToken,
+  },
+})
 
 export async function sendEmail({
   name,
@@ -81,7 +26,6 @@ export async function sendEmail({
   recipientEmail: string
   message: string
 }) {
-  const transporter = await createTransporter()
   try {
     await transporter.sendMail({
       from: gmailUser,
@@ -110,3 +54,46 @@ function escapeHtml(value: string) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 }
+
+// Old implementation
+
+// import { google } from 'googleapis'
+// const OAuth2 = google.auth.OAuth2
+
+// export const createTransporter = async () => {
+//   const oauth2Client = new OAuth2(
+//     googleClientId,
+//     googleClientSecret,
+//     'https://developers.google.com/oauthplayground'
+//   )
+
+//   oauth2Client.setCredentials({
+//     refresh_token: googleRefreshToken,
+//   })
+
+//   const accessToken = await new Promise((resolve, reject) => {
+//     oauth2Client.getAccessToken((err, token) => {
+//       if (err) {
+//         console.error('Failed to create access token :(', err)
+//         reject('Failed to create access token :(')
+//       }
+//       resolve(token)
+//     })
+//   })
+
+//   console.log('Access Token:', accessToken)
+
+//   const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//       type: 'OAuth2',
+//       user: gmailUser,
+//       accessToken,
+//       clientId: googleClientId,
+//       clientSecret: googleClientSecret,
+//       refreshToken: googleRefreshToken,
+//     },
+//   })
+
+//   return transporter
+// }
