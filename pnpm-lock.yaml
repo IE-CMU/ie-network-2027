@@ -35,6 +35,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(kysely@0.28.17)(postgres@3.4.9)
+      ioredis:
+        specifier: ^5.10.1
+        version: 5.10.1
       nodemailer:
         specifier: ^8.0.7
         version: 8.0.7

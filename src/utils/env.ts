@@ -83,6 +83,12 @@ const redisPort = getEnv('REDIS_PORT')
 const redisPassword = getEnv('REDIS_PASSWORD')
 const redisHost = getEnv('REDIS_HOST')
 
+console.log({
+  redisPort,
+  redisPassword,
+  redisHost,
+})
+
 if (!redisPort || !redisHost || !redisPassword) {
   throw new Error('Invalid Redis env.')
 }

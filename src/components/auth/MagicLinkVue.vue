@@ -34,7 +34,7 @@ async function handleMagicLink() {
             class="input"
             v-model="email"
           />
-          <button id="btn" type="submit" class="btn">Send Magic Link</button>
+          <button type="submit" class="btn">Send Magic Link</button>
         </form>
       </div>
     </div>

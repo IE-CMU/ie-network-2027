@@ -9,9 +9,31 @@ const myQueue = new Queue('foo', {
   },
 })
 
-async function addJobs() {
-  await myQueue.add('myJobName', { foo: 'bar' })
-  await myQueue.add('myJobName', { qux: 'baz' })
+async function assertRedisConnection() {
+  const client = await myQueue.client
+  console.log(`Testing Redis connection to ${redisHost}:${redisPort}...`)
+  const pong = await client.ping()
+  console.log(`Received response from Redis: ${pong}`)
+  if (pong !== 'PONG') {
+    throw new Error(`Redis ping failed for ${redisHost}:${redisPort}`)
+  }
 }
 
-addJobs().then(() => myQueue.close())
+export async function addQueue() {
+  await assertRedisConnection()
+
+  const job1 = await myQueue.add('myJobName', { foo: 'bar' })
+  const job2 = await myQueue.add('myJobName', { qux: 'baz' })
+
+  console.log('Jobs added to the queue.')
+
+  return {
+    queue: myQueue.name,
+    jobIds: [job1.id, job2.id],
+    target: `${redisHost}:${redisPort}`,
+  }
+}
+
+addQueue().catch((error) => {
+  console.error('Error adding jobs to the queue:', error)
+})

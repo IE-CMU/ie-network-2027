@@ -24,14 +24,12 @@ services:
     restart: always
     ports:
       - ${REDIS_PORT}:6379
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     networks:
       - ie_network_2027
     command: >
-      sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+      sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
   redisinsight:
     image: redis/redisinsight:latest
     container_name: redisinsight_ien

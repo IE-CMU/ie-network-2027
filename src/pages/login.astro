@@ -21,4 +21,24 @@ export const prerender = false
 <Layout title="Login">
   <LoginVue client:load />
   <MagicLinkVue client:load />
+  <button id="add-queue-btn" class="btn">Add Queue</button>
+  <script>
+    import { actions } from 'astro:actions'
+
+    const btn = document.getElementById('add-queue-btn')
+    if (!btn) {
+      console.error('Add Queue button not found')
+    }
+    btn?.addEventListener('click', async () => {
+      // Call the action
+      const { data, error } = await actions.addQueue()
+      console.log('Action response:', { data, error })
+      if (error) {
+        alert(`Queue action failed: ${error.message}`)
+        return
+      }
+
+      alert(`Enqueued on ${data.target} with jobs ${data.jobIds.join(', ')}`)
+    })
+  </script>
 </Layout>

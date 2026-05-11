@@ -35,3 +35,12 @@ docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie
 
 # Note on Email Sending
 - My mistake was using the OAuth Playground, but it was created with Gmail API read/send scopes rather than https://mail.google.com/, so the token works for some API calls but fails for SMTP login.
+
+
+# Note on Redis
+- Check if port 6379 is not used by another process:
+`Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess, State | Select-String -Pattern "63"`
+- What happned was this port is used by the system (could be WSL). When I set the redis container to 6379, the container was able to run (why?) but the connection from the application (which connects to `localhost:6379`) does not work. 
+- Another thing that I used `redisinsight` within the same docker network so the connection to `[redis_container_name]:6379` works, but the connection from the host to `localhost:6379` does not work because that port is used by another process on the host.
+- Also, when using `ioredis`, this library can uses offline mode and does not throw an error.
+- The best way to avoid this is to use port `6380`.
