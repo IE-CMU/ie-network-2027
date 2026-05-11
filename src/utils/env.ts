@@ -50,12 +50,12 @@ export const googleRefreshToken = getEnv('GOOGLE_REFRESH_TOKEN')
 // export const googleClientSecret = import.meta.env.GOOGLE_CLIENT_SECRET
 // export const googleRefreshToken = import.meta.env.GOOGLE_REFRESH_TOKEN
 
-console.log({
-  gmailUser,
-  googleClientId,
-  googleClientSecret,
-  googleRefreshToken,
-})
+// console.log({
+//   gmailUser,
+//   googleClientId,
+//   googleClientSecret,
+//   googleRefreshToken,
+// })
 
 if (
   !gmailUser ||

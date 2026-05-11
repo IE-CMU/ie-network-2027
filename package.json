@@ -22,7 +22,6 @@
     "daisyui": "^5.5.19",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
-    "googleapis": "^171.4.0",
     "nodemailer": "^8.0.7",
     "postgres": "^3.4.9",
     "tailwindcss": "^4.3.0",

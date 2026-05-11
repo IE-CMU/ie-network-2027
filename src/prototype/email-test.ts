@@ -1,4 +1,4 @@
-import { sendEmail, createTransporter } from './email'
+import { sendEmail } from '@utils/email'
 
 // Example usage
 async function testEmail() {
@@ -15,4 +15,3 @@ async function testEmail() {
 }
 
 testEmail()
-// createTransporter()
