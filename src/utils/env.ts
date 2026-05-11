@@ -37,7 +37,7 @@ const dbName = getEnv('POSTGRES_DB')
 if (!dbUser || !dbPassword || !dbHost || !dbPort || !dbName) {
   throw new Error('Invalid DB env.')
 }
-export const connectionString = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
+export const dbConnectionString = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
 
 //--------------- Gmail ----------------
 export const gmailUser = getEnv('GMAIL_USER')
@@ -76,3 +76,17 @@ export const betterAuthUrl = getEnv('BETTER_AUTH_URL')
 if (!betterAuthSecret || !betterAuthUrl) {
   throw new Error('Invalid BetterAuth env.')
 }
+
+//--------------- Redis ----------------
+
+const redisPort = getEnv('REDIS_PORT')
+const redisPassword = getEnv('REDIS_PASSWORD')
+const redisHost = getEnv('REDIS_HOST')
+
+if (!redisPort || !redisHost || !redisPassword) {
+  throw new Error('Invalid Redis env.')
+}
+
+export { redisHost, redisPort, redisPassword }
+
+export const redisConnectionString = `redis://default:${redisPassword}@${redisHost}:${redisPort}`
