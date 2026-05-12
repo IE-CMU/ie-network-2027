@@ -1,22 +1,21 @@
 import { Worker, Job } from 'bullmq'
-import { redisConnection } from '@utils/redis'
+import { redisConnection } from '@/utils/email/redis'
 
 const processJob = async (job: Job) => {
   console.log(`Processing job ${job.id} with data:`, job.data)
-  // Optionally report some progress
-  //   await job.updateProgress(42)
-  // Optionally sending an object as progress
-  //   await job.updateProgress({ foo: 'bar' })
-  // Do something with job
+  await job.updateProgress(42)
+  await job.updateProgress({ foo: 'bar' })
   return 'some value'
 }
 
-const worker = new Worker('foo', processJob, { connection: redisConnection })
+const worker = new Worker('email', processJob, {
+  connection: redisConnection,
+  concurrency: 1,
+  useWorkerThreads: true,
+})
 
 worker.on('active', (job) => {
-  console.log(
-    `Job ${job.id} is now active; previous status was ${job.prev?.status}`
-  )
+  console.log(`Job ${job.id} is now active.`)
 })
 
 worker.on('completed', (job) => {
@@ -32,7 +31,11 @@ worker.on('error', (error) => {
 })
 
 worker.on('ready', () => {
-  console.log('Worker is ready and listening for jobs on queue "foo"')
+  console.log('Worker is ready and listening for jobs on queue "email".')
+})
+
+worker.on('progress', (job, progress) => {
+  console.log(`Job ${job.id} progress:`, progress)
 })
 
 // Graceful shutdown

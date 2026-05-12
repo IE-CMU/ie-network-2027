@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq'
-import { redisConnection } from '@utils/redis'
+import { redisConnection } from '@/utils/email/redis'
 
-const myQueue = new Queue('foo', {
+const myQueue = new Queue('email', {
   connection: redisConnection,
 })
 
@@ -16,8 +16,8 @@ async function assertRedisConnection() {
 export async function addQueue() {
   await assertRedisConnection()
 
-  const job1 = await myQueue.add('myJobName', { foo: 'bar' })
-  const job2 = await myQueue.add('myJobName', { qux: 'baz' })
+  const job1 = await myQueue.add('q1', { foo: 'bar' })
+  const job2 = await myQueue.add('q2', { qux: 'baz' })
 
   console.log('Jobs added to the queue.')
 

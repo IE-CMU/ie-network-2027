@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { dbClient } from '../db/client.js' // your drizzle instance
 import { magicLink } from 'better-auth/plugins'
-import { sendEmail } from '@utils/email'
+import { sendEmail } from '@/utils/email/email.js'
 
 export const auth = betterAuth({
   database: drizzleAdapter(dbClient, {

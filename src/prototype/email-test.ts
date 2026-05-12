@@ -1,4 +1,4 @@
-import { sendEmail } from '@utils/email'
+import { sendEmail } from '@/utils/email/email'
 
 // Example usage
 async function testEmail() {

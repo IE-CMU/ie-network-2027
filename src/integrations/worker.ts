@@ -6,12 +6,12 @@ export default function workerIntegration(): AstroIntegration {
     hooks: {
       'astro:server:setup': async () => {
         // Import worker to start processing jobs
-        await import('@utils/worker')
+        await import('@/utils/email/worker')
         console.log('✓ BullMQ worker initialized')
       },
       'astro:build:done': async () => {
         // Import worker for production builds
-        await import('@utils/worker')
+        await import('@/utils/email/worker')
         console.log('✓ BullMQ worker initialized for production')
       },
     },

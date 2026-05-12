@@ -1,6 +1,6 @@
 import { defineAction } from 'astro:actions'
 import { z } from 'astro/zod'
-import { addQueue } from '@utils/queue'
+import { addQueue } from '@/utils/email/queue'
 export const server = {
   getGreeting: defineAction({
     input: z.object({ name: z.string() }),
