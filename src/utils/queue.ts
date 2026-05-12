@@ -1,21 +1,15 @@
 import { Queue } from 'bullmq'
-import { redisHost, redisPort, redisPassword } from '@utils/env'
+import { redisConnection } from '@utils/redis'
 
 const myQueue = new Queue('foo', {
-  connection: {
-    host: redisHost,
-    port: parseInt(redisPort as string),
-    password: redisPassword,
-  },
+  connection: redisConnection,
 })
 
 async function assertRedisConnection() {
   const client = await myQueue.client
-  console.log(`Testing Redis connection to ${redisHost}:${redisPort}...`)
   const pong = await client.ping()
-  console.log(`Received response from Redis: ${pong}`)
   if (pong !== 'PONG') {
-    throw new Error(`Redis ping failed for ${redisHost}:${redisPort}`)
+    throw new Error(`Redis ping failed`)
   }
 }
 
@@ -30,7 +24,6 @@ export async function addQueue() {
   return {
     queue: myQueue.name,
     jobIds: [job1.id, job2.id],
-    target: `${redisHost}:${redisPort}`,
   }
 }
 
