@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { authClient } from '@/utils/auth-client'
+import { authClient } from '@/lib/auth-client'
 import { navigate } from 'astro:transitions/client'
 
 const email = ref('')

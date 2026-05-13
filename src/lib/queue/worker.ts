@@ -1,17 +1,31 @@
-import { Worker, Job } from 'bullmq'
-import { redisConnection } from '@/utils/email/redis'
+import { JOB_NAMES, QUEUE_NAME, redisConnection } from '@/lib/queue/utils'
+import { Job, Worker } from 'bullmq'
 
-const processJob = async (job: Job) => {
-  console.log(`Processing job ${job.id} with data:`, job.data)
-  await job.updateProgress(42)
-  await job.updateProgress({ foo: 'bar' })
-  return 'some value'
+async function processJob(job: Job) {
+  if (job.name === JOB_NAMES.EMAIL) {
+    await processEmailJob(job)
+  } else if (job.name === JOB_NAMES.FACEBOOK) {
+    await processFacebookJob(job)
+  }
+
+  // console.log(`Processing job ${job.id} with data:`, job.data)
+  // await job.updateProgress(42)
+  // await job.updateProgress({ foo: 'bar' })
+  // return 'some value'
 }
 
-const worker = new Worker('email', processJob, {
+async function processEmailJob(job: Job) {
+  console.log(`Processing email job ${job.id} with data:`, job.data)
+}
+
+async function processFacebookJob(job: Job) {
+  console.log(`Processing Facebook job ${job.id} with data:`, job.data)
+}
+
+const worker = new Worker(QUEUE_NAME, processJob, {
   connection: redisConnection,
-  concurrency: 1,
-  useWorkerThreads: true,
+  concurrency: 2,
+  useWorkerThreads: false,
 })
 
 worker.on('active', (job) => {

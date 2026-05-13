@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro'
 
-import { auth } from '../utils/auth'
+import { auth } from '../lib/auth'
 let session = null
 try {
   session = await auth.api.getSession({
