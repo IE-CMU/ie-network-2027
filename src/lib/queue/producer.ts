@@ -10,7 +10,7 @@ export async function addEmailQueue(data: CreateEmailParams) {
   // await assertRedisConnection()
 
   const emailData = createEmail(data)
-  const job = await queue.add(JOB_NAMES.EMAIL, { data: emailData })
+  const job = await queue.add(JOB_NAMES.EMAIL, emailData)
 
   console.log(`Jobs added to the queue: ${job.id}`)
 

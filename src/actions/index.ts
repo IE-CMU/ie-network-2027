@@ -1,4 +1,3 @@
-import { addEmailQueue } from '@/lib/queue/producer'
 import { z } from 'astro/zod'
 import { defineAction } from 'astro:actions'
 
@@ -14,7 +13,6 @@ export const server = {
   addQueue: defineAction({
     handler: async () => {
       console.log('Adding jobs to the queue...')
-
       // return await addQueue()
     },
   }),

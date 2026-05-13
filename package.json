@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "run-p dev:server dev:worker",
     "dev:server": "astro dev",
-    "dev:worker": "tsx src/utils/email/worker.ts",
+    "dev:worker": "tsx src/lib/queue/worker.ts",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
