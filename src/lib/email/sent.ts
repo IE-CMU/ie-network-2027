@@ -6,7 +6,7 @@ import {
 } from '@utils/env'
 import nodemailer from 'nodemailer'
 
-export type SendMessageData = nodemailer.SendMailOptions
+export type SendEmailPayload = nodemailer.SendMailOptions
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-export async function _sendEmail(data: SendMessageData) {
+export async function sendEmail(data: SendEmailPayload) {
   try {
     await transporter.sendMail(data)
   } catch (error) {

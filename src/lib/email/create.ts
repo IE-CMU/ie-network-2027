@@ -1,31 +1,30 @@
+import { type SendEmailPayload } from '@/lib/email/sent'
 import { gmailUser } from '@/utils/env'
 
-import { type SendMessageData } from './engine'
-
-export interface ConstructEmailDataParams {
+export interface CreateEmailParams {
   name: string
   recipientEmail: string
   subject: string
   message: string
   html?: string
 }
-export function _constructEmailData({
+export function createEmail({
   name,
   recipientEmail,
   message,
   subject,
   html,
-}: ConstructEmailDataParams): SendMessageData {
+}: CreateEmailParams): SendEmailPayload {
+  const messageContent = `Dear ${name},\n\n${message}\n\nBest regards,\nIE Network 2017 Committee`
   const htmlContent = html
     ? html
     : `<h1>Dear ${name},</h1><p>${formatHTML(message)}</p><p>Best regards,<br>IE Network 2017 Committee</p>`
-
   return {
     from: gmailUser,
     to: recipientEmail,
     replyTo: gmailUser,
     subject: subject,
-    text: message,
+    text: messageContent,
     html: htmlContent,
   }
 }

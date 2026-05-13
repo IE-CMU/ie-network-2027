@@ -1,3 +1,4 @@
+import { type CreateEmailParams, createEmail } from '@/lib/email/create'
 import { JOB_NAMES, QUEUE_NAME, redisConnection } from '@/lib/queue/utils'
 import { Queue } from 'bullmq'
 
@@ -5,15 +6,11 @@ const queue = new Queue(QUEUE_NAME, {
   connection: redisConnection,
 })
 
-interface EmailJobData {
-  to: string
-  subject: string
-  body: string
-}
-export async function addEmailQueue(data: EmailJobData) {
-  await assertRedisConnection()
+export async function addEmailQueue(data: CreateEmailParams) {
+  // await assertRedisConnection()
 
-  const job = await queue.add(JOB_NAMES.EMAIL, data)
+  const emailData = createEmail(data)
+  const job = await queue.add(JOB_NAMES.EMAIL, { data: emailData })
 
   console.log(`Jobs added to the queue: ${job.id}`)
 
@@ -28,7 +25,7 @@ interface FacebookJobData {
   message: string
 }
 export async function addFacebookQueue(data: FacebookJobData) {
-  await assertRedisConnection()
+  // await assertRedisConnection()
 
   const job = await queue.add(JOB_NAMES.FACEBOOK, data)
 

@@ -1,4 +1,4 @@
-import { sendEmail } from '@/lib/email/data.js'
+import { sendEmail } from '@/lib/email/create.js'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 // your drizzle instance
