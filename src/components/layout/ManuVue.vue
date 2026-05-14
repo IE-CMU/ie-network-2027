@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { type Session } from '@lib/auth'
+import { type Locale } from '@utils/locale'
+
+import LanguagePickerVue from './LanguagePickerVue.vue'
 
 // Define the props for the menu component
 interface Props {
   session: Session | null
+  locale: Locale
 }
-const props = defineProps<Props>()
-
-// console.log('Session data in Manu.vue:', props.session ?? '') // Debugging log to check session data
+const { locale, session } = defineProps<Props>()
+console.log('Menu Props:', { session, locale })
 </script>
 
 <template>
@@ -17,6 +20,7 @@ const props = defineProps<Props>()
         <div class="flex items-center">
           <h1 class="text-2xl font-bold text-[#9E76B4]">IE Network 2027</h1>
         </div>
+        <LanguagePickerVue :locale="locale" />
         <ul class="hidden md:flex space-x-8">
           <li>
             <a href="/" class="hover:text-[#9E76B4] transition">Home</a>

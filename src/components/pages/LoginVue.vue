@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { authClient } from '@/lib/auth-client'
 import { navigate } from 'astro:transitions/client'
