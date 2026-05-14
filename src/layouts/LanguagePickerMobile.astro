@@ -1,0 +1,43 @@
+---
+// This component is used in the mobile menu to allow users to switch languages on mobile devices.
+// This is identical in functionality to the LanguagePicker component used in the desktop menu,
+// but with a different id for the select element to avoid conflicts with the desktop version.
+
+import { type Locale } from '@utils/locale'
+import { getUrlListCustom } from '@utils/locale'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+const localeUrlList = getUrlListCustom(Astro.url.pathname)
+console.log('Current locale:', locale)
+console.log('Locale URL list:', localeUrlList)
+---
+
+<select
+  class="border border-gray-300 rounded-md p-2"
+  id="language-switcher-mobile"
+  data-locale-url-list={JSON.stringify(localeUrlList)}
+>
+  <option value="th" selected={locale === 'th'}>Thai</option>
+  <option value="en" selected={locale === 'en'}>English</option>
+</select>
+
+<script>
+  const switcher = document.querySelector('#language-switcher-mobile')
+
+  if (switcher instanceof HTMLSelectElement) {
+    const urlList = JSON.parse(switcher.dataset.localeUrlList ?? '{}')
+
+    switcher.addEventListener('change', (event) => {
+      const selectedOption = event.currentTarget
+      if (!(selectedOption instanceof HTMLSelectElement)) return
+
+      const nextUrl = urlList[selectedOption.value]
+      if (typeof nextUrl === 'string' && nextUrl.length > 0) {
+        window.location.assign(nextUrl)
+      }
+    })
+  }
+</script>

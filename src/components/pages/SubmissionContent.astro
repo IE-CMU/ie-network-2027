@@ -1,0 +1,333 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {locale === 'th' ? 'แนวทางการส่งบทความ' : 'Paper Submission Guidelines'}
+  </h1>
+
+  <div class="grid md:grid-cols-3 gap-8 mb-12">
+    <!-- Step 1 -->
+    <div class="bg-purple-50 p-6 rounded-lg">
+      <div class="flex items-center mb-4">
+        <div
+          class="flex items-center justify-center h-10 w-10 rounded-full bg-[#9E76B4] text-white font-bold mr-3"
+        >
+          1
+        </div>
+        <h3 class="text-xl font-bold">
+          {locale === 'th' ? 'เตรียมบทความของคุณ' : 'Prepare Your Paper'}
+        </h3>
+      </div>
+      <p class="text-gray-700">
+        {
+          locale === 'th'
+            ? 'ใช้เทมเพลตที่กำหนดสำหรับบทความฉบับเต็ม และตรวจสอบให้แน่ใจว่าบทความของคุณเป็นงานวิจัยต้นฉบับในหนึ่งในหัวข้อของการประชุม'
+            : 'Use the provided template for your full paper. Ensure your paper covers original research in one of the conference topics.'
+        }
+      </p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="bg-green-50 p-6 rounded-lg">
+      <div class="flex items-center mb-4">
+        <div
+          class="flex items-center justify-center h-10 w-10 rounded-full bg-green-600 text-white font-bold mr-3"
+        >
+          2
+        </div>
+        <h3 class="text-xl font-bold">
+          {locale === 'th' ? 'ส่งผ่านระบบออนไลน์' : 'Submit Online'}
+        </h3>
+      </div>
+      <p class="text-gray-700">
+        {
+          locale === 'th'
+            ? 'ส่งบทความของคุณผ่านระบบ CMT ภายในกำหนดเวลา และกรอกข้อมูลที่จำเป็นให้ครบถ้วน'
+            : 'Submit your paper through the CMT submission portal by the deadline. Make sure all required information is provided.'
+        }
+      </p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="bg-purple-50 p-6 rounded-lg">
+      <div class="flex items-center mb-4">
+        <div
+          class="flex items-center justify-center h-10 w-10 rounded-full bg-purple-600 text-white font-bold mr-3"
+        >
+          3
+        </div>
+        <h3 class="text-xl font-bold">
+          {locale === 'th' ? 'การประเมินโดยผู้ทรงคุณวุฒิ' : 'Peer Review'}
+        </h3>
+      </div>
+      <p class="text-gray-700">
+        {
+          locale === 'th'
+            ? 'บทความของคุณจะได้รับการประเมินโดยผู้เชี่ยวชาญในสาขา และคุณจะได้รับข้อเสนอแนะพร้อมผลการพิจารณา'
+            : 'Your paper will undergo peer review by experts in your field. You will receive feedback and acceptance decision.'
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- Paper Templates -->
+  <section class="mb-12 bg-gray-50 p-8 rounded-lg">
+    <h2 class="text-2xl font-bold mb-6">
+      {locale === 'th' ? 'เทมเพลตบทความ' : 'Paper Templates'}
+    </h2>
+    <p class="text-gray-700 mb-6">
+      {
+        locale === 'th'
+          ? 'ดาวน์โหลดเทมเพลตที่เหมาะสมสำหรับบทความของคุณ โดยบทความต้องเป็นไปตามรูปแบบเทมเพลตที่กำหนดเพื่อรับการพิจารณา'
+          : 'Download the appropriate template for your paper. Papers must follow the template format to be accepted.'
+      }
+    </p>
+    <div class="grid md:grid-cols-2 gap-6">
+      <a
+        href="#"
+        class="bg-[#9E76B4] hover:bg-[#8a5fa0] text-white p-6 rounded-lg transition"
+      >
+        <h3 class="text-lg font-bold mb-2">
+          {locale === 'th' ? 'เทมเพลตบทความภาษาไทย' : 'Thai Paper Template'}
+        </h3>
+        <p>
+          {
+            locale === 'th'
+              ? 'ดาวน์โหลดเทมเพลตสำหรับบทความภาษาไทย'
+              : 'Download template for papers in Thai language'
+          }
+        </p>
+      </a>
+      <a
+        href="#"
+        class="bg-[#9E76B4] hover:bg-[#8a5fa0] text-white p-6 rounded-lg transition"
+      >
+        <h3 class="text-lg font-bold mb-2">
+          {
+            locale === 'th'
+              ? 'เทมเพลตบทความภาษาอังกฤษ'
+              : 'English Paper Template'
+          }
+        </h3>
+        <p>
+          {
+            locale === 'th'
+              ? 'ดาวน์โหลดเทมเพลตสำหรับบทความภาษาอังกฤษ'
+              : 'Download template for papers in English language'
+          }
+        </p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Submission Guidelines -->
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold mb-6">
+      {locale === 'th' ? 'ข้อกำหนดการส่งบทความ' : 'Submission Guidelines'}
+    </h2>
+    <div class="space-y-4">
+      <div class="border-l-4 border-[#9E76B4] pl-4 py-2">
+        <h3 class="font-bold text-lg">
+          {locale === 'th' ? 'ความยาวบทความ' : 'Paper Length'}
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'บทความฉบับเต็มควรมีความยาว 6-10 หน้า รวมรูป ตาราง และเอกสารอ้างอิง'
+              : 'Full papers should be between 6-10 pages, including figures, tables, and references.'
+          }
+        </p>
+      </div>
+      <div class="border-l-4 border-[#9E76B4] pl-4 py-2">
+        <h3 class="font-bold text-lg">
+          {locale === 'th' ? 'ภาษา' : 'Language'}
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'สามารถส่งบทความเป็นภาษาไทยหรือภาษาอังกฤษ โดยควรใช้ไวยากรณ์และรูปแบบการเขียนที่เหมาะสม'
+              : 'Papers may be submitted in Thai or English. Please use appropriate grammar and writing style.'
+          }
+        </p>
+      </div>
+      <div class="border-l-4 border-[#9E76B4] pl-4 py-2">
+        <h3 class="font-bold text-lg">
+          {locale === 'th' ? 'องค์ประกอบของเนื้อหา' : 'Content Requirements'}
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'ควรประกอบด้วยบทคัดย่อ บทนำ วิธีการวิจัย ผลการวิจัย อภิปรายผล สรุป และเอกสารอ้างอิง'
+              : 'Include abstract, introduction, methodology, results, discussion, conclusion, and references.'
+          }
+        </p>
+      </div>
+      <div class="border-l-4 border-[#9E76B4] pl-4 py-2">
+        <h3 class="font-bold text-lg">
+          {locale === 'th' ? 'ผลงานต้นฉบับ' : 'Original Work'}
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'บทความต้องเป็นผลงานต้นฉบับและไม่เคยตีพิมพ์มาก่อน ไม่อนุญาตให้ส่งผลงานเดียวกันซ้ำหลายครั้ง'
+              : 'Papers must be original and not previously published. Multiple submissions of the same work are not allowed.'
+          }
+        </p>
+      </div>
+      <div class="border-l-4 border-[#9E76B4] pl-4 py-2">
+        <h3 class="font-bold text-lg">
+          {
+            locale === 'th'
+              ? 'การอ้างอิงและบรรณานุกรม'
+              : 'Citations and References'
+          }
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'อ้างอิงแหล่งข้อมูลทุกแห่งอย่างถูกต้อง และปฏิบัติตามรูปแบบการอ้างอิงที่ระบุในเทมเพลต'
+              : 'Cite all sources appropriately. Follow the citation style specified in the template.'
+          }
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Important Information -->
+  <section class="mb-12 bg-yellow-50 p-8 rounded-lg border-2 border-yellow-300">
+    <h2 class="text-2xl font-bold mb-6">
+      {locale === 'th' ? 'ข้อมูลสำคัญ' : 'Important Information'}
+    </h2>
+    <ul class="space-y-3">
+      <li class="flex items-start">
+        <span class="text-yellow-600 font-bold mr-3">!</span>
+        <span class="text-gray-700">
+          <strong>
+            {
+              locale === 'th'
+                ? 'กำหนดส่งบทความฉบับเต็ม:'
+                : 'Full Paper Submission Deadline:'
+            }
+          </strong>
+          {locale === 'th' ? '31 มกราคม 2027' : 'January 31, 2027'}
+        </span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-yellow-600 font-bold mr-3">!</span>
+        <span class="text-gray-700">
+          <strong>
+            {
+              locale === 'th'
+                ? 'กำหนดส่งบทความฉบับแก้ไข:'
+                : 'Revised Paper Deadline:'
+            }
+          </strong> TBA
+        </span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-yellow-600 font-bold mr-3">!</span>
+        <span class="text-gray-700">
+          <strong>
+            {locale === 'th' ? 'กระบวนการพิจารณา:' : 'Review Process:'}
+          </strong>
+          {
+            locale === 'th'
+              ? 'พิจารณาแบบ Double-blind โดยผู้ทรงคุณวุฒิ'
+              : 'Double-blind peer review by expert reviewers'
+          }
+        </span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-yellow-600 font-bold mr-3">!</span>
+        <span class="text-gray-700">
+          <strong>
+            {locale === 'th' ? 'ประกาศผลการพิจารณา:' : 'Decision Notification:'}
+          </strong> TBA
+        </span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-yellow-600 font-bold mr-3">!</span>
+        <span class="text-gray-700">
+          <strong>{locale === 'th' ? 'การตีพิมพ์:' : 'Publication:'}</strong>
+          {
+            locale === 'th'
+              ? 'บทความที่ผ่านการคัดเลือกจะได้รับการตีพิมพ์ในวารสารวิชาการที่ผ่านการประเมินโดยผู้ทรงคุณวุฒิ'
+              : 'Selected papers will be published in peer-reviewed journals'
+          }
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Submission Portal -->
+  <section class="bg-[#9E76B4] text-white p-8 rounded-lg text-center">
+    <h2 class="text-3xl font-bold mb-4">
+      {locale === 'th' ? 'พร้อมส่งบทความหรือยัง?' : 'Ready to Submit?'}
+    </h2>
+    <p class="text-lg mb-6">
+      {
+        locale === 'th'
+          ? 'ใช้ระบบส่งบทความออนไลน์ CMT เพื่อส่งบทความของคุณ'
+          : 'Use the CMT online submission system to submit your paper.'
+      }
+    </p>
+    <a
+      href="#"
+      class="bg-white text-[#9E76B4] font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition inline-block"
+    >
+      {locale === 'th' ? 'ส่งบทความตอนนี้' : 'Submit Your Paper Now'}
+    </a>
+    <p class="mt-6 text-sm">
+      {
+        locale === 'th'
+          ? 'แพลตฟอร์ม: CMT (Conference Management Toolkit)'
+          : 'Platform: CMT (Conference Management Toolkit)'
+      }
+    </p>
+  </section>
+
+  <!-- Support -->
+  <section class="mt-12 text-center">
+    <h2 class="text-2xl font-bold mb-4">
+      {locale === 'th' ? 'ต้องการความช่วยเหลือ?' : 'Need Help?'}
+    </h2>
+    <p class="text-gray-700 mb-4">
+      {
+        locale === 'th'
+          ? 'หากคุณมีคำถามเกี่ยวกับขั้นตอนการส่งบทความ กรุณาติดต่อเรา:'
+          : 'If you have any questions about the submission process, please contact us:'
+      }
+    </p>
+    <div class="space-y-2">
+      <p>
+        <strong>{locale === 'th' ? 'อีเมล:' : 'Email:'}</strong>
+        <a
+          href="mailto:ienetwork2027@gmail.com"
+          class="text-[#9E76B4] hover:underline"
+        >
+          ienetwork2027@gmail.com
+        </a>
+      </p>
+      <p>
+        <strong>{locale === 'th' ? 'โทรศัพท์:' : 'Phone:'}</strong> (+66)53-94-4125-6
+      </p>
+    </div>
+  </section>
+
+  <section class="mt-12 text-center">
+    <h2 class="text-2xl font-bold mb-4">
+      {locale === 'th' ? 'กิตติกรรมประกาศ' : 'Acknowledgments'}
+    </h2>
+    {
+      locale === 'th'
+        ? 'การประชุมครั้งนี้ใช้บริการ Microsoft CMT สำหรับบริหารจัดการกระบวนการประเมินบทความโดยผู้ทรงคุณวุฒิ โดย Microsoft ให้บริการนี้โดยไม่มีค่าใช้จ่าย และเป็นผู้รับผิดชอบค่าใช้จ่ายทั้งหมด รวมถึงค่าใช้จ่ายด้าน Azure cloud services ตลอดจนการพัฒนาและการสนับสนุนซอฟต์แวร์'
+        : 'The Microsoft CMT service was used for managing the peer-reviewing process for this conference. This service was provided for free by Microsoft and they bore all expenses, including costs for Azure cloud services as well as for software development and support.'
+    }
+  </section>
+</main>

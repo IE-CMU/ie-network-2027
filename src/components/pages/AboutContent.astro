@@ -1,0 +1,217 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-8">
+    {locale === 'th' ? 'เกี่ยวกับ IE Network 2027' : 'About IE Network 2027'}
+  </h1>
+
+  <!-- Rationale -->
+  <section class="mb-12">
+    <h2 class="text-3xl font-bold mb-6">
+      {locale === 'th' ? 'หลักการและเหตุผล' : 'Rationale and Background'}
+    </h2>
+    <div class="space-y-4 text-gray-700">
+      <p>
+        {
+          locale === 'th'
+            ? 'เครือข่ายวิศวกรรมอุตสาหการ (IE Network) เป็นองค์กรที่ก่อตั้งขึ้นเพื่อสร้างความร่วมมือและความเข้าใจร่วมกันระหว่างสถาบันการศึกษาที่ผลิตบุคลากรด้านวิศวกรรมอุตสาหการ และองค์กรที่ดำเนินงานด้านวิศวกรรมอุตสาหการ'
+            : 'The Industrial Engineering Network (IE Network) is an organization founded to create cooperation and mutual understanding between educational institutions that produce industrial engineering professionals and organizations engaged in industrial engineering work.'
+        }
+      </p>
+      <p>
+        {
+          locale === 'th'
+            ? 'IE Network ก่อตั้งขึ้นในเดือนตุลาคม พ.ศ. 2525 โดยได้รับการสนับสนุนจากวิศวกรรมสถานแห่งประเทศไทย (EIT) มีวัตถุประสงค์หลักเพื่อสนับสนุนการแลกเปลี่ยนข้อมูลและองค์ความรู้ด้านวิศวกรรมอุตสาหการ เครือข่ายส่งเสริมการทำวิจัยร่วมกันและความร่วมมือกับองค์กรต่าง ๆ ในการพัฒนางานด้านวิศวกรรมอุตสาหการ'
+            : 'Established in October 1982 with support from the Engineering Institute of Thailand (EIT), the IE Network has the primary objective of supporting the exchange of information and knowledge in industrial engineering work. The network facilitates collaborative research projects and cooperates with various organizations in developing industrial engineering work.'
+        }
+      </p>
+      <p>
+        {
+          locale === 'th'
+            ? 'ปัจจุบัน IE Network มีสถาบันสมาชิกมากกว่า 40 แห่งทั่วประเทศไทย และได้จัดกิจกรรมทางวิชาการมาอย่างต่อเนื่องมากกว่า 20 ปี เพื่อสนับสนุนทั้งภาคการศึกษาและภาคอุตสาหกรรม ที่สำคัญคือการจัดประชุมวิชาการ IE Network Conference เป็นประจำทุกปี ซึ่งเป็นเวทีสำคัญในการแลกเปลี่ยนผลงานวิจัยและผลักดันการนำผลงานไปใช้จริง'
+            : 'Today, the IE Network has more than 40 member institutions throughout Thailand and has been organizing academic activities for more than 20 years to support both the educational sector and the industrial business community. Notably, the network conducts the IE Network Conference annually, which has become a significant venue for exchanging research findings and promoting the practical application of research results.'
+        }
+      </p>
+    </div>
+  </section>
+
+  <!-- Objectives -->
+  <section class="mb-12">
+    <h2 class="text-3xl font-bold mb-6">
+      {locale === 'th' ? 'วัตถุประสงค์ของการประชุม' : 'Conference Objectives'}
+    </h2>
+    <div class="space-y-4">
+      <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-[#9E76B4]">
+        <h3 class="text-lg font-bold mb-2">
+          {locale === 'th' ? '1. เวทีวิชาการ' : '1. Academic Forum'}
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'เพื่อเป็นเวทีให้คณาจารย์ นักศึกษา นักวิจัย และผู้ปฏิบัติงานด้านวิศวกรรมอุตสาหการและสาขาที่เกี่ยวข้อง ได้พบปะแลกเปลี่ยนความรู้ ประสบการณ์ และผลงานวิจัย ทั้งในรูปแบบบทความ งานวิจัย และสิ่งประดิษฐ์'
+              : 'To provide a platform where faculty, students, researchers, and professionals in industrial engineering and related fields can meet to exchange knowledge, experience, and research findings, including academic papers, research work, and inventions.'
+          }
+        </p>
+      </div>
+      <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-[#9E76B4]">
+        <h3 class="text-lg font-bold mb-2">
+          {
+            locale === 'th'
+              ? '2. ความร่วมมือและการพัฒนา'
+              : '2. Collaboration and Development'
+          }
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'เพื่อส่งเสริมความร่วมมือระหว่างมหาวิทยาลัยของรัฐและภาคเอกชน ในการพัฒนาองค์ความรู้และเทคโนโลยี รวมถึงการถ่ายทอดและประยุกต์ใช้เทคโนโลยี เพื่อสนับสนุนการพัฒนาประเทศด้านธุรกิจอุตสาหกรรม การออกแบบ การผลิต ระบบงาน โลจิสติกส์ การจัดการคุณภาพ และวิศวกรรมความปลอดภัย'
+              : 'To facilitate cooperation between state universities and the private sector in developing knowledge and technology, including technology transfer and application that contributes to national development in industrial business, design, production, work systems, logistics, quality management, and safety engineering.'
+          }
+        </p>
+      </div>
+      <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-[#9E76B4]">
+        <h3 class="text-lg font-bold mb-2">
+          {
+            locale === 'th'
+              ? '3. โอกาสในการมีส่วนร่วม'
+              : '3. Participation Opportunity'
+          }
+        </h3>
+        <p class="text-gray-700">
+          {
+            locale === 'th'
+              ? 'เพื่อเปิดโอกาสให้คณาจารย์ บุคลากร และนักศึกษา จากภาควิชาวิศวกรรมอุตสาหการและการจัดการ คณะวิศวกรรมศาสตร์และเทคโนโลยีอุตสาหกรรม มหาวิทยาลัยศิลปากร ได้มีส่วนร่วมในการเป็นเจ้าภาพจัดการประชุมวิชาการระดับชาติ'
+              : "To provide faculty, staff, and students from the Department of Industrial Engineering and Management at Silpakorn University's Faculty of Engineering and Industrial Technology with the opportunity to participate in hosting a national academic conference."
+          }
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conference Details -->
+  <section class="mb-12">
+    <h2 class="text-3xl font-bold mb-6">
+      {locale === 'th' ? 'รายละเอียดการประชุม' : 'Conference Details'}
+    </h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <h3 class="text-xl font-bold mb-4">
+          {locale === 'th' ? 'หัวข้อหลักของการประชุม' : 'Conference Theme'}
+        </h3>
+        <p class="text-2xl font-bold text-[#9E76B4] mb-4">
+          {
+            locale === 'th'
+              ? '"ขับเคลื่อนวิศวกรรมอุตสาหการในยุคแห่งความไม่แน่นอน"'
+              : '"Shaping Industrial Engineering in an Era of Uncertainty"'
+          }
+        </p>
+        <h3 class="text-xl font-bold mb-4">
+          {locale === 'th' ? 'ข้อมูลการประชุม' : 'Conference Information'}
+        </h3>
+        <ul class="space-y-2 text-gray-700">
+          <li>
+            <strong>{locale === 'th' ? 'งานประชุม:' : 'Edition:'}</strong>
+            {
+              locale === 'th'
+                ? 'การประชุมวิชาการข่ายงานวิศวกรรมอุตสาหการ ครั้งที่ 45'
+                : 'The 45th Industrial Engineering Network Conference'
+            }
+          </li>
+          <li>
+            <strong>{locale === 'th' ? 'วันที่:' : 'Dates:'}</strong>
+            {locale === 'th' ? ' 12-14 พฤษภาคม 2570' : ' May 12-14, 2027'}
+          </li>
+          <li>
+            <strong>{locale === 'th' ? 'สถานที่:' : 'Venue:'}</strong>
+            {
+              locale === 'th'
+                ? ' เชียงใหม่ แกรนด์วิว โฮเทล แอนด์ คอนเวนชั่น เซ็นเตอร์'
+                : ' Chiangmai Grandview Hotel & Convention Center, Chiang Mai'
+            }
+          </li>
+          <li>
+            <strong>{locale === 'th' ? 'ผู้จัดโดย:' : 'Organized by:'}</strong>
+            {
+              locale === 'th'
+                ? ' มหาวิทยาลัยเชียงใหม่'
+                : ' Chiang Mai University'
+            }
+          </li>
+          <li>
+            <strong>
+              {locale === 'th' ? 'หน่วยงานเจ้าภาพ:' : 'Host Department:'}
+            </strong>
+            {
+              locale === 'th'
+                ? ' ภาควิชาวิศวกรรมอุตสาหการ'
+                : ' Department of Industrial Engineering'
+            }
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold mb-4">
+          {locale === 'th' ? 'สิ่งที่คาดหวังได้จากการประชุม' : 'What to Expect'}
+        </h3>
+        <ul class="space-y-3 text-gray-700">
+          <li class="flex items-start">
+            <span class="text-[#9E76B4] mr-3">✓</span>
+            <span>
+              {
+                locale === 'th'
+                  ? 'การบรรยายพิเศษจากผู้เชี่ยวชาญชั้นนำด้านวิศวกรรมอุตสาหการ'
+                  : 'Keynote presentations from eminent experts in industrial engineering'
+              }
+            </span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-[#9E76B4] mr-3">✓</span>
+            <span>
+              {
+                locale === 'th'
+                  ? 'การนำเสนอผลงานวิชาการและนิทรรศการงานวิจัย'
+                  : 'Academic presentations and research showcases'
+              }
+            </span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-[#9E76B4] mr-3">✓</span>
+            <span>
+              {
+                locale === 'th'
+                  ? 'นิทรรศการภาคอุตสาหกรรมและการแสดงบริการทางธุรกิจ'
+                  : 'Industrial exhibitions and business services showcase'
+              }
+            </span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-[#9E76B4] mr-3">✓</span>
+            <span>
+              {
+                locale === 'th'
+                  ? 'โอกาสสร้างเครือข่ายกับภาควิชาการและภาคอุตสาหกรรม'
+                  : 'Networking opportunities with academia and industry'
+              }
+            </span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-[#9E76B4] mr-3">✓</span>
+            <span>
+              {
+                locale === 'th'
+                  ? 'โอกาสตีพิมพ์ในวารสารวิชาการที่ผ่านการพิจารณาโดยผู้ทรงคุณวุฒิ'
+                  : 'Publication opportunities in peer-reviewed journals'
+              }
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>

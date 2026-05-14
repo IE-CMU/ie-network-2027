@@ -1,0 +1,224 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {locale === 'th' ? 'กำหนดการสำคัญ' : 'Important Dates'}
+  </h1>
+
+  <div class="max-w-3xl mx-auto">
+    <div class="relative">
+      <!-- Timeline -->
+      <div class="space-y-8">
+        <!-- Date 1 -->
+        <div class="flex">
+          <div class="flex flex-col items-center">
+            <div
+              class="flex items-center justify-center h-12 w-12 rounded-full bg-[#9E76B4] text-white font-bold"
+            >
+              1
+            </div>
+            <div class="w-1 h-24 bg-gray-300 mt-2"></div>
+          </div>
+          <div class="ml-6 pb-4">
+            <h3 class="text-xl font-bold text-[#9E76B4]">
+              {
+                locale === 'th'
+                  ? 'เปิดรับบทความฉบับเต็ม'
+                  : 'Opening for Full Paper Submission'
+              }
+            </h3>
+            <p class="text-gray-600 mt-1">
+              {
+                locale === 'th'
+                  ? '1 ธันวาคม 2026 - 31 มกราคม 2027'
+                  : 'December 1, 2026 - January 31, 2027'
+              }
+            </p>
+            <p class="text-gray-700 mt-2">
+              {
+                locale === 'th'
+                  ? 'ส่งบทความฉบับสมบูรณ์ (full manuscript) ผ่านระบบส่งบทความออนไลน์'
+                  : 'Submit your completed papers (full manuscripts) through the online submission portal.'
+              }
+            </p>
+          </div>
+        </div>
+
+        <!-- Date 2 -->
+        <div class="flex">
+          <div class="flex flex-col items-center">
+            <div
+              class="flex items-center justify-center h-12 w-12 rounded-full bg-green-600 text-white font-bold"
+            >
+              2
+            </div>
+            <div class="w-1 h-24 bg-gray-300 mt-2"></div>
+          </div>
+          <div class="ml-6 pb-4">
+            <h3 class="text-xl font-bold text-green-600">
+              {
+                locale === 'th'
+                  ? 'ประกาศผลการตอบรับบทความ'
+                  : 'Paper Acceptance Notification'
+              }
+            </h3>
+            <p class="text-gray-600 mt-1">
+              {locale === 'th' ? '1 มีนาคม 2027' : 'March 1, 2027'}
+            </p>
+            <p class="text-gray-700 mt-2">
+              {
+                locale === 'th'
+                  ? 'ผู้ส่งบทความจะได้รับแจ้งผลการประเมินและผลการตอบรับ'
+                  : 'Authors will be notified of the peer review results and acceptance decisions.'
+              }
+            </p>
+          </div>
+        </div>
+
+        <!-- Date 3 -->
+        <div class="flex">
+          <div class="flex flex-col items-center">
+            <div
+              class="flex items-center justify-center h-12 w-12 rounded-full bg-purple-600 text-white font-bold"
+            >
+              3
+            </div>
+            <div class="w-1 h-24 bg-gray-300 mt-2"></div>
+          </div>
+          <div class="ml-6 pb-4">
+            <h3 class="text-xl font-bold text-purple-600">
+              {
+                locale === 'th'
+                  ? 'กำหนดส่งบทความฉบับแก้ไข'
+                  : 'Revised Paper Submission Deadline'
+              }
+            </h3>
+            <p class="text-gray-600 mt-1">TBA</p>
+            <p class="text-gray-700 mt-2">
+              {
+                locale === 'th'
+                  ? 'ส่งบทความฉบับปรับแก้ตามข้อคิดเห็นและข้อเสนอแนะของผู้ทรงคุณวุฒิ'
+                  : 'Submit revised papers incorporating reviewer comments and suggestions.'
+              }
+            </p>
+          </div>
+        </div>
+
+        <!-- Date 4 -->
+        <div class="flex">
+          <div class="flex flex-col items-center">
+            <div
+              class="flex items-center justify-center h-12 w-12 rounded-full bg-orange-600 text-white font-bold"
+            >
+              4
+            </div>
+            <div class="w-1 h-24 bg-gray-300 mt-2"></div>
+          </div>
+          <div class="ml-6 pb-4">
+            <h3 class="text-xl font-bold text-orange-600">
+              {
+                locale === 'th'
+                  ? 'ลงทะเบียนเข้าร่วมการประชุม'
+                  : 'Conference Registration'
+              }
+            </h3>
+            <p class="text-gray-600 mt-1">
+              {locale === 'th' ? '1-30 เมษายน 2027' : 'April 1-30, 2027'}
+            </p>
+            <p class="text-gray-700 mt-2">
+              {
+                locale === 'th'
+                  ? 'ลงทะเบียนเข้าร่วมการประชุม โดยอาจมีอัตราค่าลงทะเบียนช่วง Early Bird'
+                  : 'Register for the conference. Early bird rates may be available.'
+              }
+            </p>
+          </div>
+        </div>
+
+        <!-- Date 5 -->
+        <div class="flex">
+          <div class="flex flex-col items-center">
+            <div
+              class="flex items-center justify-center h-12 w-12 rounded-full bg-red-600 text-white font-bold"
+            >
+              5
+            </div>
+          </div>
+          <div class="ml-6 pb-4">
+            <h3 class="text-xl font-bold text-red-600">
+              {locale === 'th' ? 'วันจัดการประชุม' : 'Conference Dates'}
+            </h3>
+            <p class="text-gray-600 mt-1">
+              {locale === 'th' ? '12-14 พฤษภาคม 2027' : 'May 12-14, 2027'}
+            </p>
+            <p class="text-gray-700 mt-2">
+              {
+                locale === 'th'
+                  ? 'การนำเสนอบทความและกิจกรรมการประชุม ณ เชียงใหม่ แกรนด์วิว โฮเทล แอนด์ คอนเวนชั่น เซ็นเตอร์ จังหวัดเชียงใหม่'
+                  : 'Paper presentations and conference activities at Chiangmai Grandview Hotel & Convention Center, Chiang Mai.'
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links Section -->
+  <section class="mt-16 bg-blue-50 p-8 rounded-lg">
+    <h2 class="text-2xl font-bold mb-6">
+      {locale === 'th' ? 'พร้อมส่งบทความหรือยัง?' : 'Ready to Submit?'}
+    </h2>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-lg font-bold mb-3">
+          {locale === 'th' ? 'เทมเพลตบทความ' : 'Paper Templates'}
+        </h3>
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="text-[#9E76B4] hover:underline">
+              {
+                locale === 'th'
+                  ? 'เทมเพลต (ภาษาไทย)'
+                  : 'Template (Thai Version)'
+              }
+            </a>
+          </li>
+          <li>
+            <a href="#" class="text-[#9E76B4] hover:underline">
+              {
+                locale === 'th'
+                  ? 'เทมเพลต (ภาษาอังกฤษ)'
+                  : 'Template (English Version)'
+              }
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold mb-3">
+          {locale === 'th' ? 'ระบบส่งบทความ' : 'Submission Portal'}
+        </h3>
+        <p class="text-gray-700 mb-3">
+          {
+            locale === 'th'
+              ? 'ส่งบทความของคุณผ่านระบบส่งบทความออนไลน์ CMT'
+              : 'Submit your paper through the CMT online submission system.'
+          }
+        </p>
+        <a
+          href="#"
+          class="bg-[#9E76B4] hover:bg-[#8a5fa0] text-white font-bold py-2 px-4 rounded transition"
+        >
+          {locale === 'th' ? 'ส่งบทความ' : 'Submit Paper'}
+        </a>
+      </div>
+    </div>
+  </section>
+</main>

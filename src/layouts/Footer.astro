@@ -1,5 +1,9 @@
 ---
-
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
 ---
 
 <footer class="bg-gray-900 text-white mt-20">
@@ -8,14 +12,23 @@
       <div>
         <h3 class="text-lg font-bold mb-4">IE Network 2027</h3>
         <p class="text-gray-300">
-          Shaping Industrial Engineering in an Era of Uncertainty
+          {
+            locale === 'th'
+              ? 'ขับเคลื่อนวิศวกรรมอุตสาหการในยุคแห่งความไม่แน่นอน'
+              : 'Shaping Industrial Engineering in an Era of Uncertainty'
+          }
         </p>
       </div>
       <div>
-        <h3 class="text-lg font-bold mb-4">Contact</h3>
-        <p class="text-gray-300">Tel: (+66)53-94-4125-6</p>
+        <h3 class="text-lg font-bold mb-4">
+          {locale === 'th' ? 'ติดต่อ' : 'Contact'}
+        </h3>
         <p class="text-gray-300">
-          Email: <a
+          {locale === 'th' ? 'โทร:' : 'Tel:'} (+66)53-94-4125-6
+        </p>
+        <p class="text-gray-300">
+          {locale === 'th' ? 'อีเมล:' : 'Email:'}
+          <a
             href="mailto:ienetwork2027@gmail.com"
             class="text-purple-400 hover:text-purple-300"
           >
@@ -24,18 +37,26 @@
         </p>
       </div>
       <div>
-        <h3 class="text-lg font-bold mb-4">Follow Us</h3>
+        <h3 class="text-lg font-bold mb-4">
+          {locale === 'th' ? 'ติดตามเรา' : 'Follow Us'}
+        </h3>
         <a
           href="https://www.facebook.com/people/IE-Network-2027/61589437013925/"
           target="_blank"
           class="text-purple-400 hover:text-purple-300"
         >
-          Facebook
+          {locale === 'th' ? 'เฟซบุ๊ก' : 'Facebook'}
         </a>
       </div>
     </div>
     <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
-      <p>&copy; 2027 IE Network. All rights reserved.</p>
+      <p>
+        {
+          locale === 'th'
+            ? '\u00a9 2027 IE Network สงวนลิขสิทธิ์'
+            : '\u00a9 2027 IE Network. All rights reserved.'
+        }
+      </p>
     </div>
   </div>
 </footer>

@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import IndexContent from '@components/pages/IndexContent.astro'
+import AboutContent from '@components/pages/AboutContent.astro'
 import { getLocale } from '@utils/locale'
 
 // This page needs to be SSR becuase of the session data for the menu.
@@ -9,6 +9,8 @@ export const prerender = false
 const locale = getLocale(Astro)
 ---
 
-<Layout title="Home">
-  <IndexContent locale={locale} />
+<Layout title="About">
+  <main>
+    <AboutContent locale={locale} />
+  </main>
 </Layout>

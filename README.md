@@ -28,10 +28,7 @@ docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie
 `npx auth secret`
 
 ## Todo
-- Internationalization (i18n)
-- Gmail integration
-- Magic link login
-- Email queue for sending emails
+- Fix build error related to `import { authClient } from '@/utils/auth-client` in `signup.astro`.
 
 # Note on Email Sending
 - My mistake was using the OAuth Playground, but it was created with Gmail API read/send scopes rather than https://mail.google.com/, so the token works for some API calls but fails for SMTP login.

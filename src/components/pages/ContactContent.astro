@@ -1,0 +1,306 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {locale === 'th' ? 'ติดต่อเรา' : 'Contact Us'}
+  </h1>
+
+  <div class="grid md:grid-cols-2 gap-12">
+    <!-- Contact Information -->
+    <div>
+      <h2 class="text-2xl font-bold mb-8">
+        {locale === 'th' ? 'ข้อมูลการติดต่อ' : 'Contact Information'}
+      </h2>
+
+      <div class="space-y-8">
+        <!-- Organization -->
+        <div class="bg-purple-50 p-6 rounded-lg">
+          <h3 class="text-xl font-bold text-purple-900 mb-3">
+            {locale === 'th' ? 'องค์กร' : 'Organization'}
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            {
+              locale === 'th'
+                ? 'การประชุมเครือข่ายวิศวกรรมอุตสาหการ'
+                : 'Industrial Engineering Network Conference'
+            }
+          </p>
+        </div>
+
+        <!-- Department -->
+        <div class="bg-green-50 p-6 rounded-lg">
+          <h3 class="text-xl font-bold text-green-900 mb-3">
+            {locale === 'th' ? 'หน่วยงานผู้จัด' : 'Organizing Department'}
+          </h3>
+          <p class="text-gray-700 leading-relaxed">
+            {
+              locale === 'th'
+                ? 'ภาควิชาวิศวกรรมอุตสาหการ'
+                : 'Department of Industrial Engineering'
+            }<br />
+            {
+              locale === 'th'
+                ? 'คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเชียงใหม่'
+                : 'Faculty of Engineering, Chiang Mai University'
+            }<br />
+            {locale === 'th' ? 'ประเทศไทย' : 'Thailand'}
+          </p>
+        </div>
+
+        <!-- Telephone -->
+        <div class="bg-purple-50 p-6 rounded-lg">
+          <h3 class="text-xl font-bold text-purple-900 mb-3">
+            {locale === 'th' ? 'โทรศัพท์' : 'Telephone'}
+          </h3>
+          <p class="text-gray-700 text-lg">
+            <span class="text-purple-600 hover:underline font-semibold">
+              (+66)53-94-4125-6
+            </span>
+          </p>
+        </div>
+
+        <!-- Email -->
+        <div class="bg-orange-50 p-6 rounded-lg">
+          <h3 class="text-xl font-bold text-orange-900 mb-3">
+            {locale === 'th' ? 'อีเมล' : 'Email'}
+          </h3>
+          <p class="text-gray-700">
+            <a
+              href="mailto:ienetwork2027@gmail.com"
+              class="text-orange-600 hover:underline font-semibold break-all"
+            >
+              ienetwork2027@gmail.com
+            </a>
+          </p>
+        </div>
+
+        <!-- Social Media -->
+        <div class="bg-red-50 p-6 rounded-lg">
+          <h3 class="text-xl font-bold text-red-900 mb-3">
+            {locale === 'th' ? 'ติดตามเรา' : 'Follow Us'}
+          </h3>
+          <a
+            href="https://www.facebook.com/people/IE-Network-2027/61589437013925/"
+            target="_blank"
+            class="text-red-600 hover:text-red-700 font-semibold flex items-center"
+          >
+            {
+              locale === 'th'
+                ? 'IE Network 2027 บน Facebook'
+                : 'IE Network 2027 on Facebook'
+            }
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inquiry Form Section -->
+    <div>
+      <h2 class="text-2xl font-bold mb-8">
+        {locale === 'th' ? 'ส่งข้อความถึงเรา' : 'Send us a Message'}
+      </h2>
+
+      <div class="bg-gray-50 p-8 rounded-lg">
+        <form class="space-y-6">
+          <!-- Name -->
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-bold text-gray-700 mb-2"
+            >
+              {locale === 'th' ? 'ชื่อ-นามสกุล' : 'Full Name'}
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
+              placeholder={locale === 'th' ? 'ชื่อของคุณ' : 'Your name'}
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-bold text-gray-700 mb-2"
+            >
+              {locale === 'th' ? 'อีเมล' : 'Email Address'}
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <!-- Subject -->
+          <div>
+            <label
+              for="subject"
+              class="block text-sm font-bold text-gray-700 mb-2"
+            >
+              {locale === 'th' ? 'หัวข้อ' : 'Subject'}
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
+              placeholder={locale === 'th'
+                ? 'หัวข้อข้อความ'
+                : 'Message subject'}
+            />
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label
+              for="message"
+              class="block text-sm font-bold text-gray-700 mb-2"
+            >
+              {locale === 'th' ? 'ข้อความ' : 'Message'}
+              <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="5"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent resize-vertical"
+              placeholder={locale === 'th'
+                ? 'ข้อความของคุณ...'
+                : 'Your message...'}
+            >
+            </textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-[#9E76B4] hover:bg-[#8a5fa0] text-white font-bold py-3 rounded-lg transition"
+          >
+            {locale === 'th' ? 'ส่งข้อความ' : 'Send Message'}
+          </button>
+        </form>
+
+        <p class="mt-6 text-sm text-gray-500 text-center">
+          {
+            locale === 'th'
+              ? 'เราจะติดต่อกลับโดยเร็วที่สุด'
+              : "We'll get back to you as soon as possible."
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQs -->
+  <section class="mt-16">
+    <h2 class="text-3xl font-bold mb-8 text-center">
+      {locale === 'th' ? 'คำถามที่พบบ่อย' : 'Frequently Asked Questions'}
+    </h2>
+
+    <div class="space-y-4 max-w-3xl mx-auto">
+      <details class="bg-gray-50 p-6 rounded-lg cursor-pointer">
+        <summary class="font-bold text-lg text-[#9E76B4] hover:text-[#8a5fa0]">
+          {
+            locale === 'th'
+              ? 'ฉันจะส่งบทความได้อย่างไร?'
+              : 'How do I submit my paper?'
+          }
+        </summary>
+        <p class="mt-4 text-gray-700">
+          {
+            locale === 'th'
+              ? 'บทความควรส่งผ่านระบบออนไลน์ CMT (Conference Management Toolkit) ที่'
+              : 'Papers should be submitted through the CMT (Conference Management Toolkit) online portal at'
+          }
+          <a href="#" class="text-[#9E76B4] hover:underline">[TBA].</a>
+        </p>
+      </details>
+
+      <details class="bg-gray-50 p-6 rounded-lg cursor-pointer">
+        <summary class="font-bold text-lg text-[#9E76B4] hover:text-[#8a5fa0]">
+          {
+            locale === 'th'
+              ? 'กำหนดส่งบทความฉบับเต็มคือเมื่อใด?'
+              : 'What is the paper submission deadline?'
+          }
+        </summary>
+        <p class="mt-4 text-gray-700">
+          {
+            locale === 'th'
+              ? 'กำหนดส่งบทความฉบับเต็มคือวันที่ 31 มกราคม 2027 และสามารถส่งบทความฉบับแก้ไขได้ถึง [TBA]'
+              : 'The full paper submission deadline is January 31, 2027. Revised papers can be submitted until [TBA].'
+          }
+        </p>
+      </details>
+
+      <details class="bg-gray-50 p-6 rounded-lg cursor-pointer">
+        <summary class="font-bold text-lg text-[#9E76B4] hover:text-[#8a5fa0]">
+          {
+            locale === 'th'
+              ? 'ฉันสามารถส่งบทความได้หลายภาษาไหม?'
+              : 'Can I submit papers in multiple languages?'
+          }
+        </summary>
+        <p class="mt-4 text-gray-700">
+          {
+            locale === 'th'
+              ? 'ได้ สามารถส่งบทความเป็นภาษาไทยหรือภาษาอังกฤษ กรุณาใช้เทมเพลตที่เหมาะสมกับภาษาที่ใช้'
+              : 'Yes, papers can be submitted in Thai or English. Please use the appropriate template for your language.'
+          }
+        </p>
+      </details>
+
+      <details class="bg-gray-50 p-6 rounded-lg cursor-pointer">
+        <summary class="font-bold text-lg text-[#9E76B4] hover:text-[#8a5fa0]">
+          {
+            locale === 'th'
+              ? 'กระบวนการพิจารณาบทความใช้เวลานานเท่าไร?'
+              : 'How long is the peer review process?'
+          }
+        </summary>
+        <p class="mt-4 text-gray-700">
+          {
+            locale === 'th'
+              ? 'บทความจะผ่านการประเมินแบบผู้ทรงคุณวุฒิไม่ทราบชื่อสองทาง (double-blind) และจะแจ้งผลภายในวันที่ 1 มีนาคม 2027'
+              : 'Papers undergo double-blind peer review. Authors will be notified of the results by March 1, 2027.'
+          }
+        </p>
+      </details>
+
+      <details class="bg-gray-50 p-6 rounded-lg cursor-pointer">
+        <summary class="font-bold text-lg text-[#9E76B4] hover:text-[#8a5fa0]">
+          {
+            locale === 'th'
+              ? 'ต้องลงทะเบียนเพื่อเข้าร่วมงานหรือไม่?'
+              : 'Is registration required to attend?'
+          }
+        </summary>
+        <p class="mt-4 text-gray-700">
+          {
+            locale === 'th'
+              ? 'ต้องลงทะเบียน โดยช่วงลงทะเบียนคือวันที่ 1-30 เมษายน 2027 และข้อมูลการลงทะเบียนจะประกาศบนเว็บไซต์นี้'
+              : 'Yes, registration is required. The registration period is April 1-30, 2027. Registration information will be available on this website.'
+          }
+        </p>
+      </details>
+    </div>
+  </section>
+</main>

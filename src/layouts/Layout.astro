@@ -26,6 +26,6 @@ const locale = getLocale(Astro)
   <body class="bg-white text-gray-900">
     <Menu session={session} locale={locale} />
     <slot />
-    <Footer />
+    <Footer locale={locale} />
   </body>
 </html>

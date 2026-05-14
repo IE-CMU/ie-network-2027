@@ -1,0 +1,41 @@
+---
+import { type Locale } from '@utils/locale'
+import LanguagePickerMobile from '@layouts/LanguagePickerMobile.astro'
+
+interface Props {
+  items: Record<string, { en: string; th: string; url: string }>
+  locale: Locale
+}
+const { items, locale } = Astro.props
+---
+
+<div class="drawer">
+  <input id="my-drawer-1" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <!-- Page content here -->
+    <label for="my-drawer-1" class="btn drawer-button">
+      <svg viewBox="0 0 100 80" width="20" height="20" fill="#9E76B4">
+        <rect width="100" height="15"></rect>
+        <rect y="30" width="100" height="15"></rect>
+        <rect y="60" width="100" height="15"></rect>
+      </svg>
+    </label>
+  </div>
+  <div class="drawer-side">
+    <label for="my-drawer-1" aria-label="close sidebar" class="drawer-overlay">
+    </label>
+    <ul class="menu bg-base-200 min-h-full w-80 p-4">
+      <!-- Sidebar content here -->
+      {
+        Object.entries(items).map(([key, item]) => (
+          <li>
+            <a href={item.url}>{item[locale]}</a>
+          </li>
+        ))
+      }
+      <li class="mt-4">
+        <LanguagePickerMobile locale={locale} />
+      </li>
+    </ul>
+  </div>
+</div>

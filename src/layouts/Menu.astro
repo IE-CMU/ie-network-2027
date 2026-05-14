@@ -3,6 +3,7 @@ import { type Session } from '@lib/auth'
 import { type Locale } from '@utils/locale'
 import LanguagePicker from '@layouts/LanguagePicker.astro'
 import { getRelativeLocaleUrl } from 'astro:i18n'
+import MobileMenu from '@layouts/MobileMenu.astro'
 
 interface Props {
   session: Session | null
@@ -50,44 +51,55 @@ console.log('Menu items:', items)
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
       <div class="flex items-center">
-        <h1 class="text-2xl font-bold text-[#9E76B4]">IE Network 2027</h1>
+        <h1 class="text-2xl font-bold text-[#9E76B4]">
+          <a href={items.home.url}>IE Network 2027</a>
+        </h1>
       </div>
-      <ul class="hidden md:flex space-x-8">
-        <li>
-          <a href={items.home.url} class="hover:text-[#9E76B4] transition">
-            {items.home[locale]}
-          </a>
-        </li>
-        <li>
-          <a href={items.about.url} class="hover:text-[#9E76B4] transition">
-            {items.about[locale]}
-          </a>
-        </li>
-        <li>
-          <a href={items.topics.url} class="hover:text-[#9E76B4] transition">
-            {items.topics[locale]}
-          </a>
-        </li>
-        <li>
-          <a href={items.dates.url} class="hover:text-[#9E76B4] transition">
-            {items.dates[locale]}
-          </a>
-        </li>
-        <li>
-          <a
-            href={items.submission.url}
-            class="hover:text-[#9E76B4] transition"
-          >
-            {items.submission[locale]}
-          </a>
-        </li>
-        <li>
-          <a href={items.contact.url} class="hover:text-[#9E76B4] transition">
-            {items.contact[locale]}
-          </a>
-        </li>
-      </ul>
-      <LanguagePicker locale={locale} />
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        <ul class="md:flex space-x-8">
+          <li>
+            <a href={items.home.url} class="hover:text-[#9E76B4] transition">
+              {items.home[locale]}
+            </a>
+          </li>
+          <li>
+            <a href={items.about.url} class="hover:text-[#9E76B4] transition">
+              {items.about[locale]}
+            </a>
+          </li>
+          <li>
+            <a href={items.topics.url} class="hover:text-[#9E76B4] transition">
+              {items.topics[locale]}
+            </a>
+          </li>
+          <li>
+            <a href={items.dates.url} class="hover:text-[#9E76B4] transition">
+              {items.dates[locale]}
+            </a>
+          </li>
+          <li>
+            <a
+              href={items.submission.url}
+              class="hover:text-[#9E76B4] transition"
+            >
+              {items.submission[locale]}
+            </a>
+          </li>
+          <li>
+            <a href={items.contact.url} class="hover:text-[#9E76B4] transition">
+              {items.contact[locale]}
+            </a>
+          </li>
+        </ul>
+        <LanguagePicker locale={locale} />
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="md:hidden">
+        <MobileMenu items={items} locale={locale} />
+      </div>
     </div>
   </div>
 </nav>
