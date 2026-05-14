@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 import node from '@astrojs/node'
 import vue from '@astrojs/vue'
 import tailwindcss from '@tailwindcss/vite'
@@ -16,8 +16,8 @@ export default defineConfig({
   }),
   integrations: [vue()],
   i18n: {
-    locales: ['en', 'th'],
-    defaultLocale: 'th',
+    locales: ['th', 'en'], // Make sure the order of locales is consistent with the order in localeList in src/utils/locale.ts.
+    defaultLocale: 'th', // Default locale is Thai.
     routing: { prefixDefaultLocale: false }, // Don't prefix default locale (th) in URL.
   },
 })

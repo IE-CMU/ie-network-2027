@@ -1,20 +1,16 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import IndexVue from '@/components/pages/IndexVue.vue'
+import IndexContent from '@components/pages/IndexContent.astro'
 import { getLocale } from '@utils/locale'
-// import { getRelativeLocaleUrl } from 'astro:i18n'
 
 // This page needs to be SSR becuase of the session data for the menu.
 export const prerender = false
 
 const locale = getLocale(Astro)
-// const aboutURL = getRelativeLocaleUrl(locale ?? DEFAULT_LOCALE, 'about')
-// console.log('Current locale:', locale)
-// console.log('About URL:', aboutURL)
 ---
 
 <Layout title="Home">
   <main>
-    <IndexVue locale={locale} client:load />
+    <IndexContent locale={locale} />
   </main>
 </Layout>
