@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+export const prerender = false
+
+const currentLang = Astro.currentLocale
+const aboutURL = getRelativeLocaleUrl(currentLang ?? 'th', 'about')
+console.log('Current language:', currentLang)
+console.log('About URL:', aboutURL)
+---
+
+<Layout title="Home">
+  <main>
+    English version of the homepage. This page is accessible at /en and is the
+    default homepage for all users. The Thai version is at /th.
+  </main>
+</Layout>

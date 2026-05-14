@@ -1,11 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
+// defaultLocale is "es"
 // import { actions } from "astro:actions";
 // const res = await Astro.callAction(actions.getGreeting, { name: "IE Network" });
 
 // This page needs to be SSR becuase of the session data for the menu.
 export const prerender = false
+
+const currentLang = Astro.currentLocale
+const aboutURL = getRelativeLocaleUrl(currentLang ?? 'th', 'about')
+console.log('Current language:', currentLang)
+console.log('About URL:', aboutURL)
 ---
 
 <Layout title="Home">

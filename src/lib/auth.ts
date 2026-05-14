@@ -41,7 +41,7 @@ export async function getSession(headers: Headers): Promise<Session | null> {
       headers: headers,
     })
     session = response?.session ?? null
-    console.log('Session:', session)
+    // console.log('Session:', session)
   } catch (error) {
     console.error('Error fetching session:', error)
   }

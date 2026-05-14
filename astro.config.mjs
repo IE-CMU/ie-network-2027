@@ -15,4 +15,9 @@ export default defineConfig({
     mode: 'standalone',
   }),
   integrations: [vue()],
+  i18n: {
+    locales: ['en', 'th'],
+    defaultLocale: 'th',
+    routing: { prefixDefaultLocale: false }, // Don't prefix default locale (th) in URL.
+  },
 })
