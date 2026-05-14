@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css'
 import { getSession } from '@lib/auth'
-import ManuVue from '@components/layout/ManuVue.vue'
+import MenuVue from '@components/layout/MenuVue.vue'
 import { getLocale } from '@/utils/locale'
 // Define the props for the layout
 interface Props {
@@ -27,8 +27,8 @@ const locale = getLocale(Astro)
   <!-- Body -->
   <body class="bg-white text-gray-900">
     <!-- Menu -->
-    <ManuVue session={session} locale={locale} client:load />
-
+    <MenuVue session={session} locale={locale} client:load />
+    <!-- <MenuVue client:load /> -->
     <slot />
 
     <!-- Footer -->

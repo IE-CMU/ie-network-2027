@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Session } from '@lib/auth'
+import { type Session } from '@/types/auth'
 import { type Locale } from '@utils/locale'
 
 import LanguagePickerVue from './LanguagePickerVue.vue'
@@ -10,7 +10,7 @@ interface Props {
   locale: Locale
 }
 const { locale, session } = defineProps<Props>()
-console.log('Menu Props:', { session, locale })
+// console.log('Menu Props:', { session, locale })
 </script>
 
 <template>
