@@ -1,22 +1,21 @@
 ---
 import '../styles/global.css'
 import { getSession } from '@lib/auth'
-import MenuVue from '@components/layout/MenuVue.vue'
 import { getLocale } from '@/utils/locale'
-// Define the props for the layout
+import Menu from '@layouts/Menu.astro'
+import Footer from '@layouts/Footer.astro'
+
 interface Props {
   title: string
 }
 const { title } = Astro.props
 
-// Get the session data for the current user
 const session = await getSession(Astro.request.headers)
 const locale = getLocale(Astro)
 ---
 
 <!doctype html>
 <html lang="en">
-  <!-- Head -->
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -24,50 +23,9 @@ const locale = getLocale(Astro)
     <meta name="generator" content={Astro.generator} />
     <title>{title ? `${title} - IE Network 2027` : 'IE Network 2027'}</title>
   </head>
-  <!-- Body -->
   <body class="bg-white text-gray-900">
-    <!-- Menu -->
-    <MenuVue session={session} locale={locale} client:load />
-    <!-- <MenuVue client:load /> -->
+    <Menu session={session} locale={locale} />
     <slot />
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white mt-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <h3 class="text-lg font-bold mb-4">IE Network 2027</h3>
-            <p class="text-gray-300">
-              Shaping Industrial Engineering in an Era of Uncertainty
-            </p>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold mb-4">Contact</h3>
-            <p class="text-gray-300">Tel: (+66)53-94-4125-6</p>
-            <p class="text-gray-300">
-              Email: <a
-                href="mailto:ienetwork2027@gmail.com"
-                class="text-purple-400 hover:text-purple-300"
-              >
-                ienetwork2027@gmail.com
-              </a>
-            </p>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold mb-4">Follow Us</h3>
-            <a
-              href="https://www.facebook.com/people/IE-Network-2027/61589437013925/"
-              target="_blank"
-              class="text-purple-400 hover:text-purple-300"
-            >
-              Facebook
-            </a>
-          </div>
-        </div>
-        <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; 2027 IE Network. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </body>
 </html>

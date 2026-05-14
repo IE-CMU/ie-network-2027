@@ -1,0 +1,93 @@
+---
+import { type Session } from '@lib/auth'
+import { type Locale } from '@utils/locale'
+import LanguagePicker from '@layouts/LanguagePicker.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+interface Props {
+  session: Session | null
+  locale: Locale
+}
+const { session, locale } = Astro.props
+
+const items = {
+  home: {
+    en: 'Home',
+    th: 'หน้าแรก',
+    url: getRelativeLocaleUrl(locale, '/'),
+  },
+  about: {
+    en: 'About',
+    th: 'เกี่ยวกับ',
+    url: getRelativeLocaleUrl(locale, '/about'),
+  },
+  topics: {
+    en: 'Topics',
+    th: 'หัวข้อ',
+    url: getRelativeLocaleUrl(locale, '/conference-topics'),
+  },
+  dates: {
+    en: 'Dates',
+    th: 'วันที่สำคัญ',
+    url: getRelativeLocaleUrl(locale, '/important-dates'),
+  },
+  submission: {
+    en: 'Submission',
+    th: 'การส่งผลงาน',
+    url: getRelativeLocaleUrl(locale, '/submission'),
+  },
+  contact: {
+    en: 'Contact',
+    th: 'ติดต่อ',
+    url: getRelativeLocaleUrl(locale, '/contact'),
+  },
+} as const
+
+console.log('Menu items:', items)
+---
+
+<nav class="sticky top-0 z-50 bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-[#9E76B4]">IE Network 2027</h1>
+      </div>
+      <ul class="hidden md:flex space-x-8">
+        <li>
+          <a href={items.home.url} class="hover:text-[#9E76B4] transition">
+            {items.home[locale]}
+          </a>
+        </li>
+        <li>
+          <a href={items.about.url} class="hover:text-[#9E76B4] transition">
+            {items.about[locale]}
+          </a>
+        </li>
+        <li>
+          <a href={items.topics.url} class="hover:text-[#9E76B4] transition">
+            {items.topics[locale]}
+          </a>
+        </li>
+        <li>
+          <a href={items.dates.url} class="hover:text-[#9E76B4] transition">
+            {items.dates[locale]}
+          </a>
+        </li>
+        <li>
+          <a
+            href={items.submission.url}
+            class="hover:text-[#9E76B4] transition"
+          >
+            {items.submission[locale]}
+          </a>
+        </li>
+        <li>
+          <a href={items.contact.url} class="hover:text-[#9E76B4] transition">
+            {items.contact[locale]}
+          </a>
+        </li>
+      </ul>
+      <LanguagePicker locale={locale} />
+    </div>
+  </div>
+</nav>

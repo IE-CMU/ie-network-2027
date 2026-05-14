@@ -28,10 +28,8 @@ export const auth = betterAuth({
 })
 
 // Session type definition
-// The the return type from auth.api.getSession() is a union type that can be either { session: {...}, user: {...} } or null.
-export type Session = NonNullable<
-  Awaited<ReturnType<typeof auth.api.getSession>>
->['session']
+// Do no use this type in client code, use the one from auth-client.ts instead
+export type Session = typeof auth.$Infer.Session
 
 // Function to get session with error handling
 export async function getSession(headers: Headers): Promise<Session | null> {
@@ -40,7 +38,7 @@ export async function getSession(headers: Headers): Promise<Session | null> {
     const response = await auth.api.getSession({
       headers: headers,
     })
-    session = response?.session ?? null
+    session = response ?? null
     // console.log('Session:', session)
   } catch (error) {
     console.error('Error fetching session:', error)
