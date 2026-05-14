@@ -26,3 +26,24 @@ export const auth = betterAuth({
     }),
   ],
 })
+
+// Session type definition
+// The the return type from auth.api.getSession() is a union type that can be either { session: {...}, user: {...} } or null.
+export type Session = NonNullable<
+  Awaited<ReturnType<typeof auth.api.getSession>>
+>['session']
+
+// Function to get session with error handling
+export async function getSession(headers: Headers): Promise<Session | null> {
+  let session: Session | null = null
+  try {
+    const response = await auth.api.getSession({
+      headers: headers,
+    })
+    session = response?.session ?? null
+    console.log('Session:', session)
+  } catch (error) {
+    console.error('Error fetching session:', error)
+  }
+  return session
+}

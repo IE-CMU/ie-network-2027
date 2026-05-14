@@ -1,22 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro'
 
-import { auth } from '../lib/auth'
-let session = null
-try {
-  session = await auth.api.getSession({
-    headers: Astro.request.headers,
-  })
-  console.log('Session:', session)
-} catch (error) {
-  console.error('Error fetching session:', error)
-}
-
 // import { actions } from "astro:actions";
-// Call the getGreeting action and pass a name parameter
 // const res = await Astro.callAction(actions.getGreeting, { name: "IE Network" });
 
-// Enable prerendering for this page
+// This page needs to be SSR becuase of the session data for the menu.
 export const prerender = false
 ---
 
