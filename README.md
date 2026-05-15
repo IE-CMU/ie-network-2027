@@ -9,8 +9,11 @@
 - `docker compose --env-file .env down -v`
 
 ## Build and Push Docker Image
-- `docker build -t nnnpooh/ie_network_2027:latest .`
+- `docker build -f docker/Dockerfile -t nnnpooh/ie_network_2027:latest .`
 - `docker push nnnpooh/ie_network_2027:latest`
+
+## Test Build
+`docker compose --env-file .env -f docker-compose-test.yml  up -d`
 
 ## Run Docker Container
 `run.sh`

@@ -35,7 +35,7 @@ services:
     container_name: redisinsight_ien
     restart: always
     ports:
-      - '5540:5540'
+      - '5510:5540'
     volumes:
       - redisinsight_data:/data
     networks:
