@@ -25,16 +25,18 @@ console.log('Locale URL list:', localeUrlList)
 </select>
 
 <script>
-  const switcher = document.querySelector('#language-switcher-mobile')
+  const switcherMobile = document.querySelector('#language-switcher-mobile')
 
-  if (switcher instanceof HTMLSelectElement) {
-    const urlList = JSON.parse(switcher.dataset.localeUrlList ?? '{}')
+  if (switcherMobile instanceof HTMLSelectElement) {
+    const urlListMobile = JSON.parse(
+      switcherMobile.dataset.localeUrlList ?? '{}'
+    )
 
-    switcher.addEventListener('change', (event) => {
+    switcherMobile.addEventListener('change', (event) => {
       const selectedOption = event.currentTarget
       if (!(selectedOption instanceof HTMLSelectElement)) return
 
-      const nextUrl = urlList[selectedOption.value]
+      const nextUrl = urlListMobile[selectedOption.value]
       if (typeof nextUrl === 'string' && nextUrl.length > 0) {
         window.location.assign(nextUrl)
       }
