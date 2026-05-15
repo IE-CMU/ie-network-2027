@@ -1,0 +1,22 @@
+---
+import { type Locale } from '@utils/locale'
+import LanguagePicker from './LanguagePicker.vue'
+import { getUrlListCustom } from '@utils/locale'
+interface Props {
+  items: Record<string, { en: string; th: string; url: string }>
+  locale: Locale
+  LocaleUrlList: ReturnType<typeof getUrlListCustom>
+}
+const { items, locale, LocaleUrlList } = Astro.props
+---
+
+<ul class="md:flex space-x-8">
+  {
+    Object.entries(items).map(([key, item]) => (
+      <li>
+        <a href={item.url}>{item[locale]}</a>
+      </li>
+    ))
+  }
+</ul>
+<LanguagePicker locale={locale} localeUrlList={LocaleUrlList} client:load />

@@ -1,16 +1,21 @@
 ---
 import { type Session } from '@lib/auth'
 import { type Locale } from '@utils/locale'
-// import LanguagePicker from '@layouts/LanguagePicker.astro'
-import LanguagePicker from './LanguagePicker.vue'
 import { getRelativeLocaleUrl } from 'astro:i18n'
-import MobileMenu from '@layouts/MobileMenu.astro'
+import MenuMobile from '@layouts/MenuMobile.astro'
+import MenuDesktop from '@layouts/MenuDesktop.astro'
+import { getUrlListCustom } from '@utils/locale'
+
 interface Props {
   session: Session | null
   locale: Locale
 }
 const { session, locale } = Astro.props
 
+// For language picker, we need to get the URL list for each locale based on the current path
+const localeUrlList = getUrlListCustom(Astro.url.pathname)
+
+// Menu items with localized labels and URLs
 const items = {
   home: {
     en: 'Home',
@@ -44,62 +49,41 @@ const items = {
   },
 } as const
 
-console.log('Menu items:', items)
+// console.log('Menu items:', items)
 ---
 
 <nav class="sticky top-0 z-50 bg-white shadow-md">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <div class="flex items-center">
+    <div class="flex justify-between items-center h-18">
+      <div class="flex items-center rounded-lg px-2 py-1 bg-[#F3E5F5]">
+        <!-- Logo / Site Title -->
+        <img
+          src="/eng_logo.png"
+          alt="IE Network 2027 Logo"
+          class="h-10 w-auto mr-2"
+        />
+
         <h1 class="text-2xl font-bold text-[#9E76B4]">
           <a href={items.home.url}>IE Network 2027</a>
         </h1>
       </div>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center space-x-8">
-        <ul class="md:flex space-x-8">
-          <li>
-            <a href={items.home.url} class="hover:text-[#9E76B4] transition">
-              {items.home[locale]}
-            </a>
-          </li>
-          <li>
-            <a href={items.about.url} class="hover:text-[#9E76B4] transition">
-              {items.about[locale]}
-            </a>
-          </li>
-          <li>
-            <a href={items.topics.url} class="hover:text-[#9E76B4] transition">
-              {items.topics[locale]}
-            </a>
-          </li>
-          <li>
-            <a href={items.dates.url} class="hover:text-[#9E76B4] transition">
-              {items.dates[locale]}
-            </a>
-          </li>
-          <li>
-            <a
-              href={items.submission.url}
-              class="hover:text-[#9E76B4] transition"
-            >
-              {items.submission[locale]}
-            </a>
-          </li>
-          <li>
-            <a href={items.contact.url} class="hover:text-[#9E76B4] transition">
-              {items.contact[locale]}
-            </a>
-          </li>
-        </ul>
-        <!-- <LanguagePicker locale={locale} /> -->
-        <LanguagePicker locale={locale} items={items} client:load />
+      <div class="hidden lg:flex items-center space-x-8">
+        <MenuDesktop
+          items={items}
+          locale={locale}
+          LocaleUrlList={localeUrlList}
+        />
       </div>
 
       <!-- Mobile Navigation -->
-      <div class="md:hidden">
-        <!-- <MobileMenu items={items} locale={locale} /> -->
+      <div class="lg:hidden">
+        <MenuMobile
+          items={items}
+          locale={locale}
+          LocaleUrlList={localeUrlList}
+        />
       </div>
     </div>
   </div>

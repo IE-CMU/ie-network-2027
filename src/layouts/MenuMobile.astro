@@ -1,12 +1,13 @@
 ---
 import { type Locale } from '@utils/locale'
-import LanguagePickerMobile from '@layouts/LanguagePickerMobile.astro'
-
+import LanguagePicker from './LanguagePicker.vue'
+import { getUrlListCustom } from '@utils/locale'
 interface Props {
   items: Record<string, { en: string; th: string; url: string }>
   locale: Locale
+  LocaleUrlList: ReturnType<typeof getUrlListCustom>
 }
-const { items, locale } = Astro.props
+const { items, locale, LocaleUrlList } = Astro.props
 ---
 
 <div class="drawer">
@@ -34,7 +35,11 @@ const { items, locale } = Astro.props
         ))
       }
       <li class="mt-4">
-        <LanguagePickerMobile locale={locale} />
+        <LanguagePicker
+          locale={locale}
+          localeUrlList={LocaleUrlList}
+          client:load
+        />
       </li>
     </ul>
   </div>
