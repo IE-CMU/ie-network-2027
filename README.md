@@ -13,7 +13,11 @@
 - `docker push nnnpooh/ie_network_2027:latest`
 
 ## Test Build
-`docker compose --env-file .env -f docker-compose-test.yml  up -d`
+- `docker compose --env-file .env -f docker-compose-test.yml up -d`
+
+## Deploy
+- `docker compose --env-file .env -f docker-compose-deploy.yml up -d`
+- `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
 
 ## Run Docker Container
 `run.sh`
