@@ -19,8 +19,6 @@
 - `docker compose --env-file .env -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
 
-## Run Docker Container
-`run.sh`
 ```
 #!/bin/sh
 docker rm -f ie-network-2027
