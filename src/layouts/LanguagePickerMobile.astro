@@ -19,27 +19,8 @@ console.log('Locale URL list:', localeUrlList)
   class="border border-gray-300 rounded-md p-2"
   id="language-switcher-mobile"
   data-locale-url-list={JSON.stringify(localeUrlList)}
+  onchange="const urlList = JSON.parse(this.dataset.localeUrlList || '{}'); const nextUrl = urlList[this.value]; if (typeof nextUrl === 'string' && nextUrl.length > 0) window.location.assign(nextUrl);"
 >
   <option value="th" selected={locale === 'th'}>Thai</option>
   <option value="en" selected={locale === 'en'}>English</option>
 </select>
-
-<script>
-  const switcherMobile = document.querySelector('#language-switcher-mobile')
-
-  if (switcherMobile instanceof HTMLSelectElement) {
-    const urlListMobile = JSON.parse(
-      switcherMobile.dataset.localeUrlList ?? '{}'
-    )
-
-    switcherMobile.addEventListener('change', (event) => {
-      const selectedOption = event.currentTarget
-      if (!(selectedOption instanceof HTMLSelectElement)) return
-
-      const nextUrl = urlListMobile[selectedOption.value]
-      if (typeof nextUrl === 'string' && nextUrl.length > 0) {
-        window.location.assign(nextUrl)
-      }
-    })
-  }
-</script>

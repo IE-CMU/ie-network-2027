@@ -16,7 +16,7 @@
 - `docker compose --env-file .env -f docker-compose-test.yml up -d`
 
 ## Deploy
-- `docker compose --env-file .env -f docker-compose-deploy.yml up -d`
+- `docker compose --env-file .env -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
 
 ## Run Docker Container
