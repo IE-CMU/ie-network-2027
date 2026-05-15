@@ -6,3 +6,4 @@ dist
 pnpm-store
 npm-debug.log
 yarn-error.log
+.npmrc 

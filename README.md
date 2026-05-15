@@ -48,3 +48,7 @@ docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie
 - Another thing that I used `redisinsight` within the same docker network so the connection to `[redis_container_name]:6379` works, but the connection from the host to `localhost:6379` does not work because that port is used by another process on the host.
 - Also, when using `ioredis`, this library can uses offline mode and does not throw an error.
 - The best way to avoid this is to use port `6380`.
+
+# Note on build
+- `.npmrc` can messed up the build command `pnpm run build`.
+- `pnpm run build` fails in your Docker image because pnpm run honors the project setting in `.npmrc:2: script-shell = "pwsh.exe"`. In `node:22-alpine`, `pwsh.exe` does not exist, so script execution fails.

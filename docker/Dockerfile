@@ -11,8 +11,8 @@ RUN pnpm install --frozen-lockfile --ignore-scripts=false
 # Copy source and build
 COPY . .
 
-# RUN pmpm run build 
-RUN pnpm exec astro --version && pnpm exec astro build
+RUN pnpm run build 
+# RUN pnpm exec astro --version && pnpm exec astro build
 
 # --- Runtime stage ---
 FROM node:22-alpine
