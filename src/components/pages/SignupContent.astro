@@ -1,0 +1,14 @@
+---
+import { type Locale } from '@utils/locale'
+import SignupForm from '@components/auth/SignupForm.vue'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Sign Up</h1>
+  <SignupForm client:load locale={locale} />
+</main>

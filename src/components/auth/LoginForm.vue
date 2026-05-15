@@ -28,27 +28,20 @@ async function handleLogin() {
 </script>
 
 <template>
-  <main>
-    <div class="card bg-base-100 shadow-xl p-6 w-full max-w-md mx-auto mt-10">
-      <div class="card-title">Login</div>
-      <div class="card-body">
-        <form @submit.prevent="handleLogin">
-          <input
-            type="email"
-            placeholder="Email"
-            class="input"
-            v-model="email"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            class="input"
-            v-model="password"
-          />
-          <button type="submit" class="btn">Login</button>
-          <p v-if="errorMessage" class="">{{ errorMessage }}</p>
-        </form>
-      </div>
+  <div class="card bg-base-100 shadow-xl p-6 w-full max-w-md mx-auto mt-10">
+    <div class="card-title">Email and Password Login</div>
+    <div class="card-body">
+      <form @submit.prevent="handleLogin">
+        <input type="email" placeholder="Email" class="input" v-model="email" />
+        <input
+          type="password"
+          placeholder="Password"
+          class="input"
+          v-model="password"
+        />
+        <button type="submit" class="btn">Login</button>
+        <p v-if="errorMessage" class="">{{ errorMessage }}</p>
+      </form>
     </div>
-  </main>
+  </div>
 </template>

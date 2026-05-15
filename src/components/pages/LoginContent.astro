@@ -1,0 +1,16 @@
+---
+import { type Locale } from '@utils/locale'
+import LoginForm from '@components/auth/LoginForm.vue'
+import MagicLink from '@/components/auth/MagicLink.vue'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Login</h1>
+  <LoginForm client:load locale={locale} />
+  <MagicLink client:load locale={locale} />
+</main>

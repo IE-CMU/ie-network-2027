@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
 import { authClient } from '@/lib/auth-client'
+import { ref } from 'vue'
+
 const email = ref('')
 async function handleMagicLink() {
   try {
@@ -22,21 +23,14 @@ async function handleMagicLink() {
 </script>
 
 <template>
-  <main>
-    <div class="card bg-base-100 shadow-xl p-6 w-full max-w-md mx-auto mt-10">
-      <div class="card-title">Magic Link Login</div>
-      <div class="card-body">
-        <p>Enter your email to receive a magic link for login.</p>
-        <form @submit.prevent="handleMagicLink">
-          <input
-            type="email"
-            placeholder="Email"
-            class="input"
-            v-model="email"
-          />
-          <button type="submit" class="btn">Send Magic Link</button>
-        </form>
-      </div>
+  <div class="card bg-base-100 shadow-xl p-6 w-full max-w-md mx-auto mt-10">
+    <div class="card-title">Magic Link Login</div>
+    <div class="card-body">
+      <p>Enter your email to receive a magic link for login.</p>
+      <form @submit.prevent="handleMagicLink">
+        <input type="email" placeholder="Email" class="input" v-model="email" />
+        <button type="submit" class="btn">Send Magic Link</button>
+      </form>
     </div>
-  </main>
+  </div>
 </template>
