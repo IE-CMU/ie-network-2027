@@ -1,7 +1,9 @@
 name: ie_network_2027
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     ports:
       - "3010:4321"
     restart: unless-stopped
