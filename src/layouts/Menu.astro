@@ -1,10 +1,10 @@
 ---
 import { type Session } from '@lib/auth'
 import { type Locale } from '@utils/locale'
-import LanguagePicker from '@layouts/LanguagePicker.astro'
+// import LanguagePicker from '@layouts/LanguagePicker.astro'
+import LanguagePicker from './LanguagePicker.vue'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import MobileMenu from '@layouts/MobileMenu.astro'
-
 interface Props {
   session: Session | null
   locale: Locale
@@ -93,12 +93,13 @@ console.log('Menu items:', items)
             </a>
           </li>
         </ul>
-        <LanguagePicker locale={locale} />
+        <!-- <LanguagePicker locale={locale} /> -->
+        <LanguagePicker locale={locale} items={items} client:load />
       </div>
 
       <!-- Mobile Navigation -->
       <div class="md:hidden">
-        <MobileMenu items={items} locale={locale} />
+        <!-- <MobileMenu items={items} locale={locale} /> -->
       </div>
     </div>
   </div>
