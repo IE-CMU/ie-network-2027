@@ -21,13 +21,22 @@ export async function addEmailQueue(data: CreateEmailParams) {
 }
 
 interface FacebookJobData {
-  userId: string
   message: string
 }
 export async function addFacebookQueue(data: FacebookJobData) {
   // await assertRedisConnection()
 
-  const job = await queue.add(JOB_NAMES.FACEBOOK, data)
+  const schedulerId = `${JOB_NAMES.FACEBOOK}-scheduler`
+  const job = await queue.upsertJobScheduler(
+    schedulerId,
+    {
+      pattern: '* */15 * * * *', // Every 15 minutes
+    },
+    {
+      name: JOB_NAMES.FACEBOOK,
+      data: data,
+    }
+  )
 
   console.log(`Jobs added to the queue: ${job.id}`)
 
