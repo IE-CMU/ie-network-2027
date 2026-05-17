@@ -69,6 +69,33 @@ services:
       - redisinsight_data:/data
     networks:
       - ie_network_2027
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Bangkok
+      - POSTGRES_HOST=db_ien
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_APP_USER=${POSTGRES_APP_USER}
+      - POSTGRES_APP_PASSWORD=${POSTGRES_APP_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=https://ie-network-2027.eng.cmu.ac.th
+      - GMAIL_USER=${GMAIL_USER}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REFRESH_TOKEN=${GOOGLE_REFRESH_TOKEN}
+      - REDIS_HOST=redis_ien
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      - db
+      - redis
+    networks:
+      - ie_network_2027
 volumes:
   db_data:
   redis_data:

@@ -6,7 +6,10 @@
     "dev": "run-p dev:server dev:worker",
     "dev:server": "astro dev",
     "dev:worker": "tsx src/lib/queue/worker.ts",
-    "build": "astro build",
+    "build": "run-s build:server build:worker",
+    "build:server": "astro build",
+    "build:worker": "vite build --config vite.worker.config.ts",
+    "start:worker": "node dist-worker/worker.js",
     "preview": "astro preview",
     "astro": "astro",
     "db:generate": "cross-env NODE_OPTIONS='--import tsx' drizzle-kit generate",
@@ -42,6 +45,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^7.3.3"
   }
 }

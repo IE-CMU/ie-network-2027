@@ -1,0 +1,11 @@
+{
+  "name": "ie_network_2027_worker",
+  "type": "module",
+  "version": "0.0.1",
+  "dependencies": {
+    "bullmq": "^5.76.7",
+    "dotenv": "^17.4.2",
+    "ioredis": "^5.10.1",
+    "nodemailer": "^8.0.7"
+  }
+}
