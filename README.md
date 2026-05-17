@@ -13,21 +13,16 @@
 - `docker push nnnpooh/ie_network_2027:latest`
 
 ## Build Worker Image
-`docker build -f docker/Dockerfile.worker -t nnnpooh/ie_network_2027_worker:latest .`
+- `docker build -f docker/Dockerfile.worker -t nnnpooh/ie_network_2027_worker:latest .`
 
 ## Test Build
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate`
+- `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate --build`
 
 ## Deploy
 - `docker compose --env-file .env -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
-
-```
-#!/bin/sh
-docker rm -f ie-network-2027
-docker pull nnnpooh/ie_network_2027:latest
-docker run -d --env-file .env.local --name ie-network-2027 -p 3010:80 nnnpooh/ie_network_2027:latest
-```
+- `pnpm run db:push` in the container: `docker compose --env-file .env -f docker-compose-deploy.yml exec app pnpm run db:push`
 
 ## Generate types for better-auth
 `npx auth@latest generate`

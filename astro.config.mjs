@@ -4,8 +4,13 @@ import vue from '@astrojs/vue'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
+import { serverPort } from './src/utils/env.js'
+
 // https://astro.build/config
 export default defineConfig({
+  server: {
+    port: parseInt(serverPort),
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -21,6 +21,13 @@ function getEnv(name: string) {
   return trimmed
 }
 
+//--------------- Server Port ----------------
+const serverPort = getEnv('SERVER_PORT')
+if (!serverPort || isNaN(parseInt(serverPort))) {
+  throw new Error('Invalid SERVER_PORT env.')
+}
+export { serverPort }
+
 //--------------- Database ----------------
 const dbUser = getEnv('POSTGRES_APP_USER')
 const dbPassword = getEnv('POSTGRES_APP_PASSWORD')

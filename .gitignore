@@ -29,3 +29,6 @@ dist-worker
 
 # Local file storage
 file_storage
+
+# pnpm store
+.pnpm-store
