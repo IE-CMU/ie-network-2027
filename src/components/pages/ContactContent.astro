@@ -11,14 +11,14 @@ const { locale } = Astro.props
     {locale === 'th' ? 'ติดต่อเรา' : 'Contact Us'}
   </h1>
 
-  <div class="grid md:grid-cols-2 gap-12">
+  <div>
     <!-- Contact Information -->
     <div>
       <h2 class="text-2xl font-bold mb-8">
         {locale === 'th' ? 'ข้อมูลการติดต่อ' : 'Contact Information'}
       </h2>
 
-      <div class="space-y-8">
+      <div class="grid gap-8 lg:grid-cols-2">
         <!-- Organization -->
         <div class="bg-purple-50 p-6 rounded-lg">
           <h3 class="text-xl font-bold text-purple-900 mb-3">
@@ -99,114 +99,6 @@ const { locale } = Astro.props
         </div>
       </div>
     </div>
-
-    <!-- Inquiry Form Section -->
-    <div>
-      <h2 class="text-2xl font-bold mb-8">
-        {locale === 'th' ? 'ส่งข้อความถึงเรา' : 'Send us a Message'}
-      </h2>
-
-      <div class="bg-gray-50 p-8 rounded-lg">
-        <form class="space-y-6">
-          <!-- Name -->
-          <div>
-            <label
-              for="name"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              {locale === 'th' ? 'ชื่อ-นามสกุล' : 'Full Name'}
-              <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
-              placeholder={locale === 'th' ? 'ชื่อของคุณ' : 'Your name'}
-            />
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label
-              for="email"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              {locale === 'th' ? 'อีเมล' : 'Email Address'}
-              <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
-              placeholder="your@email.com"
-            />
-          </div>
-
-          <!-- Subject -->
-          <div>
-            <label
-              for="subject"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              {locale === 'th' ? 'หัวข้อ' : 'Subject'}
-              <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent"
-              placeholder={locale === 'th'
-                ? 'หัวข้อข้อความ'
-                : 'Message subject'}
-            />
-          </div>
-
-          <!-- Message -->
-          <div>
-            <label
-              for="message"
-              class="block text-sm font-bold text-gray-700 mb-2"
-            >
-              {locale === 'th' ? 'ข้อความ' : 'Message'}
-              <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              rows="5"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9E76B4] focus:border-transparent resize-vertical"
-              placeholder={locale === 'th'
-                ? 'ข้อความของคุณ...'
-                : 'Your message...'}
-            >
-            </textarea>
-          </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            class="w-full bg-[#9E76B4] hover:bg-[#8a5fa0] text-white font-bold py-3 rounded-lg transition"
-          >
-            {locale === 'th' ? 'ส่งข้อความ' : 'Send Message'}
-          </button>
-        </form>
-
-        <p class="mt-6 text-sm text-gray-500 text-center">
-          {
-            locale === 'th'
-              ? 'เราจะติดต่อกลับโดยเร็วที่สุด'
-              : "We'll get back to you as soon as possible."
-          }
-        </p>
-      </div>
-    </div>
   </div>
 
   <!-- FAQs -->
@@ -245,8 +137,8 @@ const { locale } = Astro.props
         <p class="mt-4 text-gray-700">
           {
             locale === 'th'
-              ? 'กำหนดส่งบทความฉบับเต็มคือวันที่ 31 มกราคม 2027 และสามารถส่งบทความฉบับแก้ไขได้ถึง [TBA]'
-              : 'The full paper submission deadline is January 31, 2027. Revised papers can be submitted until [TBA].'
+              ? 'กำหนดส่งบทความฉบับเต็มคือวันที่ 31 มกราคม 2027 และสามารถส่งบทความฉบับแก้ไขได้ถึง 24 เมษายน 2027'
+              : 'The full paper submission deadline is January 31, 2027. Revised papers can be submitted until April 24, 2027.'
           }
         </p>
       </details>
@@ -296,8 +188,8 @@ const { locale } = Astro.props
         <p class="mt-4 text-gray-700">
           {
             locale === 'th'
-              ? 'ต้องลงทะเบียน โดยช่วงลงทะเบียนคือวันที่ 1-30 เมษายน 2027 และข้อมูลการลงทะเบียนจะประกาศบนเว็บไซต์นี้'
-              : 'Yes, registration is required. The registration period is April 1-30, 2027. Registration information will be available on this website.'
+              ? 'ต้องลงทะเบียน โดยช่วงลงทะเบียนคือวันที่ 5 มีนาคม - 30 เมษายน 2027 (Early Bird สิ้นสุดวันที่ 31 มีนาคม) และข้อมูลการลงทะเบียนจะประกาศบนเว็บไซต์นี้'
+              : 'Yes, registration is required. The registration period is March 5 - April 30, 2027 (Early Bird ends March 31). Registration information will be available on this website.'
           }
         </p>
       </details>

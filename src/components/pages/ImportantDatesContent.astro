@@ -99,7 +99,9 @@ const { locale } = Astro.props
                   : 'Revised Paper Submission Deadline'
               }
             </h3>
-            <p class="text-gray-600 mt-1">TBA</p>
+            <p class="text-gray-600 mt-1">
+              {locale === 'th' ? '24 เมษายน 2027' : 'April 24, 2027'}
+            </p>
             <p class="text-gray-700 mt-2">
               {
                 locale === 'th'
@@ -129,13 +131,17 @@ const { locale } = Astro.props
               }
             </h3>
             <p class="text-gray-600 mt-1">
-              {locale === 'th' ? '1-30 เมษายน 2027' : 'April 1-30, 2027'}
+              {
+                locale === 'th'
+                  ? '5 มีนาคม - 30 เมษายน 2027 (Early Bird สิ้นสุดวันที่ 31 มีนาคม)'
+                  : 'March 5 - April 30, 2027 (Early Bird ends March 31)'
+              }
             </p>
             <p class="text-gray-700 mt-2">
               {
                 locale === 'th'
-                  ? 'ลงทะเบียนเข้าร่วมการประชุม โดยอาจมีอัตราค่าลงทะเบียนช่วง Early Bird'
-                  : 'Register for the conference. Early bird rates may be available.'
+                  ? 'ลงทะเบียนเข้าร่วมการประชุม'
+                  : 'Register for the conference.'
               }
             </p>
           </div>

@@ -88,40 +88,50 @@ const { locale } = Astro.props
           : 'Download the appropriate template for your paper. Papers must follow the template format to be accepted.'
       }
     </p>
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="space-y-3">
       <a
-        href="#"
-        class="bg-[#9E76B4] hover:bg-[#8a5fa0] text-white p-6 rounded-lg transition"
+        href="/templates/FullPaperTemplate_IENetwork2027_Th_Full.docx"
+        download
+        class="block text-[#9E76B4] hover:text-[#8a5fa0] underline font-semibold"
       >
-        <h3 class="text-lg font-bold mb-2">
-          {locale === 'th' ? 'เทมเพลตบทความภาษาไทย' : 'Thai Paper Template'}
-        </h3>
-        <p>
-          {
-            locale === 'th'
-              ? 'ดาวน์โหลดเทมเพลตสำหรับบทความภาษาไทย'
-              : 'Download template for papers in Thai language'
-          }
-        </p>
+        {
+          locale === 'th'
+            ? 'ดาวน์โหลดเทมเพลตบทความภาษาไทย (ฉบับเต็ม)'
+            : 'Download Thai Full Paper Template'
+        }
       </a>
       <a
-        href="#"
-        class="bg-[#9E76B4] hover:bg-[#8a5fa0] text-white p-6 rounded-lg transition"
+        href="/templates/FullPaperTemplate_IENetwork2027_Th_Abstract_Only.docx"
+        download
+        class="block text-[#9E76B4] hover:text-[#8a5fa0] underline font-semibold"
       >
-        <h3 class="text-lg font-bold mb-2">
-          {
-            locale === 'th'
-              ? 'เทมเพลตบทความภาษาอังกฤษ'
-              : 'English Paper Template'
-          }
-        </h3>
-        <p>
-          {
-            locale === 'th'
-              ? 'ดาวน์โหลดเทมเพลตสำหรับบทความภาษาอังกฤษ'
-              : 'Download template for papers in English language'
-          }
-        </p>
+        {
+          locale === 'th'
+            ? 'ดาวน์โหลดเทมเพลตบทความภาษาไทย (บทคัดย่อเท่านั้น)'
+            : 'Download Thai Abstract-Only Template'
+        }
+      </a>
+      <a
+        href="/templates/FullPaperTemplate-IENetwork2027-En_Full.docx"
+        download
+        class="block text-[#9E76B4] hover:text-[#8a5fa0] underline font-semibold"
+      >
+        {
+          locale === 'th'
+            ? 'ดาวน์โหลดเทมเพลตบทความภาษาอังกฤษ (ฉบับเต็ม)'
+            : 'Download English Full Paper Template'
+        }
+      </a>
+      <a
+        href="/templates/FullPaperTemplate-IENetwork2027-En_Abstract_Only.docx"
+        download
+        class="block text-[#9E76B4] hover:text-[#8a5fa0] underline font-semibold"
+      >
+        {
+          locale === 'th'
+            ? 'ดาวน์โหลดเทมเพลตบทความภาษาอังกฤษ (บทคัดย่อเท่านั้น)'
+            : 'Download English Abstract-Only Template'
+        }
       </a>
     </div>
   </section>
@@ -211,8 +221,8 @@ const { locale } = Astro.props
           <strong>
             {
               locale === 'th'
-                ? 'กำหนดส่งบทความฉบับเต็ม:'
-                : 'Full Paper Submission Deadline:'
+                ? 'กำหนดส่งบทความฉบับเต็ม: '
+                : 'Full Paper Submission Deadline: '
             }
           </strong>
           {locale === 'th' ? '31 มกราคม 2027' : 'January 31, 2027'}
@@ -224,17 +234,18 @@ const { locale } = Astro.props
           <strong>
             {
               locale === 'th'
-                ? 'กำหนดส่งบทความฉบับแก้ไข:'
-                : 'Revised Paper Deadline:'
+                ? 'กำหนดส่งบทความฉบับแก้ไข: '
+                : 'Revised Paper Deadline: '
             }
-          </strong> TBA
+          </strong>
+          {locale === 'th' ? '24 เมษายน 2027' : 'April 24, 2027'}
         </span>
       </li>
       <li class="flex items-start">
         <span class="text-yellow-600 font-bold mr-3">!</span>
         <span class="text-gray-700">
           <strong>
-            {locale === 'th' ? 'กระบวนการพิจารณา:' : 'Review Process:'}
+            {locale === 'th' ? 'กระบวนการพิจารณา: ' : 'Review Process: '}
           </strong>
           {
             locale === 'th'
@@ -247,14 +258,20 @@ const { locale } = Astro.props
         <span class="text-yellow-600 font-bold mr-3">!</span>
         <span class="text-gray-700">
           <strong>
-            {locale === 'th' ? 'ประกาศผลการพิจารณา:' : 'Decision Notification:'}
+            {
+              locale === 'th'
+                ? 'ประกาศผลการพิจารณา: '
+                : 'Decision Notification: '
+            }
           </strong> TBA
         </span>
       </li>
       <li class="flex items-start">
         <span class="text-yellow-600 font-bold mr-3">!</span>
         <span class="text-gray-700">
-          <strong>{locale === 'th' ? 'การตีพิมพ์:' : 'Publication:'}</strong>
+          <strong>
+            {locale === 'th' ? 'การตีพิมพ์: ' : 'Publication: '}
+          </strong>
           {
             locale === 'th'
               ? 'บทความที่ผ่านการคัดเลือกจะได้รับการตีพิมพ์ในวารสารวิชาการที่ผ่านการประเมินโดยผู้ทรงคุณวุฒิ'
@@ -306,7 +323,7 @@ const { locale } = Astro.props
     </p>
     <div class="space-y-2">
       <p>
-        <strong>{locale === 'th' ? 'อีเมล:' : 'Email:'}</strong>
+        <strong>{locale === 'th' ? 'อีเมล: ' : 'Email: '}</strong>
         <a
           href="mailto:ienetwork2027@gmail.com"
           class="text-[#9E76B4] hover:underline"
@@ -315,7 +332,7 @@ const { locale } = Astro.props
         </a>
       </p>
       <p>
-        <strong>{locale === 'th' ? 'โทรศัพท์:' : 'Phone:'}</strong> (+66)53-94-4125-6
+        <strong>{locale === 'th' ? 'โทรศัพท์: ' : 'Phone: '}</strong> (+66)53-94-4125-6
       </p>
     </div>
   </section>

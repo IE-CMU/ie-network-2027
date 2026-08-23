@@ -4,6 +4,129 @@ interface Props {
   locale: Locale
 }
 const { locale } = Astro.props
+
+const tracks = [
+  {
+    title: {
+      th: 'Track 1 : การหาค่าที่เหมาะสมที่สุดและวิจัยดำเนินงาน',
+      en: 'Track 1 : Optimization and Operations Research',
+    },
+    description: {
+      th: 'ครอบคลุมแบบจำลองเชิงคณิตศาสตร์ การหาคำตอบที่เหมาะสมแบบแน่นอนและฮิวริสติก การจำลองสถานการณ์ การจัดตารางงาน การวางแผนเครือข่าย และระบบสนับสนุนการตัดสินใจสำหรับปัญหาที่ซับซ้อน',
+      en: 'Covers mathematical modeling, exact and heuristic optimization, simulation, scheduling, network planning, and decision support approaches for complex industrial and service systems.',
+    },
+    classes:
+      'bg-gradient-to-br from-purple-50 to-purple-100 border-[#9E76B4] text-purple-900',
+  },
+  {
+    title: {
+      th: 'Track 2 : ระบบงาน การยศาสตร์ และวิศวกรรมที่ยึดมนุษย์เป็นศูนย์กลาง',
+      en: 'Track 2 : Work Systems, Ergonomics, and Human-Centric Engineering',
+    },
+    description: {
+      th: 'มุ่งเน้นการออกแบบและปรับปรุงระบบงาน การวัดงาน ปัจจัยมนุษย์ ความปลอดภัย อาชีวอนามัย การยศาสตร์ และการออกแบบสถานที่ทำงานเพื่อยกระดับสมรรถนะและคุณภาพชีวิตของผู้ปฏิบัติงาน',
+      en: 'Focuses on work design and improvement, work measurement, human factors, safety, occupational health, ergonomics, and workplace design to enhance performance and worker well-being.',
+    },
+    classes:
+      'bg-gradient-to-br from-green-50 to-green-100 border-green-600 text-green-900',
+  },
+  {
+    title: {
+      th: 'Track 3 : พลังงาน สิ่งแวดล้อม และระบบอุตสาหกรรมยั่งยืน',
+      en: 'Track 3 : Energy, Environment, and Sustainable Industrial Systems',
+    },
+    description: {
+      th: 'ครอบคลุมประสิทธิภาพพลังงาน การลดคาร์บอน การประเมินผลกระทบสิ่งแวดล้อม เศรษฐกิจหมุนเวียน การจัดการของเสีย และแนวทางการดำเนินงานอย่างยั่งยืนในภาคอุตสาหกรรม',
+      en: 'Encompasses energy efficiency, decarbonization, environmental impact assessment, circular economy, waste management, and sustainability-oriented industrial operations.',
+    },
+    classes:
+      'bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-600 text-emerald-900',
+  },
+  {
+    title: {
+      th: 'Track 4 : วัสดุ การผลิต และเทคโนโลยีการผลิตขั้นสูง',
+      en: 'Track 4 : Materials, Manufacturing, and Advanced Production Technologies',
+    },
+    description: {
+      th: 'นำเสนอความก้าวหน้าด้านวัสดุศาสตร์ กระบวนการผลิต การขึ้นรูป การตัดแต่ง การผลิตอัจฉริยะ การผลิตแบบเพิ่มเนื้อวัสดุ และเทคโนโลยีการผลิตสมัยใหม่',
+      en: 'Presents advances in materials science, manufacturing processes, forming, machining, smart manufacturing, additive manufacturing, and modern production technologies.',
+    },
+    classes:
+      'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-600 text-orange-900',
+  },
+  {
+    title: {
+      th: 'Track 5 : การบำรุงรักษา ความเชื่อถือได้ และวิศวกรรมคุณภาพเพื่อระบบที่ยืดหยุ่น',
+      en: 'Track 5 : Maintenance, Reliability, and Quality Engineering for Resilient Systems',
+    },
+    description: {
+      th: 'เน้นการบำรุงรักษาเชิงป้องกันและเชิงพยากรณ์ ความเชื่อถือได้ของระบบ วิศวกรรมคุณภาพ การควบคุมกระบวนการ และการสร้างความยืดหยุ่นให้ระบบการผลิตและบริการ',
+      en: 'Highlights preventive and predictive maintenance, system reliability, quality engineering, process control, and resilience building in production and service systems.',
+    },
+    classes:
+      'bg-gradient-to-br from-red-50 to-red-100 border-red-600 text-red-900',
+  },
+  {
+    title: {
+      th: 'Track 6 : การจัดการการผลิตและการปฏิบัติการภายใต้สภาพแวดล้อมที่ไม่แน่นอน',
+      en: 'Track 6 : Production and Operations Management in Uncertain Environments',
+    },
+    description: {
+      th: 'ครอบคลุมการวางแผนการผลิต การบริหารสินค้าคงคลัง การจัดตารางงาน การจัดสรรทรัพยากร และการตัดสินใจเชิงปฏิบัติการเมื่อเผชิญความไม่แน่นอนและความเสี่ยง',
+      en: 'Covers production planning, inventory management, scheduling, resource allocation, and operational decision-making under uncertainty, disruption, and risk.',
+    },
+    classes:
+      'bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-600 text-cyan-900',
+  },
+  {
+    title: {
+      th: 'Track 7 : โซ่อุปทาน โลจิสติกส์ และการออกแบบเครือข่ายอย่างยั่งยืน',
+      en: 'Track 7 : Supply Chain, Logistics, and Sustainable Network Design',
+    },
+    description: {
+      th: 'ว่าด้วยการออกแบบและเพิ่มประสิทธิภาพโซ่อุปทาน การขนส่ง คลังสินค้า โลจิสติกส์เมือง ความยืดหยุ่นของเครือข่าย และการออกแบบเครือข่ายที่คำนึงถึงความยั่งยืน',
+      en: 'Addresses supply chain design and optimization, transportation, warehousing, urban logistics, network resilience, and sustainability-driven network design.',
+    },
+    classes:
+      'bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-600 text-indigo-900',
+  },
+  {
+    title: {
+      th: 'Track 8 : ปัญญาประดิษฐ์ อุตสาหกรรมอัจฉริยะ และการเปลี่ยนผ่านสู่ดิจิทัล',
+      en: 'Track 8 : Artificial Intelligence, Smart Industries, and Digital Transformation',
+    },
+    description: {
+      th: 'ครอบคลุม AI การเรียนรู้ของเครื่อง IoT ดิจิทัลทวิน ระบบไซเบอร์กายภาพ การวิเคราะห์ข้อมูลอุตสาหกรรม และการประยุกต์ใช้เทคโนโลยีดิจิทัลเพื่อยกระดับองค์กร',
+      en: 'Includes AI, machine learning, IoT, digital twins, cyber-physical systems, industrial data analytics, and digital technologies for enterprise transformation.',
+    },
+    classes:
+      'bg-gradient-to-br from-pink-50 to-pink-100 border-pink-600 text-pink-900',
+  },
+  {
+    title: {
+      th: 'Track 9 : การวิเคราะห์การตัดสินใจและระบบตัดสินใจอัจฉริยะ',
+      en: 'Track 9 : Decision Analytics and Intelligent Decision Systems',
+    },
+    description: {
+      th: 'มุ่งเน้นการวิเคราะห์ข้อมูลเพื่อการตัดสินใจ การพยากรณ์ ระบบแนะนำ การประเมินหลายเกณฑ์ การวิเคราะห์ความเสี่ยง และระบบตัดสินใจอัจฉริยะสำหรับภาคอุตสาหกรรมและบริการ',
+      en: 'Focuses on data-driven decision making, forecasting, recommender systems, multi-criteria evaluation, risk analysis, and intelligent decision systems for industry and services.',
+    },
+    classes:
+      'bg-gradient-to-br from-lime-50 to-lime-100 border-lime-600 text-lime-900',
+  },
+  {
+    title: {
+      th: 'Track 10 : การศึกษาวิศวกรรมอุตสาหการ นโยบาย และหัวข้อเกิดใหม่',
+      en: 'Track 10 : Industrial Engineering Education, Policy, and Emerging Topics',
+    },
+    description: {
+      th: 'เปิดรับงานด้านการเรียนการสอน การพัฒนาหลักสูตร นโยบายและยุทธศาสตร์อุตสาหกรรม การพัฒนากำลังคน ตลอดจนประเด็นใหม่ที่กำลังกำหนดทิศทางของวิศวกรรมอุตสาหการ',
+      en: 'Welcomes contributions on pedagogy, curriculum development, industrial policy and strategy, workforce development, and emerging issues shaping the future of industrial engineering.',
+    },
+    classes:
+      'bg-gradient-to-br from-teal-50 to-teal-100 border-teal-600 text-teal-900',
+  },
+]
 ---
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -20,195 +143,18 @@ const { locale } = Astro.props
   </p>
 
   <div class="grid md:grid-cols-2 gap-6">
-    <div
-      class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border-l-4 border-[#9E76B4]"
-    >
-      <h3 class="text-xl font-bold mb-3 text-purple-900">
-        {
-          locale === 'th'
-            ? 'วิจัยดำเนินงาน การหาค่าที่เหมาะสมที่สุด และระบบสนับสนุนการตัดสินใจ'
-            : 'Operations Research, Optimization and Decision Support Systems'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'เทคนิคการหาค่าที่เหมาะสมขั้นสูงและกรอบการตัดสินใจ'
-            : 'Advanced optimization techniques and decision-making frameworks'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border-l-4 border-green-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-green-900">
-        {
-          locale === 'th'
-            ? 'ระบบอัตโนมัติและเทคโนโลยีอัจฉริยะ'
-            : 'Automation and Smart Technology'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'อุตสาหกรรม 4.0, IoT และระบบอัตโนมัติอัจฉริยะ'
-            : 'Industry 4.0, IoT, and intelligent automation systems'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border-l-4 border-purple-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-purple-900">
-        {
-          locale === 'th'
-            ? 'การจัดการโซ่อุปทานและโลจิสติกส์'
-            : 'Supply Chain and Logistics Management'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'การเพิ่มประสิทธิภาพโซ่อุปทาน เครือข่ายโลจิสติกส์ และระบบกระจายสินค้า'
-            : 'Supply chain optimization, logistics networks, and distribution systems'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg border-l-4 border-orange-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-orange-900">
-        {
-          locale === 'th'
-            ? 'การศึกษางาน การยศาสตร์ ความปลอดภัย และการออกแบบโรงงาน'
-            : 'Work Study, Ergonomics, Safety and Plant Design'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'การเพิ่มประสิทธิภาพสถานที่ทำงาน วิศวกรรมความปลอดภัย และการออกแบบสถานประกอบการ'
-            : 'Workplace optimization, safety engineering, and facility design'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg border-l-4 border-red-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-red-900">
-        {
-          locale === 'th'
-            ? 'กระบวนการผลิตและการบำรุงรักษา'
-            : 'Manufacturing Processes and Maintenance'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'การผลิตขั้นสูง กระบวนการผลิต และกลยุทธ์การบำรุงรักษา'
-            : 'Advanced manufacturing, production processes, and maintenance strategies'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-6 rounded-lg border-l-4 border-indigo-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-indigo-900">
-        {
-          locale === 'th'
-            ? 'โลหะวิทยา วัสดุ และวิศวกรรมพื้นผิว'
-            : 'Metallurgy, Materials and Surface Engineering'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'วิทยาศาสตร์วัสดุและการประยุกต์ใช้วิศวกรรมพื้นผิว'
-            : 'Materials science and surface engineering applications'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-cyan-50 to-cyan-100 p-6 rounded-lg border-l-4 border-cyan-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-cyan-900">
-        {
-          locale === 'th'
-            ? 'การจัดการการผลิตและการปฏิบัติการ'
-            : 'Production and Operation Management'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'การวางแผนการผลิต การจัดตารางงาน และการจัดการปฏิบัติการ'
-            : 'Production planning, scheduling, and operations management'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-lg border-l-4 border-pink-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-pink-900">
-        {
-          locale === 'th'
-            ? 'วิศวกรรมและการจัดการคุณภาพ'
-            : 'Quality Engineering and Management'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'การควบคุมคุณภาพ การปรับปรุงกระบวนการ และระบบคุณภาพ'
-            : 'Quality control, process improvement, and quality systems'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-lime-50 to-lime-100 p-6 rounded-lg border-l-4 border-lime-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-lime-900">
-        {
-          locale === 'th'
-            ? 'เทคโนโลยีสีเขียว การจัดการนวัตกรรม และการถ่ายทอดเทคโนโลยี'
-            : 'Green Technology, Innovation Management and Technology Transfer'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'เทคโนโลยีเพื่อความยั่งยืนและการจัดการนวัตกรรม'
-            : 'Sustainable technologies and innovation management'
-        }
-      </p>
-    </div>
-
-    <div
-      class="bg-gradient-to-br from-teal-50 to-teal-100 p-6 rounded-lg border-l-4 border-teal-600"
-    >
-      <h3 class="text-xl font-bold mb-3 text-teal-900">
-        {
-          locale === 'th'
-            ? 'หัวข้ออื่น ๆ ที่เกี่ยวข้องกับวิศวกรรมอุตสาหการ'
-            : 'Other Related Topics in Industrial Engineering'
-        }
-      </h3>
-      <p class="text-gray-700">
-        {
-          locale === 'th'
-            ? 'หัวข้ออื่นใดที่เกี่ยวข้องกับสาขาวิศวกรรมอุตสาหการ'
-            : 'Any other topics relevant to industrial engineering field'
-        }
-      </p>
-    </div>
+    {
+      tracks.map((track) => (
+        <div class={`p-6 rounded-lg border-l-4 ${track.classes}`}>
+          <h3 class="text-xl font-bold mb-3">
+            {locale === 'th' ? track.title.th : track.title.en}
+          </h3>
+          <p class="text-gray-700">
+            {locale === 'th' ? track.description.th : track.description.en}
+          </p>
+        </div>
+      ))
+    }
   </div>
 
   <!-- Publication Section -->
@@ -231,13 +177,19 @@ const { locale } = Astro.props
       <li class="flex items-center">
         <span class="text-blue-600 font-bold mr-3">•</span>
         <span class="text-gray-700">
-          <strong>Engineering and Technology Horizons (ETI)</strong> (Scopus Q3)
+          <strong>Journal of Logistics and Digital Supply Chain (JLDSC)</strong> (TCI 2)
         </span>
       </li>
       <li class="flex items-center">
         <span class="text-blue-600 font-bold mr-3">•</span>
         <span class="text-gray-700">
-          <strong>Thai Journal of Operations Research: TJOR</strong> (TCI 1)
+          <strong>Thai Journal of Operations Research (TJOR)</strong> (TCI 1)
+        </span>
+      </li>
+      <li class="flex items-center">
+        <span class="text-blue-600 font-bold mr-3">•</span>
+        <span class="text-gray-700">
+          <strong>Thai Industrial Engineering Network Journal (IENJ)</strong> (TCI 2)
         </span>
       </li>
       <li class="flex items-center">
@@ -249,10 +201,13 @@ const { locale } = Astro.props
       <li class="flex items-center">
         <span class="text-blue-600 font-bold mr-3">•</span>
         <span class="text-gray-700">
-          <strong>
-            Research on Modern science and Utilizing Technological Innovation
-            Journal (RMUTI)
-          </strong> (TCI 2)
+          <strong>Research on Modern Science and Utilizing Technological Innovation Journal (RMUTI)</strong> (TCI 2)
+        </span>
+      </li>
+      <li class="flex items-center">
+        <span class="text-blue-600 font-bold mr-3">•</span>
+        <span class="text-gray-700">
+          <strong>Engineering and Technology Horizons (ETH)</strong> (TCI 1)
         </span>
       </li>
     </ul>
