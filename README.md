@@ -25,7 +25,7 @@
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate`
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate --build`
 
-## Test Deploy
+## Test Deploy (Local)
 
 - `docker compose --env-file .env.test -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env.test -f docker-compose-deploy.yml down -v`
