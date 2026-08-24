@@ -3,7 +3,7 @@ services:
   web:
     image: nnnpooh/ie_network_2027:latest
     ports:
-      - "3010:4321"
+      - ${SERVER_PORT}:${SERVER_PORT}
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -22,6 +22,7 @@ services:
       - REDIS_HOST=redis_ien
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SERVER_PORT=${SERVER_PORT}
     depends_on:
       - db
       - redis
