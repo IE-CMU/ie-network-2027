@@ -11,6 +11,16 @@ const externalDeps = [
   ...Object.keys(pkg.devDependencies ?? {}),
 ]
 
+function isExternalModule(id: string) {
+  return (
+    builtinModules.includes(id) ||
+    id.startsWith('node:') ||
+    externalDeps.some(
+      (dependency) => id === dependency || id.startsWith(`${dependency}/`)
+    )
+  )
+}
+
 export default defineConfig({
   publicDir: false,
   build: {
@@ -24,11 +34,7 @@ export default defineConfig({
       fileName: () => 'worker.js',
     },
     rollupOptions: {
-      external: [
-        ...builtinModules,
-        ...builtinModules.map((module) => `node:${module}`),
-        ...externalDeps,
-      ],
+      external: isExternalModule,
       output: {
         inlineDynamicImports: true,
       },

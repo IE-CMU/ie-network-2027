@@ -26,8 +26,10 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - ie_network_2027
   db:
@@ -46,9 +48,18 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
       - ./_entrypoint:/docker-entrypoint-initdb.d
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
     networks:
       - ie_network_2027
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} && PGPASSWORD=${POSTGRES_PASSWORD} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'SELECT 1;'",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   redis:
     container_name: redis_ien
     image: redis:8-alpine
@@ -61,9 +72,21 @@ services:
       - ie_network_2027
     command: >
       sh -c "redis-server --requirepass ${REDIS_PASSWORD} --port ${REDIS_PORT}"
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'redis-cli -h redis_ien -p ${REDIS_PORT} -a ${REDIS_PASSWORD} ping | grep PONG',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   redisinsight:
     image: redis/redisinsight:latest
     container_name: redisinsight_ien
+    depends_on:
+      redis:
+        condition: service_healthy
     restart: always
     ports:
       - ${REDIS_INSIGHT_PORT}:${REDIS_INSIGHT_PORT}
@@ -77,6 +100,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.worker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -96,9 +124,6 @@ services:
       - REDIS_HOST=redis_ien
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-    depends_on:
-      - db
-      - redis
     networks:
       - ie_network_2027
 volumes:

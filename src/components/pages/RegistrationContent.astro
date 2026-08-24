@@ -1,0 +1,107 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {locale === 'th' ? 'การลงทะเบียน' : 'Registration'}
+  </h1>
+
+  <div class="overflow-x-auto">
+    <table
+      class="w-full min-w-[640px] border-collapse overflow-hidden rounded-lg shadow-sm"
+    >
+      <thead>
+        <tr class="bg-[#9E76B4] text-white">
+          <th
+            scope="col"
+            class="border border-white/30 px-6 py-4 text-left font-bold"
+          >
+            {locale === 'th' ? 'ประเภทผู้ลงทะเบียน' : 'Registration Type'}
+          </th>
+          <th
+            scope="col"
+            class="border border-white/30 px-6 py-4 text-center font-bold"
+          >
+            {locale === 'th' ? 'Early Bird' : 'Early Bird'}
+          </th>
+          <th
+            scope="col"
+            class="border border-white/30 px-6 py-4 text-center font-bold"
+          >
+            {locale === 'th' ? 'รอบปกติ' : 'Regular'}
+          </th>
+          <th
+            scope="col"
+            class="border border-white/30 px-6 py-4 text-center font-bold"
+          >
+            {locale === 'th' ? 'บทความที่ 2' : 'Second Paper'}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-purple-50">
+          <th
+            scope="row"
+            class="border border-gray-200 px-6 py-4 text-left font-semibold text-gray-800"
+          >
+            {
+              locale === 'th'
+                ? 'อาจารย์/บุคคลทั่วไป'
+                : 'Faculty / General Public'
+            }
+          </th>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            4,000 THB
+          </td>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            4,500 THB
+          </td>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            +500 THB
+          </td>
+        </tr>
+        <tr class="bg-white">
+          <th
+            scope="row"
+            class="border border-gray-200 px-6 py-4 text-left font-semibold text-gray-800"
+          >
+            {locale === 'th' ? 'นักศึกษา' : 'Student'}
+          </th>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            3,500 THB
+          </td>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            4,000 THB
+          </td>
+          <td
+            class="border border-gray-200 px-6 py-4 text-center text-gray-700"
+          >
+            +500 THB
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-4 text-sm text-gray-600 italic">
+    {
+      locale === 'th'
+        ? 'นักศึกษาภาควิชาวิศวกรรมอุตสาหการ คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเชียงใหม่ จะได้รับอัตราค่าลงทะเบียน 3,500 บาท สำหรับโควตา 1 บทความต่อนักศึกษา 1 คน โดยไม่ขึ้นอยู่กับช่วงเวลาการลงทะเบียน'
+        : 'Students in the Department of Industrial Engineering, Faculty of Engineering, Chiang Mai University, are eligible for the 3,500 THB registration rate for a quota of one paper per student, regardless of the registration period.'
+    }
+  </p>
+</main>

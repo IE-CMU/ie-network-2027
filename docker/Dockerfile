@@ -28,6 +28,10 @@ RUN pnpm install --prod --frozen-lockfile --ignore-scripts=false
 # Copy built SSR server from builder
 COPY --from=builder /app/dist ./dist
 
+COPY ./drizzle.config.ts ./
+COPY ./tsconfig.json ./
+COPY ./src ./src
+
 ENV HOST=0.0.0.0
 
 CMD ["node", "./dist/server/entry.mjs"]

@@ -1,50 +1,68 @@
 # IE Network 2027
 
 ## Setup
+
 `npx auth secret`
 `pnpm run eol`
 
 ## Run with Docker Compose
+
 - `docker compose --env-file .env up -d`
 - `docker compose --env-file .env down -v`
 
 ## Build and Push Docker Image
+
 - `docker build -f docker/Dockerfile -t nnnpooh/ie_network_2027:latest .`
 - `docker push nnnpooh/ie_network_2027:latest`
 
 ## Build Worker Image
+
 - `docker build -f docker/Dockerfile.worker -t nnnpooh/ie_network_2027_worker:latest .`
+- `docker push nnnpooh/ie_network_2027_worker:latest`
 
 ## Test Build
+
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate`
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate --build`
 
-## Deploy
+## Test Deploy
+
+- `docker compose --env-file .env.test -f docker-compose-deploy.yml up -d --pull always --force-recreate`
+- `docker compose --env-file .env.test -f docker-compose-deploy.yml down -v`
+- `pnpm run db:migrate` in the container: `docker compose --env-file .env.test -f docker-compose-deploy.yml exec web pnpm run db:migrate`
+
+## Deploy (Production)
+
 - `docker compose --env-file .env -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
-- `pnpm run db:push` in the container: `docker compose --env-file .env -f docker-compose-deploy.yml exec app pnpm run db:push`
+- `pnpm run db:migrate` in the container: `docker compose --env-file .env -f docker-compose-deploy.yml exec web pnpm run db:migrate`
 
 ## Generate types for better-auth
+
 `npx auth@latest generate`
 
 ## Generate secret for better-auth
+
 `npx auth secret`
 
 ## Todo
+
 - Fix build error related to `import { authClient } from '@/utils/auth-client` in `signup.astro`.
 
 # Note on Email Sending
+
 - My mistake was using the OAuth Playground, but it was created with Gmail API read/send scopes rather than https://mail.google.com/, so the token works for some API calls but fails for SMTP login.
 
-
 # Note on Redis
+
 - Check if port 6379 is not used by another process:
-`Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess, State | Select-String -Pattern "63"`
-- What happned was this port is used by the system (could be WSL). When I set the redis container to 6379, the container was able to run (why?) but the connection from the application (which connects to `localhost:6379`) does not work. 
+  `Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess, State | Select-String -Pattern "63"`
+- What happned was this port is used by the system (could be WSL). When I set the redis container to 6379, the container was able to run (why?) but the connection from the application (which connects to `localhost:6379`) does not work.
 - Another thing that I used `redisinsight` within the same docker network so the connection to `[redis_container_name]:6379` works, but the connection from the host to `localhost:6379` does not work because that port is used by another process on the host.
 - Also, when using `ioredis`, this library can uses offline mode and does not throw an error.
 - The best way to avoid this is to use port `6380`.
 
 # Note on build
+
 - `.npmrc` can messed up the build command `pnpm run build`.
 - `pnpm run build` fails in your Docker image because pnpm run honors the project setting in `.npmrc:2: script-shell = "pwsh.exe"`. In `node:22-alpine`, `pwsh.exe` does not exist, so script execution fails.
