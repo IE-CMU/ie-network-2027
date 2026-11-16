@@ -12,18 +12,19 @@
 
 ## Build and Push Docker Image
 
-- `docker build -f docker/Dockerfile -t nnnpooh/ie_network_2027:latest .`
-- `docker push nnnpooh/ie_network_2027:latest`
+- `docker build -f docker/Dockerfile -t iecmu/ie_network_2027:latest .`
+- `docker push iecmu/ie_network_2027:latest`
 
 ## Build Worker Image
 
-- `docker build -f docker/Dockerfile.worker -t nnnpooh/ie_network_2027_worker:latest .`
-- `docker push nnnpooh/ie_network_2027_worker:latest`
+- `docker build -f docker/Dockerfile.worker -t iecmu/ie_network_2027_worker:latest .`
+- `docker push iecmu/ie_network_2027_worker:latest`
 
 ## Test Build
 
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate`
 - `docker compose --env-file .env.test -f docker-compose-test.yml up -d --force-recreate --build`
+- `docker compose --env-file .env.test -f docker-compose-test.yml down -v`
 
 ## Test Deploy (Local)
 

@@ -1,7 +1,28 @@
 name: ie_network_2027
 services:
+  # One-shot: applies DB migrations, then exits. web and worker wait for it.
+  migrate:
+    image: iecmu/ie_network_2027:latest
+    command: ['pnpm', 'run', 'db:migrate']
+    restart: 'no'
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Bangkok
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_APP_USER=${POSTGRES_APP_USER}
+      - POSTGRES_APP_PASSWORD=${POSTGRES_APP_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ie_network_2027
   web:
-    image: nnnpooh/ie_network_2027:latest
+    image: iecmu/ie_network_2027:latest
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     restart: unless-stopped
@@ -20,6 +41,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - SERVER_PORT=${SERVER_PORT}
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
@@ -91,8 +114,10 @@ services:
     networks:
       - ie_network_2027
   worker:
-    image: nnnpooh/ie_network_2027_worker:latest
+    image: iecmu/ie_network_2027_worker:latest
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:

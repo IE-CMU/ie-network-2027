@@ -32,6 +32,10 @@ export async function addEmailQueue(data: CreateEmailParams) {
 }
 
 const FACEBOOK_JOB_OPTS = {
+  // Retry transient DB / Graph API failures (10s, 20s, 40s, 80s) instead of
+  // leaving the cache stale until the next cron tick.
+  attempts: 5,
+  backoff: { type: 'exponential', delay: 10_000 },
   removeOnComplete: 50,
   removeOnFail: 50,
 }
