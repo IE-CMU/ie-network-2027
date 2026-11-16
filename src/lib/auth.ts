@@ -2,8 +2,11 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'
 
+import { requireBetterAuthEnv } from '../utils/env.js'
 import { dbClient } from '../db/client.js'
 import { addEmailQueue } from './queue/producer.js'
+
+requireBetterAuthEnv()
 
 export const auth = betterAuth({
   database: drizzleAdapter(dbClient, {

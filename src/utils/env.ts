@@ -21,12 +21,21 @@ function getEnv(name: string) {
   return trimmed
 }
 
-//--------------- Server Port ----------------
-const serverPort = getEnv('SERVER_PORT')
-if (!serverPort || isNaN(parseInt(serverPort))) {
-  throw new Error('Invalid SERVER_PORT env.')
+// Env groups that only one service needs (web or worker) are exported as
+// optional values plus a require*() function. Each service calls the
+// require*() functions it needs at startup, so a missing value fails fast
+// there without forcing the other service to define it.
+// Env needed by both services (DB, Redis) is still checked on import.
+
+//--------------- Server Port (web) ----------------
+export const serverPort = getEnv('SERVER_PORT')
+
+export function requireServerPort() {
+  if (!serverPort || isNaN(parseInt(serverPort))) {
+    throw new Error('Invalid SERVER_PORT env.')
+  }
+  return parseInt(serverPort)
 }
-export { serverPort }
 
 //--------------- Database ----------------
 const dbUser = getEnv('POSTGRES_APP_USER')
@@ -46,7 +55,7 @@ if (!dbUser || !dbPassword || !dbHost || !dbPort || !dbName) {
 }
 export const dbConnectionString = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
 
-//--------------- Gmail ----------------
+//--------------- Gmail (worker) ----------------
 export const gmailUser = getEnv('GMAIL_USER')
 export const googleClientId = getEnv('GOOGLE_CLIENT_ID')
 export const googleClientSecret = getEnv('GOOGLE_CLIENT_SECRET')
@@ -64,24 +73,31 @@ export const googleRefreshToken = getEnv('GOOGLE_REFRESH_TOKEN')
 //   googleRefreshToken,
 // })
 
-if (
-  !gmailUser ||
-  !googleClientId ||
-  !googleClientSecret ||
-  !googleRefreshToken
-) {
-  throw new Error('Invalid Gmail env.')
+export function requireGmailEnv() {
+  if (
+    !gmailUser ||
+    !googleClientId ||
+    !googleClientSecret ||
+    !googleRefreshToken
+  ) {
+    throw new Error('Invalid Gmail env.')
+  }
+  return { gmailUser, googleClientId, googleClientSecret, googleRefreshToken }
 }
 
-//--------------- BetterAuth ----------------
+//--------------- BetterAuth (web) ----------------
 export const betterAuthSecret = getEnv('BETTER_AUTH_SECRET')
 export const betterAuthUrl = getEnv('BETTER_AUTH_URL')
 
 // export const betterAuthSecret = import.meta.env.BETTER_AUTH_SECRET
 // export const betterAuthUrl = import.meta.env.BETTER_AUTH_URL
 
-if (!betterAuthSecret || !betterAuthUrl) {
-  throw new Error('Invalid BetterAuth env.')
+// BetterAuth reads these from process.env itself; this only fails fast.
+export function requireBetterAuthEnv() {
+  if (!betterAuthSecret || !betterAuthUrl) {
+    throw new Error('Invalid BetterAuth env.')
+  }
+  return { betterAuthSecret, betterAuthUrl }
 }
 
 //--------------- Redis ----------------
@@ -104,7 +120,7 @@ export { redisHost, redisPort, redisPassword }
 
 export const redisConnectionString = `redis://default:${redisPassword}@${redisHost}:${redisPort}`
 
-//--------------- Facebook ----------------
+//--------------- Facebook (worker) ----------------
 // Only the worker uses these. They are not required here so the web server can
 // start without them; the sync job checks them before calling the Graph API.
 export const facebookAccessToken = getEnv('FACEBOOK_ACCESS_TOKEN')

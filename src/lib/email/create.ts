@@ -1,5 +1,6 @@
-import { type SendEmailPayload } from '@/lib/email/sent'
-import { gmailUser } from '@/utils/env'
+// Type-only import: the web service must not load sent.ts, which requires
+// the Gmail env.
+import type { SendEmailPayload } from '@/lib/email/sent'
 
 export interface CreateEmailParams {
   name: string
@@ -19,10 +20,9 @@ export function createEmail({
   const htmlContent = html
     ? html
     : `<p><b>Dear ${escapeHtml(name)},</b></p>${formatHTML(message)}<p>Best regards,<br>IE Network 2027 Committee</p>`
+  // from/replyTo are filled in by the worker in sendEmail().
   return {
-    from: gmailUser,
     to: recipientEmail,
-    replyTo: gmailUser,
     subject: subject,
     text: messageContent,
     html: htmlContent,
