@@ -2,13 +2,19 @@
 import Layout from '@layouts/Layout.astro'
 import LoginContent from '@components/pages/LoginContent.astro'
 import { getLocale } from '@utils/locale'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 
 // This page needs to be SSR becuase of the session data for the menu.
 export const prerender = false
 
 const locale = getLocale(Astro)
+
+// Already signed in: nothing to do here.
+if (Astro.locals.user) {
+  return Astro.redirect(getRelativeLocaleUrl(locale, '/'))
+}
 ---
 
-<Layout title="Login">
+<Layout title={locale === 'th' ? 'เข้าสู่ระบบ' : 'Sign in'}>
   <LoginContent locale={locale} />
 </Layout>

@@ -1,0 +1,44 @@
+---
+import { type Locale, getUrlListCustom } from '@utils/locale'
+
+// One-click language toggle: shows the *other* language and links to the
+// current page in that language. Pure server-rendered link, no client JS.
+interface Props {
+  locale: Locale
+  localeUrlList: ReturnType<typeof getUrlListCustom>
+  class?: string
+}
+const { locale, localeUrlList, class: className = '' } = Astro.props
+
+const target: Locale = locale === 'th' ? 'en' : 'th'
+const labels: Record<Locale, { short: string; full: string }> = {
+  th: { short: 'ไทย', full: 'ภาษาไทย' },
+  en: { short: 'EN', full: 'English' },
+}
+---
+
+<a
+  href={localeUrlList[target]}
+  hreflang={target}
+  lang={target}
+  title={labels[target].full}
+  aria-label={labels[target].full}
+  class:list={['btn btn-sm btn-ghost gap-1 px-2 font-normal', className]}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="size-4"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M2 12h20"></path>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+  </svg>
+  <span>{labels[target].short}</span>
+</a>

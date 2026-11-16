@@ -13,7 +13,7 @@
 # Init
 
 - `pnpm run db:migrate`
-- Create admin `npx auth@latest create-admin --email nnnpooh@gmail.com --name "Admin" --role admin`
+- Create admin `npx auth@latest create-admin --email [EMAL] --name "Admin" --role admin`
 
 ## Build and Push Docker Image
 
