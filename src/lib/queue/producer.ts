@@ -1,5 +1,6 @@
 import { type CreateEmailParams, createEmail } from '@/lib/email/create'
 import { JOB_NAMES, QUEUE_NAME, redisConnection } from '@/lib/queue/utils'
+import { facebookCronPattern } from '@utils/env'
 import { Queue } from 'bullmq'
 
 const queue = new Queue(QUEUE_NAME, {
@@ -20,30 +21,32 @@ export async function addEmailQueue(data: CreateEmailParams) {
   }
 }
 
-interface FacebookJobData {
-  message: string
+const FACEBOOK_JOB_OPTS = {
+  removeOnComplete: 50,
+  removeOnFail: 50,
 }
-export async function addFacebookQueue(data: FacebookJobData) {
-  // await assertRedisConnection()
 
+/**
+ * Registers (or updates) the repeating Facebook sync and queues one sync right
+ * away, so the cache is filled after a deploy instead of at the next cron tick.
+ * Safe to call on every worker start: the scheduler is upserted by id.
+ */
+export async function registerFacebookScheduler() {
   const schedulerId = `${JOB_NAMES.FACEBOOK}-scheduler`
-  const job = await queue.upsertJobScheduler(
+  await queue.upsertJobScheduler(
     schedulerId,
-    {
-      pattern: '* */15 * * * *', // Every 15 minutes
-    },
+    { pattern: facebookCronPattern },
     {
       name: JOB_NAMES.FACEBOOK,
-      data: data,
+      data: {},
+      opts: FACEBOOK_JOB_OPTS,
     }
   )
+  const job = await queue.add(JOB_NAMES.FACEBOOK, {}, FACEBOOK_JOB_OPTS)
 
-  console.log(`Jobs added to the queue: ${job.id}`)
-
-  return {
-    queue: queue.name,
-    jobIds: [job.id],
-  }
+  console.log(
+    `Facebook scheduler "${schedulerId}" registered with pattern "${facebookCronPattern}". Startup sync job: ${job.id}`
+  )
 }
 
 async function assertRedisConnection() {

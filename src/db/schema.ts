@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm'
 import {
   boolean,
+  customType,
   index,
   pgTable,
   text,
@@ -100,3 +101,30 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+// ---------------- Facebook post cache ----------------
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType() {
+    return 'bytea'
+  },
+})
+
+// Latest posts from the Facebook page, kept in sync by the worker.
+export const facebookPost = pgTable(
+  'facebook_post',
+  {
+    id: text('id').primaryKey(), // Graph API post id
+    createdTime: timestamp('created_time', { withTimezone: true }).notNull(),
+    message: text('message'),
+    permalinkUrl: text('permalink_url').notNull(),
+    // Stable id of the picture (attachment target id). The CDN URL changes on
+    // every request, so this is what decides whether to download it again.
+    imageKey: text('image_key'),
+    image: bytea('image'),
+    imageMime: text('image_mime'),
+    fetchedAt: timestamp('fetched_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [index('facebook_post_created_time_idx').on(table.createdTime)]
+)

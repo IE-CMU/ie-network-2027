@@ -1,5 +1,7 @@
+import { registerFacebookScheduler } from '@/lib/queue/producer'
 import { JOB_NAMES, QUEUE_NAME, redisConnection } from '@/lib/queue/utils'
 import { sendEmail } from '@lib/email/sent'
+import { syncFacebookPosts } from '@lib/facebook/sync'
 import { Job, Worker } from 'bullmq'
 
 async function processJob(job: Job) {
@@ -22,7 +24,9 @@ async function processEmailJob(job: Job) {
 }
 
 async function processFacebookJob(job: Job) {
-  console.log(`Processing Facebook job ${job.id} with data:`, job.data)
+  console.log(`Processing Facebook sync job ${job.id}`)
+  const result = await syncFacebookPosts()
+  console.log(`Facebook sync job ${job.id} done:`, result)
 }
 
 const worker = new Worker(QUEUE_NAME, processJob, {
@@ -51,6 +55,10 @@ worker.on('ready', () => {
   console.log(
     `Worker is ready and listening for jobs on queue "${QUEUE_NAME}".`
   )
+})
+
+registerFacebookScheduler().catch((error) => {
+  console.error('Failed to register the Facebook scheduler:', error)
 })
 
 worker.on('progress', (job, progress) => {

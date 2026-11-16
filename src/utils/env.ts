@@ -103,3 +103,20 @@ if (!redisPort || !redisHost || !redisPassword) {
 export { redisHost, redisPort, redisPassword }
 
 export const redisConnectionString = `redis://default:${redisPassword}@${redisHost}:${redisPort}`
+
+//--------------- Facebook ----------------
+// Only the worker uses these. They are not required here so the web server can
+// start without them; the sync job checks them before calling the Graph API.
+export const facebookAccessToken = getEnv('FACEBOOK_ACCESS_TOKEN')
+export const facebookPageId = getEnv('FACEBOOK_PAGE_ID')
+
+// BullMQ cron pattern (with a seconds field). Default: every 3 hours, on the hour.
+export const facebookCronPattern =
+  getEnv('FACEBOOK_CRON_PATTERN') ?? '0 0 */3 * * *'
+
+// Number of latest posts to keep in the database.
+const facebookPostLimit = Number(getEnv('FACEBOOK_POST_LIMIT') ?? '10')
+if (!Number.isInteger(facebookPostLimit) || facebookPostLimit < 1) {
+  throw new Error('Invalid FACEBOOK_POST_LIMIT env.')
+}
+export { facebookPostLimit }

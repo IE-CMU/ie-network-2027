@@ -5,7 +5,9 @@
   "dependencies": {
     "bullmq": "^5.76.7",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
     "ioredis": "^5.10.1",
-    "nodemailer": "^8.0.7"
+    "nodemailer": "^8.0.7",
+    "postgres": "^3.4.9"
   }
 }
