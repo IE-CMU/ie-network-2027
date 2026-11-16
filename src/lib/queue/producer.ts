@@ -59,10 +59,10 @@ export async function registerFacebookScheduler() {
   )
 }
 
-async function assertRedisConnection() {
-  const client = await queue.client
-  const pong = await client.ping()
-  if (pong !== 'PONG') {
-    throw new Error(`Redis ping failed`)
-  }
-}
+// async function assertRedisConnection() {
+//   const client = await queue.client
+//   const pong = await client.ping()
+//   if (pong !== 'PONG') {
+//     throw new Error(`Redis ping failed`)
+//   }
+// }
