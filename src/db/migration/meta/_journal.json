@@ -15,6 +15,13 @@
       "when": 1794813688680,
       "tag": "0001_unique_kinsey_walden",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794864698678,
+      "tag": "0002_panoramic_sasquatch",
+      "breakpoints": true
     }
   ]
 }
