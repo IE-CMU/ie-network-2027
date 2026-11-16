@@ -23,7 +23,8 @@ export async function sendEmail(data: SendEmailPayload) {
   try {
     await transporter.sendMail(data)
   } catch (error) {
-    console.error('Error sending email:', error)
-    throw new Error('Failed to send email')
+    // Keep the real reason so it shows up as the job's failure reason.
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(`Failed to send email: ${reason}`, { cause: error })
   }
 }

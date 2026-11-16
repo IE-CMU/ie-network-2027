@@ -15,10 +15,10 @@ export function createEmail({
   subject,
   html,
 }: CreateEmailParams): SendEmailPayload {
-  const messageContent = `Dear ${name},\n\n${message}\n\nBest regards,\nIE Network 2017 Committee`
+  const messageContent = `Dear ${name},\n\n${message}\n\nBest regards,\nIE Network 2027 Committee`
   const htmlContent = html
     ? html
-    : `<p><b>Dear ${name},</b></p><p>${formatHTML(message)}</p><p>Best regards,<br>IE Network 2017 Committee</p>`
+    : `<p><b>Dear ${escapeHtml(name)},</b></p>${formatHTML(message)}<p>Best regards,<br>IE Network 2027 Committee</p>`
   return {
     from: gmailUser,
     to: recipientEmail,

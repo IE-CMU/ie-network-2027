@@ -19,7 +19,10 @@ async function processJob(job: Job) {
 }
 
 async function processEmailJob(job: Job) {
-  console.log(`Processing email job ${job.id} with data:`, job.data)
+  // Don't log job.data: it contains the email body (e.g. magic sign-in links).
+  console.log(
+    `Processing email job ${job.id} to ${job.data.to} (attempt ${job.attemptsMade + 1})`
+  )
   await sendEmail(job.data)
 }
 
