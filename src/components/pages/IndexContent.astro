@@ -1,4 +1,11 @@
 ---
+import PosterDisplay from '@/components/index/PosterDisplay.vue'
+import PostScroller from '@/components/index/PostScoller.vue'
+import {
+  FACEBOOK_PAGE_URL,
+  type FacebookPostCard,
+  getFacebookPosts,
+} from '@lib/facebook/posts'
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 
@@ -6,6 +13,14 @@ interface Props {
   locale: Locale
 }
 const { locale } = Astro.props
+
+// A database problem should only hide the news strip, not break the home page.
+let facebookPosts: FacebookPostCard[] = []
+try {
+  facebookPosts = await getFacebookPosts(locale)
+} catch (error) {
+  console.error('Failed to load Facebook posts:', error)
+}
 ---
 
 <main>
@@ -47,6 +62,18 @@ const { locale } = Astro.props
       </a>
     </div>
   </section>
+
+  <!-- Facebook News -->
+  {
+    facebookPosts.length > 0 && (
+      <PostScroller
+        client:visible
+        posts={facebookPosts}
+        locale={locale}
+        pageUrl={FACEBOOK_PAGE_URL}
+      />
+    )
+  }
 
   <!-- About Section -->
   <section class="py-16 bg-gray-50">
@@ -91,11 +118,15 @@ const { locale } = Astro.props
   </section>
 
   <!-- Poster Image -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <img
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <PosterDisplay
+      client:visible
       src="/poster.png"
       alt="IE Network 2027 Conference Poster"
-      class="w-full h-auto rounded-lg shadow-lg"
+      width={1024}
+      height={1536}
+      locale={locale}
+      downloadName="IE-Network-2027-Poster.png"
     />
   </div>
 </main>
