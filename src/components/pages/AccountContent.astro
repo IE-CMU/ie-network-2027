@@ -1,0 +1,12 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<div>
+  <h1>{locale === 'th' ? 'บัญชีของคุณ' : 'Your Account'}</h1>
+  {JSON.stringify(Astro.locals)}
+</div>
