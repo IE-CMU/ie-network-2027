@@ -42,6 +42,7 @@
 - `docker compose --env-file .env -f docker-compose-deploy.yml up -d --pull always --force-recreate`
 - `docker compose --env-file .env -f docker-compose-deploy.yml down -v`
 - `pnpm run db:migrate` in the container: `docker compose --env-file .env -f docker-compose-deploy.yml exec web pnpm run db:migrate`
+- `docker compose --env-file .env -f docker-compose-deploy.yml exec -it web`
 
 ## Generate types for better-auth
 
