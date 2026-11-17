@@ -57,9 +57,7 @@ export const dbConnectionString = `postgres://${dbUser}:${dbPassword}@${dbHost}:
 
 //--------------- Gmail (worker) ----------------
 export const gmailUser = getEnv('GMAIL_USER')
-export const googleClientId = getEnv('GOOGLE_CLIENT_ID')
-export const googleClientSecret = getEnv('GOOGLE_CLIENT_SECRET')
-export const googleRefreshToken = getEnv('GOOGLE_REFRESH_TOKEN')
+export const gmailAppPassword = getEnv('GMAIL_APP_PASSWORD')
 
 // export const gmailUser = import.meta.env.GMAIL_USER
 // export const googleClientId = import.meta.env.GOOGLE_CLIENT_ID
@@ -74,15 +72,10 @@ export const googleRefreshToken = getEnv('GOOGLE_REFRESH_TOKEN')
 // })
 
 export function requireGmailEnv() {
-  if (
-    !gmailUser ||
-    !googleClientId ||
-    !googleClientSecret ||
-    !googleRefreshToken
-  ) {
+  if (!gmailUser || !gmailAppPassword) {
     throw new Error('Invalid Gmail env.')
   }
-  return { gmailUser, googleClientId, googleClientSecret, googleRefreshToken }
+  return { gmailUser, gmailAppPassword }
 }
 
 //--------------- BetterAuth (web) ----------------

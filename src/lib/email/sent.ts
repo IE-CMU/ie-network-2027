@@ -9,12 +9,16 @@ const gmail = requireGmailEnv()
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  // auth: {
+  //   type: 'OAuth2',
+  //   user: gmail.gmailUser,
+  //   clientId: gmail.googleClientId,
+  //   clientSecret: gmail.googleClientSecret,
+  //   refreshToken: gmail.googleRefreshToken,
+  // },
   auth: {
-    type: 'OAuth2',
     user: gmail.gmailUser,
-    clientId: gmail.googleClientId,
-    clientSecret: gmail.googleClientSecret,
-    refreshToken: gmail.googleRefreshToken,
+    pass: gmail.gmailAppPassword,
   },
 })
 
