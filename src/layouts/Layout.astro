@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css'
-import { getSession } from '@lib/auth'
 import { getLocale } from '@/utils/locale'
 import Menu from '@layouts/Menu.astro'
 import Footer from '@layouts/Footer.astro'
@@ -10,7 +9,8 @@ interface Props {
 }
 const { title } = Astro.props
 
-const session = await getSession(Astro.request.headers)
+// Session is resolved once in src/middleware.ts.
+const { user } = Astro.locals
 const locale = getLocale(Astro)
 ---
 
@@ -24,7 +24,7 @@ const locale = getLocale(Astro)
     <title>{title ? `${title} - IE Network 2027` : 'IE Network 2027'}</title>
   </head>
   <body class="bg-white text-gray-900">
-    <Menu session={session} locale={locale} />
+    <Menu user={user} locale={locale} />
     <slot />
     <Footer locale={locale} />
   </body>

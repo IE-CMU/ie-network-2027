@@ -1,71 +1,81 @@
 ---
-import { type Session } from '@lib/auth'
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import MenuMobile from '@layouts/MenuMobile.astro'
 import MenuDesktop from '@layouts/MenuDesktop.astro'
 import { getUrlListCustom } from '@utils/locale'
+import { type AccountMenu, type MenuItem } from '@layouts/menu'
 
 interface Props {
-  session: Session | null
+  user: App.Locals['user']
   locale: Locale
 }
-const { session, locale } = Astro.props
+const { user, locale } = Astro.props
 
 // For language picker, we need to get the URL list for each locale based on the current path
 const localeUrlList = getUrlListCustom(Astro.url.pathname)
 
-// Menu items with localized labels and URLs
-const items = {
-  home: {
-    en: 'Home',
-    th: 'หน้าแรก',
-    url: getRelativeLocaleUrl(locale, '/'),
-  },
-  about: {
-    en: 'About',
-    th: 'เกี่ยวกับ',
-    url: getRelativeLocaleUrl(locale, '/about'),
-  },
-  topics: {
-    en: 'Topics',
-    th: 'หัวข้อ',
-    url: getRelativeLocaleUrl(locale, '/conference-topics'),
-  },
-  dates: {
-    en: 'Dates',
-    th: 'วันที่สำคัญ',
-    url: getRelativeLocaleUrl(locale, '/important-dates'),
-  },
-  publications: {
-    en: 'Publication',
-    th: 'การตีพิมพ์',
-    url: getRelativeLocaleUrl(locale, '/publication'),
-  },
-  submission: {
-    en: 'Submission',
-    th: 'การส่งผลงาน',
-    url: getRelativeLocaleUrl(locale, '/submission'),
-  },
-  registration: {
-    en: 'Registration',
-    th: 'การลงทะเบียน',
-    url: getRelativeLocaleUrl(locale, '/registration'),
-  },
-  contact: {
-    en: 'Contact',
-    th: 'ติดต่อ',
-    url: getRelativeLocaleUrl(locale, '/contact'),
-  },
-} as const
+const url = (path: string) => getRelativeLocaleUrl(locale, path)
+const homeUrl = url('/')
 
-// console.log('Menu items:', items)
+// Menu tree. Groups (with `children`) have no page target and only open a submenu.
+const items: MenuItem[] = [
+  { label: { en: 'Home', th: 'หน้าแรก' }, url: homeUrl },
+  {
+    label: { en: 'About', th: 'เกี่ยวกับ' },
+    children: [
+      { label: { en: 'Conference', th: 'การประชุม' }, url: url('/about') },
+      { label: { en: 'Topics', th: 'หัวข้อ' }, url: url('/conference-topics') },
+      {
+        label: { en: 'Important Dates', th: 'วันที่สำคัญ' },
+        url: url('/important-dates'),
+      },
+    ],
+  },
+  {
+    label: { en: 'Publication', th: 'การตีพิมพ์' },
+    children: [
+      { label: { en: 'Journals', th: 'วารสาร' }, url: url('/publication') },
+      { label: { en: 'Submission', th: 'การส่งผลงาน' }, url: url('/submission') },
+    ],
+  },
+  {
+    label: { en: 'Registration', th: 'การลงทะเบียน' },
+    url: url('/registration'),
+  },
+  { label: { en: 'Contact', th: 'ติดต่อ' }, url: url('/contact') },
+]
+
+// Account area: avatar dropdown when authenticated, login link otherwise.
+const displayName = user?.name?.trim() || user?.email || ''
+const account: AccountMenu = {
+  user: user
+    ? {
+        name: displayName,
+        email: user.email,
+        initial: displayName.charAt(0).toUpperCase() || '?',
+      }
+    : null,
+  links: [
+    { label: { en: 'My Account', th: 'บัญชีของฉัน' }, url: url('/account') },
+  ],
+  logout: {
+    label: { en: 'Logout', th: 'ออกจากระบบ' },
+    redirectUrl: homeUrl,
+  },
+  login: { label: { en: 'Login', th: 'เข้าสู่ระบบ' }, url: url('/login') },
+}
 ---
 
 <nav class="sticky top-0 z-50 bg-white shadow-md">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-18">
-      <div class="flex items-center rounded-lg px-2 py-1 bg-[#F3E5F5]">
+    <!-- Mobile: logo left, hamburger right. Desktop: 3 columns (logo | centered menu | language + user). -->
+    <div
+      class="flex justify-between items-center h-18 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4"
+    >
+      <div
+        class="flex items-center justify-self-start rounded-lg px-2 py-1 bg-[#F3E5F5]"
+      >
         <!-- Logo / Site Title -->
         <img
           src="/eng_logo.png"
@@ -74,14 +84,15 @@ const items = {
         />
 
         <h1 class="text-2xl font-bold text-[#9E76B4]">
-          <a href={items.home.url}>IE Network 2027</a>
+          <a href={homeUrl}>IE Network 2027</a>
         </h1>
       </div>
 
-      <!-- Desktop Navigation -->
-      <div class="hidden lg:flex items-center space-x-8">
+      <!-- Desktop Navigation: `contents` lets MenuDesktop's two blocks become grid columns -->
+      <div class="hidden lg:contents">
         <MenuDesktop
           items={items}
+          account={account}
           locale={locale}
           LocaleUrlList={localeUrlList}
         />
@@ -91,6 +102,7 @@ const items = {
       <div class="lg:hidden">
         <MenuMobile
           items={items}
+          account={account}
           locale={locale}
           LocaleUrlList={localeUrlList}
         />
@@ -98,3 +110,37 @@ const items = {
     </div>
   </div>
 </nav>
+
+<script>
+  // Desktop dropdowns: only one open at a time; close on outside click / Escape.
+  const openDropdowns = () =>
+    document.querySelectorAll<HTMLDetailsElement>('details[data-dropdown][open]')
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Node
+    openDropdowns().forEach((d) => {
+      if (!d.contains(target)) d.open = false
+    })
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') openDropdowns().forEach((d) => (d.open = false))
+  })
+
+  // Logout (better-auth sign-out is a POST, so it can't be a plain link).
+  document
+    .querySelectorAll<HTMLButtonElement>('[data-logout]')
+    .forEach((button) => {
+      button.addEventListener('click', async () => {
+        button.disabled = true
+        try {
+          const { authClient } = await import('@lib/auth-client')
+          await authClient.signOut()
+          window.location.assign(button.dataset.redirect || '/')
+        } catch (error) {
+          console.error('Logout failed:', error)
+          button.disabled = false
+        }
+      })
+    })
+</script>

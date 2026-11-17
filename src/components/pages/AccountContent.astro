@@ -1,0 +1,105 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+// Middleware guarantees a user on /account, but guard anyway.
+const user = Astro.locals.user
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+const displayName = user?.name?.trim() || user?.email || ''
+const initial = displayName.charAt(0).toUpperCase() || '?'
+
+// th-TH uses the Buddhist calendar (e.g. 17 พฤศจิกายน 2569).
+const formatDate = (date: Date | string | null | undefined) =>
+  date
+    ? new Intl.DateTimeFormat(locale === 'th' ? 'th-TH' : 'en-GB', {
+        dateStyle: 'long',
+      }).format(new Date(date))
+    : '-'
+
+const roleLabels: Record<string, { th: string; en: string }> = {
+  admin: { th: 'ผู้ดูแลระบบ', en: 'Administrator' },
+  user: { th: 'ผู้ใช้ทั่วไป', en: 'User' },
+}
+const role = user?.role || 'user'
+const roleLabel = roleLabels[role]?.[locale] ?? role
+---
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {t('บัญชีของฉัน', 'My Account')}
+  </h1>
+
+  {
+    user && (
+      <section class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body gap-6">
+          <!-- Header: avatar + name -->
+          <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+            <div class="avatar avatar-placeholder">
+              <div class="w-20 rounded-full bg-[#9E76B4] text-white">
+                {user.image ? (
+                  <img src={user.image} alt={displayName} />
+                ) : (
+                  <span class="text-3xl">{initial}</span>
+                )}
+              </div>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-2xl font-bold truncate">{displayName}</h2>
+              <p class="text-base-content/70 truncate">{user.email}</p>
+              <span class="badge badge-sm mt-2 bg-[#F3E5F5] text-[#6B4A80] border-0">
+                {roleLabel}
+              </span>
+            </div>
+          </div>
+
+          <div class="divider my-0" />
+
+          <!-- Details -->
+          <dl class="grid grid-cols-1 sm:grid-cols-[12rem_1fr] gap-x-6 gap-y-4">
+            <dt class="font-semibold text-base-content/70">
+              {t('ชื่อ', 'Name')}
+            </dt>
+            <dd class="break-words">{user.name || '-'}</dd>
+
+            <dt class="font-semibold text-base-content/70">
+              {t('อีเมล', 'Email')}
+            </dt>
+            <dd class="flex flex-wrap items-center gap-2 break-all">
+              {user.email}
+              {user.emailVerified ? (
+                <span class="badge badge-sm badge-success badge-soft">
+                  {t('ยืนยันแล้ว', 'Verified')}
+                </span>
+              ) : (
+                <span class="badge badge-sm badge-warning badge-soft">
+                  {t('ยังไม่ยืนยัน', 'Not verified')}
+                </span>
+              )}
+            </dd>
+
+            <dt class="font-semibold text-base-content/70">
+              {t('สถานะบัญชี', 'Account type')}
+            </dt>
+            <dd>{roleLabel}</dd>
+
+            <dt class="font-semibold text-base-content/70">
+              {t('เป็นสมาชิกตั้งแต่', 'Member since')}
+            </dt>
+            <dd>{formatDate(user.createdAt)}</dd>
+
+            <dt class="font-semibold text-base-content/70">
+              {t('อัปเดตล่าสุด', 'Last updated')}
+            </dt>
+            <dd>{formatDate(user.updatedAt)}</dd>
+          </dl>
+        </div>
+      </section>
+    )
+  }
+</main>

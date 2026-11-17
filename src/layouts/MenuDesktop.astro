@@ -1,22 +1,90 @@
 ---
 import { type Locale } from '@utils/locale'
-import LanguagePicker from './LanguagePicker.vue'
+import LanguageSwitcher from './LanguageSwitcher.astro'
 import { getUrlListCustom } from '@utils/locale'
+import { type AccountMenu, type MenuItem, isMenuGroup } from '@layouts/menu'
+
 interface Props {
-  items: Record<string, { en: string; th: string; url: string }>
+  items: MenuItem[]
+  account: AccountMenu
   locale: Locale
   LocaleUrlList: ReturnType<typeof getUrlListCustom>
 }
-const { items, locale, LocaleUrlList } = Astro.props
+const { items, account, locale, LocaleUrlList } = Astro.props
+const { user } = account
 ---
 
-<ul class="md:flex space-x-8">
+<!-- Center column: main navigation -->
+<ul class="menu menu-horizontal flex-nowrap justify-self-center gap-1 text-base">
   {
-    Object.entries(items).map(([key, item]) => (
-      <li>
-        <a href={item.url}>{item[locale]}</a>
-      </li>
-    ))
+    items.map((item) =>
+      isMenuGroup(item) ? (
+        <li>
+          <details data-dropdown>
+            <summary>{item.label[locale]}</summary>
+            <ul class="z-50 w-max min-w-44 bg-base-100 rounded-box shadow-md p-2">
+              {item.children.map((child) => (
+                <li>
+                  <a href={child.url}>{child.label[locale]}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+      ) : (
+        <li>
+          <a href={item.url}>{item.label[locale]}</a>
+        </li>
+      ),
+    )
   }
 </ul>
-<LanguagePicker locale={locale} localeUrlList={LocaleUrlList} client:load />
+
+<!-- Right column: language switcher + user menu -->
+<div class="flex items-center justify-self-end gap-3">
+  <LanguageSwitcher locale={locale} localeUrlList={LocaleUrlList} />
+
+{
+  user ? (
+    <details data-dropdown class="dropdown dropdown-end">
+      <summary
+        class="btn btn-ghost btn-circle list-none"
+        aria-label={user.name}
+        title={user.name}
+      >
+        <div class="avatar avatar-placeholder">
+          <div class="w-10 rounded-full bg-[#9E76B4] text-white">
+            <span class="text-lg">{user.initial}</span>
+          </div>
+        </div>
+      </summary>
+      <ul class="menu dropdown-content z-50 mt-2 w-60 bg-base-100 rounded-box shadow-md p-2">
+        <li class="menu-title">
+          <span class="truncate text-base-content">{user.name}</span>
+          {user.email !== user.name && (
+            <span class="truncate font-normal text-xs">{user.email}</span>
+          )}
+        </li>
+        {account.links.map((link) => (
+          <li>
+            <a href={link.url}>{link.label[locale]}</a>
+          </li>
+        ))}
+        <li>
+          <button
+            type="button"
+            data-logout
+            data-redirect={account.logout.redirectUrl}
+          >
+            {account.logout.label[locale]}
+          </button>
+        </li>
+      </ul>
+    </details>
+  ) : (
+    <a href={account.login.url} class="btn btn-sm bg-[#9E76B4] text-white">
+      {account.login.label[locale]}
+    </a>
+  )
+}
+</div>

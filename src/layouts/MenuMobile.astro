@@ -1,13 +1,17 @@
 ---
 import { type Locale } from '@utils/locale'
-import LanguagePicker from './LanguagePicker.vue'
+import LanguageSwitcher from './LanguageSwitcher.astro'
 import { getUrlListCustom } from '@utils/locale'
+import { type AccountMenu, type MenuItem, isMenuGroup } from '@layouts/menu'
+
 interface Props {
-  items: Record<string, { en: string; th: string; url: string }>
+  items: MenuItem[]
+  account: AccountMenu
   locale: Locale
   LocaleUrlList: ReturnType<typeof getUrlListCustom>
 }
-const { items, locale, LocaleUrlList } = Astro.props
+const { items, account, locale, LocaleUrlList } = Astro.props
+const { user } = account
 ---
 
 <div class="drawer">
@@ -25,20 +29,71 @@ const { items, locale, LocaleUrlList } = Astro.props
   <div class="drawer-side">
     <label for="my-drawer-1" aria-label="close sidebar" class="drawer-overlay">
     </label>
-    <ul class="menu bg-base-200 min-h-full w-80 p-4">
+    <ul class="menu bg-base-200 min-h-full w-80 p-4 text-base">
       <!-- Sidebar content here -->
       {
-        Object.entries(items).map(([key, item]) => (
-          <li>
-            <a href={item.url}>{item[locale]}</a>
-          </li>
-        ))
+        items.map((item) =>
+          isMenuGroup(item) ? (
+            <li>
+              <details>
+                <summary>{item.label[locale]}</summary>
+                <ul>
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={child.url}>{child.label[locale]}</a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </li>
+          ) : (
+            <li>
+              <a href={item.url}>{item.label[locale]}</a>
+            </li>
+          ),
+        )
       }
+
+      <div class="divider my-2"></div>
+
+      {
+        user ? (
+          <>
+            <li class="menu-title flex-row items-center gap-3">
+              <div class="avatar avatar-placeholder">
+                <div class="w-8 rounded-full bg-[#9E76B4] text-white">
+                  <span>{user.initial}</span>
+                </div>
+              </div>
+              <span class="truncate text-base-content">{user.name}</span>
+            </li>
+            {account.links.map((link) => (
+              <li>
+                <a href={link.url}>{link.label[locale]}</a>
+              </li>
+            ))}
+            <li>
+              <button
+                type="button"
+                data-logout
+                data-redirect={account.logout.redirectUrl}
+              >
+                {account.logout.label[locale]}
+              </button>
+            </li>
+          </>
+        ) : (
+          <li>
+            <a href={account.login.url}>{account.login.label[locale]}</a>
+          </li>
+        )
+      }
+
       <li class="mt-4">
-        <LanguagePicker
+        <LanguageSwitcher
           locale={locale}
           localeUrlList={LocaleUrlList}
-          client:load
+          class="justify-start"
         />
       </li>
     </ul>

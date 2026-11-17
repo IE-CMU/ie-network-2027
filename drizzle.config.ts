@@ -9,6 +9,6 @@ export default defineConfig({
   dbCredentials: {
     url: dbConnectionString,
   },
-  verbose: true,
+  verbose: false,
   strict: true,
 })

@@ -5,4 +5,4 @@ import { dbConnectionString } from '../utils/env.js'
 
 export const dbConn = postgres(dbConnectionString)
 
-export const dbClient = drizzle(dbConn, { schema: schema, logger: true })
+export const dbClient = drizzle(dbConn, { schema: schema, logger: false })

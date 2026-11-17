@@ -10,6 +10,11 @@
 - `docker compose --env-file .env up -d`
 - `docker compose --env-file .env down -v`
 
+# Init
+
+- `pnpm run db:migrate`
+- Create admin `npx auth@latest create-admin --email [EMAL] --name "Admin" --role admin`
+
 ## Build and Push Docker Image
 
 - `docker build -f docker/Dockerfile -t iecmu/ie_network_2027:latest .`

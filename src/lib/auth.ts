@@ -1,6 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'
+import { admin } from "better-auth/plugins"
 
 import { requireBetterAuthEnv } from '../utils/env.js'
 import { dbClient } from '../db/client.js'
@@ -16,6 +17,7 @@ export const auth = betterAuth({
     enabled: true,
   },
   plugins: [
+    admin(),
     magicLink({
       sendMagicLink: async ({ email, url, token }) => {
         // Implement your email sending logic here using the token

@@ -1,0 +1,12 @@
+---
+import { type Locale } from '@utils/locale'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<div>
+  <h1>{locale === 'th' ? 'ไม่ได้รับอนุญาต' : 'Unauthorized'}</h1>
+  <p>{locale === 'th' ? 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ กรุณาเข้าสู่ระบบก่อน' : 'You do not have permission to access this page. Please log in first.'}</p>
+</div>
