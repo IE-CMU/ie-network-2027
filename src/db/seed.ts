@@ -1,22 +1,14 @@
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { admin } from 'better-auth/plugins'
 import 'dotenv/config'
 import fs from 'fs'
 
-import { dbClient, dbConn } from '../db/client.js'
-import { requireBetterAuthEnv } from '../utils/env.js'
+import { dbConn } from '../db/client.js'
+import { createAuth } from '../lib/create_auth.js'
 
-requireBetterAuthEnv()
-
-const auth = betterAuth({
-  database: drizzleAdapter(dbClient, {
-    provider: 'pg', // or "mysql", "sqlite"
-  }),
-  emailAndPassword: {
-    enabled: true,
+// Same config as the app; the seed never sends magic links, so no Redis needed.
+const auth = createAuth({
+  sendMagicLink: async () => {
+    throw new Error('Magic links are not available in the seed script')
   },
-  plugins: [admin()],
 })
 
 const users = JSON.parse(fs.readFileSync('seed_accounts.json', 'utf-8'))

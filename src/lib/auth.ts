@@ -1,35 +1,15 @@
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { magicLink } from 'better-auth/plugins'
-import { admin } from "better-auth/plugins"
-
-import { requireBetterAuthEnv } from '../utils/env.js'
-import { dbClient } from '../db/client.js'
+import { createAuth } from './create_auth.js'
 import { addEmailQueue } from './queue/producer.js'
 
-requireBetterAuthEnv()
-
-export const auth = betterAuth({
-  database: drizzleAdapter(dbClient, {
-    provider: 'pg', // or "mysql", "sqlite"
-  }),
-  emailAndPassword: {
-    enabled: true,
+export const auth = createAuth({
+  sendMagicLink: async ({ email, url }) => {
+    await addEmailQueue({
+      name: email,
+      recipientEmail: email,
+      message: `Click the link to sign in: ${url}`,
+      subject: 'Your Magic Link',
+    })
   },
-  plugins: [
-    admin(),
-    magicLink({
-      sendMagicLink: async ({ email, url, token }) => {
-        // Implement your email sending logic here using the token
-        await addEmailQueue({
-          name: email,
-          recipientEmail: email,
-          message: `Click the link to sign in: ${url}`,
-          subject: 'Your Magic Link',
-        })
-      },
-    }),
-  ],
 })
 
 // Session type definition
