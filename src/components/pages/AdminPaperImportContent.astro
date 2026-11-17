@@ -1,0 +1,31 @@
+---
+import PaperImport from '@components/admin/PaperImport.vue'
+import { type Locale } from '@utils/locale'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+const papersUrl = getRelativeLocaleUrl(locale, '/admin/papers')
+---
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <a href={papersUrl} class="link link-hover text-sm text-base-content/70">
+    ← {t('กลับไปหน้ารายการบทความ', 'Back to papers')}
+  </a>
+  <p class="mt-6 text-sm font-semibold text-[#9E76B4] text-center">
+    {t('แอดมิน', 'Admin')}
+  </p>
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {t('นำเข้าบทความ', 'Import Papers')}
+  </h1>
+
+  <section class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body">
+      <PaperImport client:load locale={locale} papersUrl={papersUrl} />
+    </div>
+  </section>
+</main>

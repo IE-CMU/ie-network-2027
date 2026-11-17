@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 
 interface Props {
   locale: 'th' | 'en'
+  papersUrl: string
 }
 const props = defineProps<Props>()
 
@@ -48,6 +49,8 @@ const text = {
     unexpected: 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง',
     session: 'เซสชันหมดอายุหรือไม่มีสิทธิ์ กรุณาเข้าสู่ระบบใหม่',
     tooLarge: 'ไฟล์มีขนาดใหญ่เกินไป',
+    backToPapers: 'ไปหน้ารายการบทความ',
+    importAnother: 'นำเข้าไฟล์อื่น',
   },
   en: {
     title: 'Import papers from CMT',
@@ -78,6 +81,8 @@ const text = {
     session:
       'Your session has expired or you are not allowed. Please sign in again.',
     tooLarge: 'The file is too large.',
+    backToPapers: 'Go to papers',
+    importAnother: 'Import another file',
   },
 } as const
 const t = computed(() => text[props.locale])
@@ -99,6 +104,7 @@ function onFileChange(e: Event) {
 function reset() {
   file.value = null
   summary.value = null
+  done.value = false
   errorMessage.value = ''
   if (fileInput.value) fileInput.value.value = ''
 }
@@ -135,11 +141,8 @@ async function run(kind: 'preview' | 'import') {
       return
     }
     summary.value = data
-    if (kind === 'import') {
-      done.value = true
-      // Refresh the paper table below.
-      setTimeout(() => window.location.reload(), 1500)
-    }
+    // Stay on this page so the summary can be read; links below lead on.
+    if (kind === 'import') done.value = true
   } catch (e) {
     console.error(`Paper ${kind} failed:`, e)
     errorMessage.value = t.value.unexpected
@@ -171,7 +174,7 @@ const stats = computed(() => {
 <template>
   <div class="flex flex-col gap-4">
     <div>
-      <h3 class="text-lg font-bold">{{ t.title }}</h3>
+      <h2 class="text-lg font-bold">{{ t.title }}</h2>
       <p class="mt-1 text-sm text-base-content/70">{{ t.intro }}</p>
     </div>
 
@@ -266,7 +269,19 @@ const stats = computed(() => {
         </ul>
       </details>
 
-      <div v-if="!done" class="flex flex-wrap gap-2">
+      <div v-if="done" class="flex flex-wrap gap-2">
+        <a
+          :href="papersUrl"
+          class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"
+        >
+          {{ t.backToPapers }}
+        </a>
+        <button type="button" class="btn btn-ghost" @click="reset">
+          {{ t.importAnother }}
+        </button>
+      </div>
+
+      <div v-else class="flex flex-wrap gap-2">
         <p v-if="summary.accepted === 0" class="text-sm text-error w-full">
           {{ t.noAccepted }}
         </p>
