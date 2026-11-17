@@ -32,3 +32,5 @@ file_storage
 
 # pnpm store
 .pnpm-store
+
+seed_accounts.json
