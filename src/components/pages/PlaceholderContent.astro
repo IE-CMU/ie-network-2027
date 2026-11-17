@@ -1,0 +1,27 @@
+---
+import { type Locale } from '@utils/locale'
+import { type MenuLabel } from '@layouts/menu'
+
+// Temporary "coming soon" body for role-menu pages that aren't built yet.
+interface Props {
+  locale: Locale
+  section: MenuLabel
+  title: MenuLabel
+}
+const { locale, section, title } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+---
+
+<main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <p class="text-sm font-semibold tracking-widest text-violet-700 text-center uppercase">
+    {section[locale]}
+  </p>
+  <h1 class="text-4xl font-bold mt-1 mb-12 text-center">{title[locale]}</h1>
+
+  <section class="card bg-violet-50 border border-violet-200">
+    <div class="card-body items-center text-center text-violet-800">
+      <p>{t('หน้านี้อยู่ระหว่างการพัฒนา', 'This page is under construction.')}</p>
+    </div>
+  </section>
+</main>

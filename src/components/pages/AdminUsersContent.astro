@@ -1,0 +1,15 @@
+---
+import { type Locale } from '@utils/locale'
+import PlaceholderContent from '@components/pages/PlaceholderContent.astro'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+---
+
+<PlaceholderContent
+  locale={locale}
+  section={{ en: 'Admin', th: 'แอดมิน' }}
+  title={{ en: 'Users', th: 'ผู้ใช้ระบบ' }}
+/>

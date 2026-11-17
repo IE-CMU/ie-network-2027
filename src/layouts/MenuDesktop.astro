@@ -21,11 +21,30 @@ const { user } = account
       isMenuGroup(item) ? (
         <li>
           <details data-dropdown>
-            <summary>{item.label[locale]}</summary>
-            <ul class="z-50 w-max min-w-44 bg-base-100 rounded-box shadow-md p-2">
+            <summary
+              class:list={[
+                item.tone === 'role' &&
+                  'bg-violet-50 text-violet-800 hover:bg-violet-100',
+              ]}
+            >
+              {item.label[locale]}
+            </summary>
+            <ul
+              class:list={[
+                'z-50 w-max min-w-44 rounded-box shadow-md p-2',
+                item.tone === 'role'
+                  ? 'bg-violet-50 border border-violet-200 text-violet-800'
+                  : 'bg-base-100',
+              ]}
+            >
               {item.children.map((child) => (
                 <li>
-                  <a href={child.url}>{child.label[locale]}</a>
+                  <a
+                    href={child.url}
+                    class:list={[item.tone === 'role' && 'hover:bg-violet-100']}
+                  >
+                    {child.label[locale]}
+                  </a>
                 </li>
               ))}
             </ul>

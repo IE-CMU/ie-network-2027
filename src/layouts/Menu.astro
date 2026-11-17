@@ -5,6 +5,7 @@ import MenuMobile from '@layouts/MenuMobile.astro'
 import MenuDesktop from '@layouts/MenuDesktop.astro'
 import { getUrlListCustom } from '@utils/locale'
 import { type AccountMenu, type MenuItem } from '@layouts/menu'
+import { isAdmin } from '@utils/role'
 
 interface Props {
   user: App.Locals['user']
@@ -30,6 +31,7 @@ const items: MenuItem[] = [
         label: { en: 'Important Dates', th: 'วันที่สำคัญ' },
         url: url('/important-dates'),
       },
+      { label: { en: 'Contact', th: 'ติดต่อ' }, url: url('/contact') },
     ],
   },
   {
@@ -43,8 +45,31 @@ const items: MenuItem[] = [
     label: { en: 'Registration', th: 'การลงทะเบียน' },
     url: url('/registration'),
   },
-  { label: { en: 'Contact', th: 'ติดต่อ' }, url: url('/contact') },
 ]
+
+// Role menus (working area), appended after the public items with a violet
+// tint. Visibility here is cosmetic only; access is enforced in src/middleware.ts.
+if (user) {
+  items.push({
+    tone: 'role',
+    label: { en: 'Participant', th: 'ผู้เข้างาน' },
+    children: [
+      {
+        label: { en: 'Register', th: 'ลงทะเบียน' },
+        url: url('/participant/register'),
+      },
+    ],
+  })
+}
+if (isAdmin(user)) {
+  items.push({
+    tone: 'role',
+    label: { en: 'Admin', th: 'แอดมิน' },
+    children: [
+      { label: { en: 'Users', th: 'ผู้ใช้ระบบ' }, url: url('/admin/users') },
+    ],
+  })
+}
 
 // Account area: avatar dropdown when authenticated, login link otherwise.
 const displayName = user?.name?.trim() || user?.email || ''

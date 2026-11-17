@@ -11,9 +11,12 @@ export interface MenuLink {
 }
 
 // A group with no page target; it only opens a submenu.
+// `tone: 'role'` marks the logged-in working-area menus (Participant, Admin),
+// rendered with a violet tint to set them apart from the public site menu.
 export interface MenuGroup {
   label: MenuLabel
   children: MenuLink[]
+  tone?: 'role'
 }
 
 export type MenuItem = MenuLink | MenuGroup

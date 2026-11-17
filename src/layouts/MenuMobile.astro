@@ -34,13 +34,29 @@ const { user } = account
       {
         items.map((item) =>
           isMenuGroup(item) ? (
-            <li>
+            <li
+              class:list={[
+                item.tone === 'role' &&
+                  'mt-1 rounded-box bg-violet-50 text-violet-800',
+              ]}
+            >
               <details>
-                <summary>{item.label[locale]}</summary>
+                <summary
+                  class:list={[item.tone === 'role' && 'hover:bg-violet-100']}
+                >
+                  {item.label[locale]}
+                </summary>
                 <ul>
                   {item.children.map((child) => (
                     <li>
-                      <a href={child.url}>{child.label[locale]}</a>
+                      <a
+                        href={child.url}
+                        class:list={[
+                          item.tone === 'role' && 'hover:bg-violet-100',
+                        ]}
+                      >
+                        {child.label[locale]}
+                      </a>
                     </li>
                   ))}
                 </ul>

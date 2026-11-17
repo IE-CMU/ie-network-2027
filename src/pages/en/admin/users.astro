@@ -1,0 +1,14 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { getLocale } from '@utils/locale'
+import AdminUsersContent from '@components/pages/AdminUsersContent.astro'
+
+// SSR: protected by src/middleware.ts (admins only).
+export const prerender = false
+
+const locale = getLocale(Astro)
+---
+
+<Layout title="Admin Users">
+  <AdminUsersContent locale={locale} />
+</Layout>
