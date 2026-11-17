@@ -22,9 +22,13 @@ export function createAuth({ sendMagicLink }: { sendMagicLink: SendMagicLink }) 
     database: drizzleAdapter(dbClient, {
       provider: 'pg',
     }),
+    // Accounts are created only by the seed / admins, never by self sign-up.
+    // Participants sign in by magic link first (which verifies their email),
+    // then may set a password from the account page.
     emailAndPassword: {
       enabled: true,
+      disableSignUp: true,
     },
-    plugins: [admin(), magicLink({ sendMagicLink })],
+    plugins: [admin(), magicLink({ sendMagicLink, disableSignUp: true })],
   })
 }

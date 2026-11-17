@@ -2,8 +2,7 @@
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import LoginForm from '@components/auth/LoginForm.vue'
-// Magic link login is disabled for now. Uncomment this import and the block below to enable it.
-// import MagicLink from '@/components/auth/MagicLink.vue'
+import MagicLink from '@components/auth/MagicLink.vue'
 
 interface Props {
   locale: Locale
@@ -13,6 +12,7 @@ const { locale } = Astro.props
 const t = (th: string, en: string) => (locale === 'th' ? th : en)
 const homeUrl = getRelativeLocaleUrl(locale, '/')
 const signupUrl = getRelativeLocaleUrl(locale, '/signup')
+const loginUrl = getRelativeLocaleUrl(locale, '/login')
 ---
 
 <main
@@ -37,15 +37,19 @@ const signupUrl = getRelativeLocaleUrl(locale, '/signup')
     <!-- Card -->
     <div class="card border border-base-300 bg-base-100 shadow-lg">
       <div class="card-body gap-6 p-6 sm:p-8">
-        <LoginForm client:load locale={locale} redirectUrl={homeUrl} />
+        <!-- Magic link first: participants have no password until they set one. -->
+        <MagicLink
+          client:load
+          locale={locale}
+          redirectUrl={homeUrl}
+          errorUrl={loginUrl}
+        />
 
-        {
-          /*
-          Magic link login (disabled for now).
-          <div class="divider my-0 text-sm text-gray-500">{t('หรือ', 'or')}</div>
-          <MagicLink client:load locale={locale} />
-          */
-        }
+        <div class="divider my-0 text-sm text-gray-500">
+          {t('หรือเข้าสู่ระบบด้วยรหัสผ่าน', 'or sign in with a password')}
+        </div>
+
+        <LoginForm client:load locale={locale} redirectUrl={homeUrl} />
       </div>
     </div>
 

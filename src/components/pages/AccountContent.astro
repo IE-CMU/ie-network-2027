@@ -1,4 +1,6 @@
 ---
+import PasswordSettings from '@components/auth/PasswordSettings.vue'
+import { auth } from '@lib/auth'
 import { type Locale } from '@utils/locale'
 interface Props {
   locale: Locale
@@ -27,6 +29,20 @@ const roleLabels: Record<string, { th: string; en: string }> = {
 }
 const role = user?.role || 'user'
 const roleLabel = roleLabels[role]?.[locale] ?? role
+
+// A 'credential' account means the user has a password; magic-link-only
+// participants have none. Decides between "Set" and "Change" password.
+let hasPassword = false
+if (user) {
+  try {
+    const accounts = await auth.api.listUserAccounts({
+      headers: Astro.request.headers,
+    })
+    hasPassword = accounts.some((a) => a.providerId === 'credential')
+  } catch (error) {
+    console.error('Error listing user accounts:', error)
+  }
+}
 ---
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -98,6 +114,16 @@ const roleLabel = roleLabels[role]?.[locale] ?? role
             </dt>
             <dd>{formatDate(user.updatedAt)}</dd>
           </dl>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    user && (
+      <section class="card bg-base-100 border border-base-300 shadow-sm mt-8">
+        <div class="card-body">
+          <PasswordSettings client:load locale={locale} hasPassword={hasPassword} />
         </div>
       </section>
     )
