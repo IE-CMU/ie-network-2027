@@ -1,15 +1,85 @@
 ---
+import UserTable, { type AdminUserRow } from '@components/admin/UserTable.vue'
+import { dbClient } from '@db/client'
+import { account, paper, paperUser, user } from '@db/schema'
 import { type Locale } from '@utils/locale'
-import PlaceholderContent from '@components/pages/PlaceholderContent.astro'
+import { getRoles } from '@utils/role'
+import { and, eq, sql } from 'drizzle-orm'
 
 interface Props {
   locale: Locale
 }
 const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+let users: AdminUserRow[] = []
+let loadError = false
+
+try {
+  // Active papers per user (deactivated papers are not counted).
+  const paperCounts = dbClient
+    .select({
+      userId: paperUser.userId,
+      count: sql<number>`count(*)::int`.as('count'),
+    })
+    .from(paperUser)
+    .innerJoin(paper, and(eq(paper.id, paperUser.paperId), eq(paper.isActive, true)))
+    .groupBy(paperUser.userId)
+    .as('paper_counts')
+
+  const rows = await dbClient
+    .select({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      emailVerified: user.emailVerified,
+      banned: user.banned,
+      createdAt: user.createdAt,
+      paperCount: sql<number>`coalesce(${paperCounts.count}, 0)`,
+      // A 'credential' account means the user has set a password.
+      hasPassword: sql<boolean>`exists (
+        select 1 from ${account}
+        where ${account.userId} = ${user.id} and ${account.providerId} = 'credential'
+      )`,
+    })
+    .from(user)
+    .leftJoin(paperCounts, eq(paperCounts.userId, user.id))
+    .orderBy(user.name)
+
+  users = rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    email: r.email,
+    roles: getRoles(r),
+    emailVerified: r.emailVerified,
+    banned: r.banned ?? false,
+    hasPassword: r.hasPassword,
+    paperCount: r.paperCount,
+    createdAt: r.createdAt.toISOString(),
+  }))
+} catch (error) {
+  console.error('Error loading users:', error)
+  loadError = true
+}
 ---
 
-<PlaceholderContent
-  locale={locale}
-  section={{ en: 'Admin', th: 'แอดมิน' }}
-  title={{ en: 'Users', th: 'ผู้ใช้ระบบ' }}
-/>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <p class="text-sm font-semibold text-[#9E76B4] text-center">
+    {t('แอดมิน', 'Admin')}
+  </p>
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {t('ผู้ใช้ระบบ', 'Users')}
+  </h1>
+
+  {
+    loadError ? (
+      <div role="alert" class="alert alert-error alert-soft">
+        <span>{t('ไม่สามารถโหลดรายชื่อผู้ใช้ได้', 'Could not load the user list.')}</span>
+      </div>
+    ) : (
+      <UserTable client:load locale={locale} users={users} />
+    )
+  }
+</main>
