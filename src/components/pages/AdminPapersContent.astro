@@ -1,0 +1,159 @@
+---
+import PaperImport from '@components/admin/PaperImport.vue'
+import { dbClient } from '@db/client'
+import { type Locale } from '@utils/locale'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+let papers: Awaited<ReturnType<typeof loadPapers>> = []
+let loadError = false
+
+async function loadPapers() {
+  return dbClient.query.paper.findMany({
+    orderBy: (p, { asc }) => [asc(p.id)],
+    with: { authors: { orderBy: (a, { asc }) => [asc(a.authorOrder)] } },
+  })
+}
+
+try {
+  papers = await loadPapers()
+} catch (error) {
+  console.error('Error loading papers:', error)
+  loadError = true
+}
+
+const active = papers.filter((p) => p.isActive)
+const inactive = papers.filter((p) => !p.isActive)
+const authorCount = new Set(active.flatMap((p) => p.authors.map((a) => a.email))).size
+
+const lastImport = papers.reduce<Date | null>(
+  (max, p) => (!max || p.importedAt > max ? p.importedAt : max),
+  null
+)
+const formatDateTime = (date: Date | null) =>
+  date
+    ? new Intl.DateTimeFormat(locale === 'th' ? 'th-TH' : 'en-GB', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+        timeZone: 'Asia/Bangkok',
+      }).format(date)
+    : '-'
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <p class="text-sm font-semibold text-[#9E76B4] text-center">
+    {t('แอดมิน', 'Admin')}
+  </p>
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {t('บทความที่ได้รับการตอบรับ', 'Accepted Papers')}
+  </h1>
+
+  <section class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body">
+      <PaperImport client:load locale={locale} />
+    </div>
+  </section>
+
+  {
+    loadError && (
+      <div role="alert" class="alert alert-error alert-soft mt-8">
+        <span>{t('ไม่สามารถโหลดรายการบทความได้', 'Could not load the paper list.')}</span>
+      </div>
+    )
+  }
+
+  <section class="mt-8">
+    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+      <h2 class="text-2xl font-bold">
+        {t('รายการบทความ', 'Papers')}{' '}
+        <span class="text-base font-normal text-base-content/70">
+          {`(${active.length} ${t('บทความ', 'papers')}, ${authorCount} ${t('อีเมลผู้แต่ง', 'author emails')})`}
+        </span>
+      </h2>
+      <p class="text-sm text-base-content/70">
+        {t('นำเข้าล่าสุด', 'Last import')}: {formatDateTime(lastImport)}
+      </p>
+    </div>
+
+    {
+      active.length === 0 ? (
+        <p class="text-base-content/70">{t('ยังไม่มีบทความ', 'No papers yet.')}</p>
+      ) : (
+        <div class="overflow-x-auto rounded-box border border-base-300">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>{t('ชื่อบทความ', 'Title')}</th>
+                <th>{t('หัวข้อหลัก', 'Primary subject area')}</th>
+                <th>{t('ผู้แต่ง', 'Authors')}</th>
+                <th>{t('สถานะ', 'Status')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {active.map((p) => (
+                <tr class="align-top">
+                  <td class="tabular-nums">{p.id}</td>
+                  <td class="min-w-60">{p.title}</td>
+                  <td class="min-w-48">{p.primarySubjectArea ?? '-'}</td>
+                  <td class="min-w-64">
+                    <ul>
+                      {p.authors.map((a) => (
+                        <li>
+                          <span class={a.isPrimaryContact ? 'font-semibold' : ''}>
+                            {a.authorName}
+                            {a.isPrimaryContact && '*'}
+                          </span>
+                          <span class="text-base-content/60 break-all"> {a.email}</span>
+                          {a.affiliation && (
+                            <div class="text-xs text-base-content/60">{a.affiliation}</div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td class="whitespace-nowrap">{p.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+    {
+      active.length > 0 && (
+        <p class="mt-2 text-xs text-base-content/60">
+          * {t('ผู้ติดต่อหลัก', 'Primary contact')}
+        </p>
+      )
+    }
+
+    {
+      inactive.length > 0 && (
+        <details class="mt-8">
+          <summary class="cursor-pointer font-semibold">
+            {t('บทความที่ปิดใช้งาน', 'Deactivated papers')} ({inactive.length})
+          </summary>
+          <p class="mt-2 text-sm text-base-content/70">
+            {t(
+              'ไม่อยู่ในไฟล์ที่นำเข้าล่าสุดหรือไม่ได้รับการตอบรับแล้ว จะกลับมาใช้งานเมื่อปรากฏในไฟล์อีกครั้ง',
+              'Missing from the latest import or no longer accepted. They are reactivated if they appear in a later import.'
+            )}
+          </p>
+          <ul class="mt-2 ml-5 list-disc text-sm">
+            {inactive.map((p) => (
+              <li>
+                #{p.id} {p.title} <span class="text-base-content/60">({p.status})</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )
+    }
+  </section>
+</main>

@@ -16,6 +16,10 @@ export default defineConfig({
   },
   // Need to use "server" insteald of "static" because of catch-all routes for auth.
   output: 'server',
+  security: {
+    // CMT paper list uploads (admin import) are ~4 KB per paper.
+    actionBodySizeLimit: 10 * 1024 * 1024,
+  },
   adapter: node({
     mode: 'standalone',
   }),

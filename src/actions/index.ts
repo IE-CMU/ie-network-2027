@@ -1,7 +1,37 @@
 import { auth } from '@/lib/auth'
-import { ActionError, defineAction } from 'astro:actions'
+import { CmtParseError, parseCmtPaperList } from '@/lib/papers/cmt'
+import {
+  ImportRefusedError,
+  applyImport,
+  planImport,
+} from '@/lib/papers/import'
+import { isAdmin } from '@/utils/role'
 import { z } from 'astro/zod'
+import { type ActionAPIContext, ActionError, defineAction } from 'astro:actions'
 import { APIError } from 'better-auth/api'
+
+function requireAdmin(context: ActionAPIContext) {
+  if (!context.locals.user) {
+    throw new ActionError({ code: 'UNAUTHORIZED', message: 'UNAUTHORIZED' })
+  }
+  if (!isAdmin(context.locals.user)) {
+    throw new ActionError({ code: 'FORBIDDEN', message: 'FORBIDDEN' })
+  }
+}
+
+// Upload of the CMT paper list export (see src/lib/papers/cmt.ts).
+const paperListInput = z.object({ file: z.instanceof(File) })
+
+async function parsePaperList(file: File) {
+  try {
+    return parseCmtPaperList(await file.text())
+  } catch (e) {
+    if (e instanceof CmtParseError) {
+      throw new ActionError({ code: 'BAD_REQUEST', message: e.message })
+    }
+    throw e
+  }
+}
 
 export const server = {
   getGreeting: defineAction({
@@ -49,7 +79,48 @@ export const server = {
           })
         }
         console.error('setPassword failed:', e)
-        throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'UNKNOWN' })
+        throw new ActionError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'UNKNOWN',
+        })
+      }
+    },
+  }),
+
+  /** Admin: parse a CMT paper list and report what an import would change. */
+  previewPaperImport: defineAction({
+    accept: 'form',
+    input: paperListInput,
+    handler: async ({ file }, context) => {
+      requireAdmin(context)
+      return await planImport(await parsePaperList(file))
+    },
+  }),
+
+  /** Admin: import a CMT paper list (accepted papers + author accounts). */
+  importPapers: defineAction({
+    accept: 'form',
+    input: paperListInput,
+    handler: async ({ file }, context) => {
+      requireAdmin(context)
+      const parsed = await parsePaperList(file)
+      try {
+        const summary = await applyImport(parsed)
+        console.log(
+          `Paper import by ${context.locals.user!.email}: ${summary.accepted} accepted, ` +
+            `${summary.newPapers.length} new, ${summary.updatedPapers.length} updated, ` +
+            `${summary.deactivatedPapers.length} deactivated, ${summary.newUsers.length} new users`
+        )
+        return summary
+      } catch (e) {
+        if (e instanceof ImportRefusedError) {
+          throw new ActionError({ code: 'BAD_REQUEST', message: e.message })
+        }
+        console.error('Paper import failed:', e)
+        throw new ActionError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: (e as Error)?.message ?? 'Import failed',
+        })
       }
     },
   }),

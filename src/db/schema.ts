@@ -3,7 +3,9 @@ import {
   boolean,
   customType,
   index,
+  integer,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -91,6 +93,7 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  papers: many(paperUser),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -133,3 +136,65 @@ export const facebookPost = pgTable(
   },
   (table) => [index('facebook_post_created_time_idx').on(table.createdTime)]
 )
+
+// ---------------- Accepted papers (imported from CMT) ----------------
+// Replaced by each admin import of the CMT paper list (src/lib/papers/import.ts).
+
+export const paper = pgTable(
+  'paper',
+  {
+    // CMT "Paper ID": stable across re-imports, so not auto-generated.
+    id: integer('id').primaryKey(),
+    title: text('title').notNull(),
+    abstract: text('abstract'),
+    primarySubjectArea: text('primary_subject_area'),
+    secondarySubjectAreas: text('secondary_subject_areas'),
+    trackName: text('track_name'),
+    status: text('status').notNull(), // CMT status, e.g. "Accept with Revision"
+    authorsDisplay: text('authors_display'), // CMT "Authors" string as-is
+    cmtCreatedAt: timestamp('cmt_created_at', { withTimezone: true }),
+    cmtModifiedAt: timestamp('cmt_modified_at', { withTimezone: true }),
+    // false once a paper is no longer accepted in the latest import.
+    // Soft, so data linked to papers later is not lost.
+    isActive: boolean('is_active').default(true).notNull(),
+    importedAt: timestamp('imported_at', { withTimezone: true }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index('paper_is_active_idx').on(table.isActive)]
+)
+
+// Authors of a paper. Rows are rewritten for every paper in each import.
+export const paperUser = pgTable(
+  'paper_user',
+  {
+    paperId: integer('paper_id')
+      .notNull()
+      .references(() => paper.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(), // = user.email (lowercased), for easy queries
+    isPrimaryContact: boolean('is_primary_contact').default(false).notNull(),
+    authorOrder: integer('author_order').notNull(), // 1-based
+    authorName: text('author_name').notNull(), // as written in CMT
+    affiliation: text('affiliation'),
+  },
+  (table) => [
+    primaryKey({ columns: [table.paperId, table.email] }),
+    index('paper_user_user_id_idx').on(table.userId),
+    index('paper_user_email_idx').on(table.email),
+  ]
+)
+
+export const paperRelations = relations(paper, ({ many }) => ({
+  authors: many(paperUser),
+}))
+
+export const paperUserRelations = relations(paperUser, ({ one }) => ({
+  paper: one(paper, { fields: [paperUser.paperId], references: [paper.id] }),
+  user: one(user, { fields: [paperUser.userId], references: [user.id] }),
+}))

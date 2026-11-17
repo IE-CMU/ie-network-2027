@@ -1,0 +1,1951 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Styles>
+    <Style ss:ID="s1">
+      <Font x:Family="Swiss" ss:Bold="1" />
+    </Style>
+    <Style ss:ID="s2">
+      <NumberFormat ss:Format="0%" />
+    </Style>
+  </Styles>
+  <Worksheet ss:Name="IENETWORK2027">
+    <Table>
+      <Row>
+        <Cell ss:Index="1">
+          <Data ss:Type="String">IENETWORK2027</Data>
+        </Cell>
+      </Row>
+      <Row ss:Index="3">
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Paper ID</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Created</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Last Modified</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Paper Title</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Abstract</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Primary Contact Author Name</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Primary Contact Author Email</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Authors</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Author Names</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Author Emails</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Track Name</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Primary Subject Area</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Secondary Subject Areas</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Conflicts</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Assigned</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Completed</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">% Completed</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Bids</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Discussion</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Status</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Requested For Author Feedback</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Author Feedback Submitted?</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Requested For Camera Ready</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Camera Ready Submitted?</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Requested For Presentation</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Files</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Number of Files</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Supplementary Files</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Number of Supplementary Files</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Reviewers</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">Reviewer Emails</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">MetaReviewers</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">MetaReviewer Emails</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">SeniorMetaReviewers</Data>
+        </Cell>
+        <Cell ss:StyleID="s1">
+          <Data ss:Type="String">SeniorMetaReviewerEmails</Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[9/17/2026 3:45:07 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:27 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Evaluating the Impact of Pre-Registration Systems on Conference Review Dynamics: An Empirical Study on Microsoft CMT Workflows]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Peer-review platforms form the operational backbone of scholarly publishing, yet balancing reviewer workload with domain-specific expertise remains a persistent challenge in academic conference management. This study examines the efficacy of automated workflow configurations within the Microsoft Conference Management Toolkit (CMT), specifically analyzing how dual-stage pre-registration and subject-category bidding influence the distribution and precision of paper assignments. Utilizing a simulated track dataset comprising 250 submissions across five specialized sub-domains, we model submission dynamics, conflict-of-interest (CoI) detection accuracy, and reviewer workload variance.
+
+Our empirical evaluation focuses on three primary metrics: bid-to-assignment alignment, time-to-decision latency, and the incidence of unhandled domain mismatches. The results indicate that integrating automated primary/secondary subject area constraints with explicit CoI filtering reduces cross-track assignment errors by 34% compared to baseline manual allocations. Furthermore, automated track chair overrides and meta-reviewer oversight loops significantly lower review disparity across multi-track settings without increasing administrative overhead. These findings demonstrate that optimizing Microsoft CMT parameterization enhances reviewer match quality while reducing submission processing bottlenecks, offering actionable guidelines for conference organizers structuring high-volume peer-review pipelines.]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nirand Pisutha-Arnond]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nirand.p@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nirand Pisutha-Arnond (CMU)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Pisutha-Arnond, Nirand*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nirand.p@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[0.33]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Submission Test.pdf (24,189 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Malee Boonmee (CNX); Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com; Maleewan.boonmee@gmail.com; rattiyakorn.c@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Plearn test  (Department of industrial engineering)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th; rattiyakorn.chattanon@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[9/25/2026 7:35:56 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:34 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[AAAA]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[dfsdfffffsdfsfr]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Boonmee, Chawis*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Manuscipt_Logistics_14June2026.docx (1,248,405 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Malee Boonmee (CNX)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Maleewan.boonmee@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Malee Boonmee (CNX)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Maleewan.boonmee@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[9/28/2026 9:47:19 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:37 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Test manuscript]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[test 1234]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.c@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chattanon, Rattiyakorn*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.c@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track10 : Industrial Engineering Education, Policy, Emerging Topics, and Other Topics]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[MTND4 gene 1st draft.docx (72,357 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[4]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[9/29/2026 4:37:56 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:40 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[SSS]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[AAAAA]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)*; Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Boonmee, Chawis*; Boonmee, Chawis]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th*; golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[2. Title Page.docx (32,294 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.c@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nirand Pisutha-Arnond (CMU)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nirand.p@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[5]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/7/2026 4:49:41 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:43 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[ddd]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[dfsf]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)*; ชวิศ บุญมี (Chaign Mai)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Boonmee, Chawis*; บุญมี, ชวิศ]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com*; chawis.boonmee@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 2 : Work Systems, Ergonomics, and Human-Centric Engineering]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[TRL research proposal. 2570. blind.pdf (984,068 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[6]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/8/2026 2:35:48 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:47 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[aaaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[aaaaaaaaaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.c@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University)*; aaa bbb (lanna uni)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chattanon, Rattiyakorn*; bbb, aaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.c@cmu.ac.th*; rattyplayful@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 7 : Supply Chain, Logistics, and Sustainable Network Design]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[เวียนเพื่อพิจารณา - ณิชาภัทร สมจิโน (TO).pdf (65,448 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[7]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/9/2026 6:11:38 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:50 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[zzz]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[aaaaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.chattanon@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Rattiyakorn Chattanon (Department of industrial engineering)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chattanon, Rattiyakorn*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.chattanon@gmail.com*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 9 : Decision Analytics and Intelligent Decision Systems]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[เวียนเพื่อพิจารณา - ณิชาภัทร สมจิโน (TO).pdf (65,448 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[8]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/12/2026 5:05:52 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:53 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[5555]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[หกดหด]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Boonmee, Chawis*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[9]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/19/2026 2:47:05 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:56 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[test guideline]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[One day when the sky is fallin'
+I'll be standing right next to you, right next to you
+Nothing will ever come between us
+'Cause I'll be standing right next to you, right next to you]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Plearn test ]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.chattanon@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Plearn test  (Department of industrial engineering)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[test , Plearn*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[rattiyakorn.chattanon@gmail.com*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track10 : Industrial Engineering Education, Policy, Emerging Topics, and Other Topics]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Yes]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[ประกาศภาควิชาฯ แนวปฏิบัติการเข้าสอบสำหรั.pdf (767,825 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Nirand Pisutha-Arnond (CMU); Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th; nirand.p@cmu.ac.th; rattiyakorn.c@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Khaned test (math)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th; khaned.1407@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[10]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:13:33 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:02:59 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[WL]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[ทดสอบ ทดสอบ]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wimalin Laosiritaworn]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wimalin.l@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wimalin Laosiritaworn (Chaing Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Laosiritaworn, Wimalin*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wimalin.l@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 6 : Production and Operations Management in Uncertain Environments]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Rattiyakorn Chattanon (Department of Industrial Engineering, Chiang Mai University); Suwin Sandhu (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th; rattiyakorn.c@cmu.ac.th; suwin.sandhu@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nivit chroenchai (cmu)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[xnivit@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[11]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:14:10 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:05 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Plasma]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Test]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wassanai Wattanutchariya]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wassanai@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wassanai Wattanutchariya (Faculty of Engineering, Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wattanutchariya, Wassanai*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wassanai@eng.cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 4 : Materials, Manufacturing, and Advanced Production Technologies]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nivit chroenchai (cmu); Suwin Sandhu (Chiang Mai University); Wimalin Laosiritaworn (Chaing Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[xnivit@gmail.com; suwin.sandhu@cmu.ac.th; wimalin.l@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sakgasem Ramingwong (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[sakgasem.ramingwong@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[12]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:14:10 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:10 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[SR]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[TEST]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sakgasem Ramingwong]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[sakgasem.ramingwong@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sakgasem Ramingwong (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Ramingwong, Sakgasem*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[sakgasem.ramingwong@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 7 : Supply Chain, Logistics, and Sustainable Network Design]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[RooftopSolarPVThailandSimulation.pdf (479,763 bytes)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nirand Pisutha-Arnond (CMU); Suwin Sandhu (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nirand.p@cmu.ac.th; suwin.sandhu@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Suwin Sandhu (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[suwin.sandhu@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[13]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:17:00 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:13 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Test_WR]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[fkjsdklfjsalkdfj]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Warisa Nakkiew]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[warisa@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Warisa Nakkiew (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nakkiew, Warisa*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[warisa@eng.cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[4]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[4]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Suwin Sandhu (Chiang Mai University); UTTAPOL SMUTKUPT (Chiang Mai University); Wassanai Wattanutchariya (Faculty of Engineering, Chiang Mai University); Wimalin Laosiritaworn (Chaing Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[suwin.sandhu@cmu.ac.th; uttapol@eng.cmu.ac.th; wassanai@eng.cmu.ac.th; wimalin.l@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wasawat Nakkiew (CMU)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wasawat.n@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[14]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:17:09 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:17 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[aaaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[aaaa]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wasawat Nakkiew]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wasawat.n@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wasawat Nakkiew (CMU)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Nakkiew, Wasawat*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wasawat.n@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 4 : Materials, Manufacturing, and Advanced Production Technologies]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[2]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[0.66]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sakgasem Ramingwong (Chiang Mai University); Suwin Sandhu (Chiang Mai University); Tinnakorn Phongthiya (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[sakgasem.ramingwong@cmu.ac.th; suwin.sandhu@cmu.ac.th; tinnakorn.phongthiya@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[UTTAPOL SMUTKUPT (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[uttapol@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[15]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:17:13 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:20 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[SSS]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sss]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Suwin Sandhu]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[suwin.sandhu@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Suwin Sandhu (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sandhu, Suwin*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[suwin.sandhu@cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 3 : Energy, Environment, and Sustainable Industrial Systems]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[5]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[5]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Sakgasem Ramingwong (Chiang Mai University); Warisa Nakkiew (Chiang Mai University); Wasawat Nakkiew (CMU); Wimalin Laosiritaworn (Chaing Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis.boonmee@cmu.ac.th; sakgasem.ramingwong@cmu.ac.th; warisa@eng.cmu.ac.th; wasawat.n@cmu.ac.th; wimalin.l@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wassanai Wattanutchariya (Faculty of Engineering, Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wassanai@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[16]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:20:01 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:23 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Uttapol]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Uttapol]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[UTTAPOL SMUTKUPT]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[uttapol@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[UTTAPOL SMUTKUPT (Chiang Mai University)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[SMUTKUPT, UTTAPOL*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[uttapol@eng.cmu.ac.th*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 8 : Artificial Intelligence, Smart Industries, and Digital Transformation]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[4]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[0.75]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Chawis Boonmee (Chiang Mai University); Chawis Boonmee (Chiang Mai University); Nirand Pisutha-Arnond (CMU); Warisa Nakkiew (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[golf.chawis@gmail.com; Chawis.boonmee@cmu.ac.th; nirand.p@cmu.ac.th; warisa@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Warisa Nakkiew (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[warisa@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[17]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 7:20:07 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[10/29/2026 8:03:26 AM +00:00]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[XNIVIT]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[S]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nivit chroenchai]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[xnivit@gmail.com]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[nivit chroenchai (cmu)*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[chroenchai, nivit*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[xnivit@gmail.com*]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[IENETWORK2027]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Track 1: Optimization and Operations Research]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[3]]></Data>
+        </Cell>
+        <Cell ss:StyleID="s2">
+          <Data ss:Type="Number"><![CDATA[1]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Disabled (0)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Accept with Revision]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[No]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="Number"><![CDATA[0]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Sakgasem Ramingwong (Chiang Mai University); Suwin Sandhu (Chiang Mai University); Warisa Nakkiew (Chiang Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[sakgasem.ramingwong@cmu.ac.th; suwin.sandhu@cmu.ac.th; warisa@eng.cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[Wimalin Laosiritaworn (Chaing Mai University)]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[wimalin.l@cmu.ac.th]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String"><![CDATA[]]></Data>
+        </Cell>
+      </Row>
+    </Table>
+  </Worksheet>
+</Workbook>
