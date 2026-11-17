@@ -1,7 +1,7 @@
 import { and, eq, inArray, notInArray, sql } from 'drizzle-orm'
 
 import { dbClient } from '../../db/client.js'
-import { paper, paperUser, user } from '../../db/schema.js'
+import { type PaperAuthor, paper, paperUser, user } from '../../db/schema.js'
 import { auth } from '../auth.js'
 import type { CmtAuthor, CmtPaper, CmtParseResult } from './cmt.js'
 
@@ -43,6 +43,13 @@ const authorKey = (
 ) =>
   JSON.stringify([a.email, a.isPrimaryContact, a.order, a.name, a.affiliation])
 
+// Field by field: jsonb does not keep key order, so JSON.stringify of the
+// stored value can differ from a freshly parsed one.
+const authorListKey = (list: PaperAuthor[]) =>
+  JSON.stringify(
+    list.map((a) => [a.order, a.name, a.affiliation, a.isPrimaryContact])
+  )
+
 function paperChanged(
   p: CmtPaper,
   old: ExistingPaper,
@@ -55,7 +62,7 @@ function paperChanged(
     p.secondarySubjectAreas !== old.secondarySubjectAreas ||
     p.trackName !== old.trackName ||
     p.status !== old.status ||
-    p.authorsDisplay !== old.authorsDisplay ||
+    authorListKey(p.authorList) !== authorListKey(old.authorList) ||
     !sameTime(p.cmtCreatedAt, old.cmtCreatedAt) ||
     !sameTime(p.cmtModifiedAt, old.cmtModifiedAt) ||
     p.authors.map(authorKey).join('\n') !== oldAuthors.join('\n')
@@ -210,7 +217,7 @@ export async function applyImport(
         secondarySubjectAreas: p.secondarySubjectAreas,
         trackName: p.trackName,
         status: p.status,
-        authorsDisplay: p.authorsDisplay,
+        authorList: p.authorList,
         cmtCreatedAt: p.cmtCreatedAt,
         cmtModifiedAt: p.cmtModifiedAt,
         isActive: true,
@@ -230,7 +237,7 @@ export async function applyImport(
             secondarySubjectAreas: sql`excluded.secondary_subject_areas`,
             trackName: sql`excluded.track_name`,
             status: sql`excluded.status`,
-            authorsDisplay: sql`excluded.authors_display`,
+            authorList: sql`excluded.author_list`,
             cmtCreatedAt: sql`excluded.cmt_created_at`,
             cmtModifiedAt: sql`excluded.cmt_modified_at`,
             isActive: sql`excluded.is_active`,

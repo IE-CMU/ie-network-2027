@@ -4,6 +4,7 @@ import {
   customType,
   index,
   integer,
+  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -140,6 +141,14 @@ export const facebookPost = pgTable(
 // ---------------- Accepted papers (imported from CMT) ----------------
 // Replaced by each admin import of the CMT paper list (src/lib/papers/import.ts).
 
+/** One author in paper.authorList. No email, so it is safe to show publicly. */
+export interface PaperAuthor {
+  order: number // 1-based
+  name: string
+  affiliation: string | null
+  isPrimaryContact: boolean
+}
+
 export const paper = pgTable(
   'paper',
   {
@@ -151,7 +160,9 @@ export const paper = pgTable(
     secondarySubjectAreas: text('secondary_subject_areas'),
     trackName: text('track_name'),
     status: text('status').notNull(), // CMT status, e.g. "Accept with Revision"
-    authorsDisplay: text('authors_display'), // CMT "Authors" string as-is
+    // Every author from the CMT "Authors" column, in order. Unlike paper_user,
+    // this also keeps authors whose email was missing or invalid.
+    authorList: jsonb('author_list').$type<PaperAuthor[]>().notNull().default([]),
     cmtCreatedAt: timestamp('cmt_created_at', { withTimezone: true }),
     cmtModifiedAt: timestamp('cmt_modified_at', { withTimezone: true }),
     // false once a paper is no longer accepted in the latest import.

@@ -133,7 +133,7 @@ async function run(kind: 'preview' | 'import') {
     const form = new FormData()
     form.append('file', file.value)
     const action =
-      kind === 'preview' ? actions.previewPaperImport : actions.importPapers
+      kind === 'preview' ? actions.paper.previewImport : actions.paper.import
     const { data, error } = await action(form)
     if (error) {
       console.error(`Paper ${kind} error:`, error)

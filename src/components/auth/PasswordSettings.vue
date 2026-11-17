@@ -139,7 +139,7 @@ async function handleSubmit() {
       }
       successMessage.value = t.value.changeDone
     } else {
-      const { error } = await actions.setPassword({ newPassword: newPassword.value })
+      const { error } = await actions.user.setPassword({ newPassword: newPassword.value })
       if (error) {
         console.error('Set password error:', error)
         errorMessage.value = errorFor(error.code === 'UNAUTHORIZED' ? 'UNAUTHORIZED' : error.message)
