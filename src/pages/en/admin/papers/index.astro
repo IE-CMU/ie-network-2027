@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro'
 import { getLocale } from '@utils/locale'
-import PageAdminIndex from '@components/paper/PageAdminIndex.astro'
+import PageAdminPapers from '@components/paper/PageAdminPapers.astro'
 
 // SSR: protected by src/middleware.ts (admins only).
 export const prerender = false
@@ -10,5 +10,5 @@ const locale = getLocale(Astro)
 ---
 
 <Layout title="Admin Papers">
-  <PageAdminIndex locale={locale} />
+  <PageAdminPapers locale={locale} />
 </Layout>
