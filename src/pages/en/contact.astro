@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import ContactContent from '@components/site/ContactContent.astro'
+import PageContact from '@components/site/PageContact.astro'
 import { getLocale } from '@utils/locale'
 
 // This page needs to be SSR becuase of the session data for the menu.
@@ -10,5 +10,5 @@ const locale = getLocale(Astro)
 ---
 
 <Layout title="Contact">
-  <ContactContent locale={locale} />
+  <PageContact locale={locale} />
 </Layout>

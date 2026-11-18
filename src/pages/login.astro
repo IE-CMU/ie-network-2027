@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import LoginContent from '@components/auth/LoginContent.astro'
+import PageLogin from '@components/auth/PageLogin.astro'
 import { getLocale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 
@@ -16,5 +16,5 @@ if (Astro.locals.user) {
 ---
 
 <Layout title={locale === 'th' ? 'เข้าสู่ระบบ' : 'Sign in'}>
-  <LoginContent locale={locale} />
+  <PageLogin locale={locale} />
 </Layout>

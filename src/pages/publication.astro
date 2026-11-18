@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import PublicationContent from '@components/site/PublicationContent.astro'
+import PagePublication from '@components/site/PagePublication.astro'
 import { getLocale } from '@utils/locale'
 
 // This page needs to be SSR becuase of the session data for the menu.
@@ -10,5 +10,5 @@ const locale = getLocale(Astro)
 ---
 
 <Layout title="Publication">
-  <PublicationContent locale={locale} />
+  <PagePublication locale={locale} />
 </Layout>

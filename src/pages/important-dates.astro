@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import ImportantDatesContent from '@components/site/ImportantDatesContent.astro'
+import PageImportantDates from '@components/site/PageImportantDates.astro'
 import { getLocale } from '@utils/locale'
 
 // This page needs to be SSR becuase of the session data for the menu.
@@ -10,5 +10,5 @@ const locale = getLocale(Astro)
 ---
 
 <Layout title="Important Dates">
-  <ImportantDatesContent locale={locale} />
+  <PageImportantDates locale={locale} />
 </Layout>
