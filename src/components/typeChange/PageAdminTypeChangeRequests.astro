@@ -1,0 +1,41 @@
+---
+import TypeChangeRequestTable from '@components/typeChange/TypeChangeRequestTable.vue'
+import { type AdminTypeChangeRow, loadAdminTypeChangeRequests } from '@lib/typeChange/requests'
+import { type Locale } from '@utils/locale'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+let requests: AdminTypeChangeRow[] = []
+let loadError = false
+
+try {
+  requests = await loadAdminTypeChangeRequests()
+} catch (error) {
+  console.error('Error loading type change requests:', error)
+  loadError = true
+}
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <p class="text-sm font-semibold text-[#9E76B4] text-center">
+    {t('แอดมิน', 'Admin')}
+  </p>
+  <h1 class="text-4xl font-bold mb-12 text-center">
+    {t('คำขอเปลี่ยนประเภทผู้เข้าร่วม', 'Participant Type Requests')}
+  </h1>
+
+  {
+    loadError ? (
+      <div role="alert" class="alert alert-error alert-soft">
+        <span>{t('ไม่สามารถโหลดรายการคำขอได้', 'Could not load the requests.')}</span>
+      </div>
+    ) : (
+      <TypeChangeRequestTable client:load locale={locale} requests={requests} />
+    )
+  }
+</main>

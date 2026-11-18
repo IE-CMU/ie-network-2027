@@ -1,5 +1,7 @@
 ---
+import { getTypeChangeState, type TypeChangeState } from '@lib/typeChange/requests'
 import { type Locale } from '@utils/locale'
+import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 interface Props {
   locale: Locale
@@ -24,12 +26,29 @@ const formatDate = (date: Date | string | null | undefined) =>
 
 const roleLabels: Record<string, { th: string; en: string }> = {
   admin: { th: 'ผู้ดูแลระบบ', en: 'Administrator' },
-  user: { th: 'ผู้ใช้ทั่วไป', en: 'User' },
+  user: { th: 'ผู้ใช้', en: 'User' },
 }
 const role = user?.role || 'user'
 const roleLabel = roleLabels[role]?.[locale] ?? role
 
 const passwordSettingUrl = getRelativeLocaleUrl(locale, '/user/password-setting')
+const changeTypeUrl = getRelativeLocaleUrl(locale, '/user/change-type')
+
+// Read from the database rather than the session, so a just-approved
+// request shows the new type straight away.
+let typeState: TypeChangeState | null = null
+if (user) {
+  try {
+    typeState = await getTypeChangeState(user.id)
+  } catch (error) {
+    console.error('Error loading type change state:', error)
+  }
+}
+const typeLabels = PARTICIPANT_TYPE_LABELS[locale]
+const participantType = typeState?.participantType ?? user?.participantType ?? 'general'
+const request = typeState?.latest ?? null
+const requestedLabel = request ? typeLabels[request.requestedType] : ''
+const evidenceUrl = request?.hasEvidence ? `/api/type-change-request/${request.id}/evidence` : null
 ---
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -87,9 +106,21 @@ const passwordSettingUrl = getRelativeLocaleUrl(locale, '/user/password-setting'
             </dd>
 
             <dt class="font-semibold text-base-content/70">
-              {t('สถานะบัญชี', 'Account type')}
+              {t('บทบาท', 'Role')}
             </dt>
             <dd>{roleLabel}</dd>
+
+            <dt class="font-semibold text-base-content/70">
+              {t('ประเภทผู้เข้าร่วม', 'Participant type')}
+            </dt>
+            <dd class="flex flex-wrap items-center gap-2">
+              {typeLabels[participantType]}
+              {request?.status === 'pending' && (
+                <span class="badge badge-sm badge-info badge-soft">
+                  {t('รอตรวจสอบคำขอเปลี่ยน', 'Change pending')}
+                </span>
+              )}
+            </dd>
 
             <dt class="font-semibold text-base-content/70">
               {t('เป็นสมาชิกตั้งแต่', 'Member since')}
@@ -102,9 +133,63 @@ const passwordSettingUrl = getRelativeLocaleUrl(locale, '/user/password-setting'
             <dd>{formatDate(user.updatedAt)}</dd>
           </dl>
 
+          <!-- Latest participant type change request -->
+          {request && (
+            <div
+              role="status"
+              class:list={[
+                'alert alert-soft text-sm items-start',
+                request.status === 'pending' && 'alert-info',
+                request.status === 'approved' && 'alert-success',
+                request.status === 'rejected' && 'alert-error',
+              ]}
+            >
+              <div class="flex flex-col gap-1">
+                <span class="font-semibold">
+                  {request.status === 'pending' &&
+                    t(
+                      `คำขอเปลี่ยนประเภทเป็น "${requestedLabel}" (ส่งเมื่อ ${formatDate(request.submittedAt)}) อยู่ระหว่างการตรวจสอบ`,
+                      `Your request to change to "${requestedLabel}" (submitted ${formatDate(request.submittedAt)}) is waiting for review.`
+                    )}
+                  {request.status === 'approved' &&
+                    t(
+                      `คำขอเปลี่ยนประเภทเป็น "${requestedLabel}" ได้รับการอนุมัติเมื่อ ${formatDate(request.statusChangedAt)}`,
+                      `Your request to change to "${requestedLabel}" was approved on ${formatDate(request.statusChangedAt)}.`
+                    )}
+                  {request.status === 'rejected' &&
+                    t(
+                      `คำขอเปลี่ยนประเภทเป็น "${requestedLabel}" ไม่ได้รับการอนุมัติเมื่อ ${formatDate(request.statusChangedAt)}`,
+                      `Your request to change to "${requestedLabel}" was rejected on ${formatDate(request.statusChangedAt)}.`
+                    )}
+                </span>
+                {request.reviewerComment && (
+                  <span class="whitespace-pre-line">
+                    {request.status === 'rejected' ? t('เหตุผล: ', 'Reason: ') : t('หมายเหตุ: ', 'Note: ')}
+                    {request.reviewerComment}
+                  </span>
+                )}
+                {request.status === 'rejected' && typeState?.canRequest && (
+                  <span>{t('คุณสามารถส่งคำขอใหม่ได้', 'You can submit a new request.')}</span>
+                )}
+                {evidenceUrl && (
+                  <a href={evidenceUrl} target="_blank" rel="noopener" class="link w-fit">
+                    {t('ดูไฟล์หลักฐานที่อัปโหลด', 'View uploaded evidence')}
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
           <div class="divider my-0" />
 
           <div class="card-actions justify-end">
+            {typeState?.canRequest && (
+              <a href={changeTypeUrl} class="btn btn-outline border-[#9E76B4] text-[#6B4A80] hover:bg-[#F3E5F5]">
+                {request?.status === 'rejected'
+                  ? t('ส่งคำขอเปลี่ยนประเภทใหม่', 'Submit a new type request')
+                  : t('ขอเปลี่ยนประเภทผู้เข้าร่วม', 'Change participant type')}
+              </a>
+            )}
             <a
               href={passwordSettingUrl}
               class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"

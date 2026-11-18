@@ -18,7 +18,8 @@ export default defineConfig({
   output: 'server',
   security: {
     // CMT paper list uploads (admin import) are ~4 KB per paper.
-    actionBodySizeLimit: 10 * 1024 * 1024,
+    // Type change evidence files are up to 10 MB (EVIDENCE_MAX_BYTES) plus form overhead.
+    actionBodySizeLimit: 12 * 1024 * 1024,
   },
   adapter: node({
     mode: 'standalone',

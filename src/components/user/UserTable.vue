@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AdminUserRow } from '@lib/user/admin'
-import { PARTICIPANT_TYPES, type ParticipantType } from '@utils/participantType'
+import { PARTICIPANT_TYPE_LABELS, PARTICIPANT_TYPES, type ParticipantType } from '@utils/participantType'
 import { computed, ref } from 'vue'
 
 interface Props {
@@ -17,7 +17,7 @@ const text = {
     papers: 'บทความ',
     all: 'ทั้งหมด',
     admin: 'ผู้ดูแลระบบ',
-    user: 'ผู้ใช้ทั่วไป',
+    user: 'ผู้ใช้',
     yes: 'ยืนยันแล้ว',
     no: 'ยังไม่ยืนยัน',
     withPapers: 'มีบทความ',
@@ -30,11 +30,7 @@ const text = {
     created: 'สร้างเมื่อ',
     banned: 'ถูกระงับ',
     type: 'ประเภท',
-    types: {
-      general: 'บุคคลทั่วไป',
-      student: 'นักศึกษา',
-      ie_student: 'นักศึกษา IE มช.',
-    } satisfies Record<ParticipantType, string>,
+    types: PARTICIPANT_TYPE_LABELS.th,
     showing: (n: number, total: number) => `แสดง ${n} จาก ${total} บัญชี`,
     empty: 'ไม่พบผู้ใช้',
   },
@@ -58,11 +54,7 @@ const text = {
     created: 'Created',
     banned: 'Banned',
     type: 'Type',
-    types: {
-      general: 'General',
-      student: 'Student',
-      ie_student: 'CMU IE student',
-    } satisfies Record<ParticipantType, string>,
+    types: PARTICIPANT_TYPE_LABELS.en,
     showing: (n: number, total: number) => `Showing ${n} of ${total} accounts`,
     empty: 'No users found.',
   },

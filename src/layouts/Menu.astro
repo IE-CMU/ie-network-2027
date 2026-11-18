@@ -68,6 +68,10 @@ if (isAdmin(user)) {
     children: [
       { label: { en: 'Users', th: 'ผู้ใช้ระบบ' }, url: url('/admin/users') },
       { label: { en: 'Papers', th: 'บทความ' }, url: url('/admin/papers') },
+      {
+        label: { en: 'Type requests', th: 'คำขอเปลี่ยนประเภท' },
+        url: url('/admin/type-change-requests'),
+      },
     ],
   })
 }

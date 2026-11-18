@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
   boolean,
   customType,
@@ -9,13 +9,16 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
 
 import { PARTICIPANT_TYPES } from '../utils/participantType.js'
+import { TYPE_CHANGE_STATUSES } from '../utils/typeChangeRequest.js'
 
 export const participantTypeEnum = pgEnum('participant_type', PARTICIPANT_TYPES)
+export const typeChangeStatusEnum = pgEnum('type_change_request_status', TYPE_CHANGE_STATUSES)
 
 // Below is a schema for better-auth using Drizzle ORM with PostgreSQL.
 export const user = pgTable('user', {
@@ -157,12 +160,58 @@ export const billingAddressRelations = relations(billingAddress, ({ one }) => ({
   user: one(user, { fields: [billingAddress.userId], references: [user.id] }),
 }))
 
-// ---------------- Facebook post cache ----------------
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({
   dataType() {
     return 'bytea'
   },
 })
+
+// ---------------- Participant type change requests ----------------
+// A user asks to change user.participant_type (e.g. to student) and uploads
+// evidence; an admin approves or rejects. Rules (src/lib/typeChange/):
+// at most one pending request per user (enforced by the index below),
+// no new requests after one is approved, new ones allowed after a rejection.
+export const typeChangeRequest = pgTable(
+  'type_change_request',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    requesterId: text('requester_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    requestedType: participantTypeEnum('requested_type').notNull(),
+    requesterComment: text('requester_comment'),
+    status: typeChangeStatusEnum('status').default('pending').notNull(),
+    submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
+    statusChangedAt: timestamp('status_changed_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    // Admin who approved or rejected; kept as null if that admin is deleted.
+    reviewerId: text('reviewer_id').references(() => user.id, { onDelete: 'set null' }),
+    reviewerComment: text('reviewer_comment'),
+  },
+  (table) => [
+    index('type_change_request_requester_id_idx').on(table.requesterId),
+    index('type_change_request_status_idx').on(table.status),
+    uniqueIndex('type_change_request_one_pending_idx')
+      .on(table.requesterId)
+      .where(sql`${table.status} = 'pending'`),
+  ]
+)
+
+// Uploaded evidence (ID card, image or PDF), one per request. A separate
+// table so listing requests never loads the file bytes. Personal data:
+// only served to the requester and admins (src/pages/api/type-change-request/).
+export const typeChangeEvidence = pgTable('type_change_evidence', {
+  requestId: uuid('request_id')
+    .primaryKey()
+    .references(() => typeChangeRequest.id, { onDelete: 'cascade' }),
+  fileName: text('file_name').notNull(), // original name, for display/download
+  mimeType: text('mime_type').notNull(), // detected from the file's bytes
+  size: integer('size').notNull(),
+  data: bytea('data').notNull(),
+})
+
+// ---------------- Facebook post cache ----------------
 
 // Latest posts from the Facebook page, kept in sync by the worker.
 export const facebookPost = pgTable(
