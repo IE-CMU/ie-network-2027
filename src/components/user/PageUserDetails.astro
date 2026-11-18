@@ -1,7 +1,6 @@
 ---
-import PasswordSettings from '@components/user/PasswordSettings.vue'
-import { auth } from '@lib/auth/server'
 import { type Locale } from '@utils/locale'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 interface Props {
   locale: Locale
 }
@@ -30,19 +29,7 @@ const roleLabels: Record<string, { th: string; en: string }> = {
 const role = user?.role || 'user'
 const roleLabel = roleLabels[role]?.[locale] ?? role
 
-// A 'credential' account means the user has a password; magic-link-only
-// participants have none. Decides between "Set" and "Change" password.
-let hasPassword = false
-if (user) {
-  try {
-    const accounts = await auth.api.listUserAccounts({
-      headers: Astro.request.headers,
-    })
-    hasPassword = accounts.some((a) => a.providerId === 'credential')
-  } catch (error) {
-    console.error('Error listing user accounts:', error)
-  }
-}
+const passwordSettingUrl = getRelativeLocaleUrl(locale, '/user/password-setting')
 ---
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -114,16 +101,17 @@ if (user) {
             </dt>
             <dd>{formatDate(user.updatedAt)}</dd>
           </dl>
-        </div>
-      </section>
-    )
-  }
 
-  {
-    user && (
-      <section class="card bg-base-100 border border-base-300 shadow-sm mt-8">
-        <div class="card-body">
-          <PasswordSettings client:load locale={locale} hasPassword={hasPassword} />
+          <div class="divider my-0" />
+
+          <div class="card-actions justify-end">
+            <a
+              href={passwordSettingUrl}
+              class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"
+            >
+              {t('ตั้งค่ารหัสผ่าน', 'Password settings')}
+            </a>
+          </div>
         </div>
       </section>
     )
