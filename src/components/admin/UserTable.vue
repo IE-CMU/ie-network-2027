@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AdminUserRow } from '@lib/users/admin'
-import { computed, ref } from 'vue'
+import { PARTICIPANT_TYPES, type ParticipantType } from '@utils/participantType'
+import { actions } from 'astro:actions'
+import { computed, reactive, ref } from 'vue'
 
 interface Props {
   locale: 'th' | 'en'
@@ -28,6 +30,13 @@ const text = {
     noPassword: 'ลิงก์อีเมลเท่านั้น',
     created: 'สร้างเมื่อ',
     banned: 'ถูกระงับ',
+    type: 'ประเภท',
+    types: {
+      general: 'บุคคลทั่วไป',
+      student: 'นักศึกษา',
+      ie_student: 'นักศึกษา IE มช.',
+    } satisfies Record<ParticipantType, string>,
+    saveFailed: 'บันทึกไม่สำเร็จ',
     showing: (n: number, total: number) => `แสดง ${n} จาก ${total} บัญชี`,
     empty: 'ไม่พบผู้ใช้',
   },
@@ -50,6 +59,13 @@ const text = {
     noPassword: 'Email link only',
     created: 'Created',
     banned: 'Banned',
+    type: 'Type',
+    types: {
+      general: 'General',
+      student: 'Student',
+      ie_student: 'CMU IE student',
+    } satisfies Record<ParticipantType, string>,
+    saveFailed: 'Save failed',
     showing: (n: number, total: number) => `Showing ${n} of ${total} accounts`,
     empty: 'No users found.',
   },
@@ -60,6 +76,33 @@ const query = ref('')
 const roleFilter = ref<'all' | 'admin' | 'user'>('all')
 const verifiedFilter = ref<'all' | 'yes' | 'no'>('all')
 const paperFilter = ref<'all' | 'with' | 'without'>('all')
+const typeFilter = ref<'all' | ParticipantType>('all')
+
+// Participant type as changed in this page (rows come in as props).
+const typeOf = reactive<Record<string, ParticipantType>>(
+  Object.fromEntries(props.users.map((u) => [u.id, u.participantType]))
+)
+const saving = reactive<Record<string, boolean>>({})
+const saveError = reactive<Record<string, boolean>>({})
+
+async function changeType(u: AdminUserRow, event: Event) {
+  const select = event.target as HTMLSelectElement
+  const next = select.value as ParticipantType
+  const prev = typeOf[u.id]
+  typeOf[u.id] = next
+  saving[u.id] = true
+  saveError[u.id] = false
+  const { error } = await actions.user.setParticipantType({
+    userId: u.id,
+    participantType: next,
+  })
+  saving[u.id] = false
+  if (error) {
+    typeOf[u.id] = prev
+    select.value = prev
+    saveError[u.id] = true
+  }
+}
 
 type SortKey = 'name' | 'email' | 'paperCount' | 'createdAt'
 const sortKey = ref<SortKey>('name')
@@ -90,7 +133,8 @@ const filtered = computed(() => {
       (verifiedFilter.value === 'all' ||
         (verifiedFilter.value === 'yes') === u.emailVerified) &&
       (paperFilter.value === 'all' ||
-        (paperFilter.value === 'with') === u.paperCount > 0)
+        (paperFilter.value === 'with') === u.paperCount > 0) &&
+      (typeFilter.value === 'all' || typeFilter.value === typeOf[u.id])
   )
   const dir = sortAsc.value ? 1 : -1
   const key = sortKey.value
@@ -150,6 +194,16 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
           <option value="with">{{ t.withPapers }}</option>
           <option value="without">{{ t.withoutPapers }}</option>
         </select>
+        <select
+          v-model="typeFilter"
+          class="select select-sm w-auto"
+          :aria-label="t.type"
+        >
+          <option value="all">{{ t.type }}: {{ t.all }}</option>
+          <option v-for="pt in PARTICIPANT_TYPES" :key="pt" :value="pt">
+            {{ t.types[pt] }}
+          </option>
+        </select>
       </div>
     </div>
 
@@ -180,6 +234,7 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
               </button>
             </th>
             <th>{{ t.role }}</th>
+            <th>{{ t.type }}</th>
             <th>{{ t.verified }}</th>
             <th>{{ t.password }}</th>
             <th class="text-right">
@@ -204,7 +259,7 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
         </thead>
         <tbody>
           <tr v-if="filtered.length === 0">
-            <td colspan="7" class="text-center text-base-content/70 py-6">
+            <td colspan="8" class="text-center text-base-content/70 py-6">
               {{ t.empty }}
             </td>
           </tr>
@@ -230,6 +285,21 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
               >
                 {{ isAdmin(u) ? t.admin : t.user }}
               </span>
+            </td>
+            <td class="whitespace-nowrap">
+              <select
+                class="select select-xs w-auto"
+                :class="{ 'select-error': saveError[u.id] }"
+                :value="typeOf[u.id]"
+                :disabled="saving[u.id]"
+                :aria-label="`${t.type}: ${u.name}`"
+                :title="saveError[u.id] ? t.saveFailed : undefined"
+                @change="changeType(u, $event)"
+              >
+                <option v-for="pt in PARTICIPANT_TYPES" :key="pt" :value="pt">
+                  {{ t.types[pt] }}
+                </option>
+              </select>
             </td>
             <td>
               <span

@@ -2,6 +2,7 @@ import { and, eq, sql } from 'drizzle-orm'
 
 import { dbClient } from '../../db/client.js'
 import { account, paper, paperUser, user } from '../../db/schema.js'
+import type { ParticipantType } from '../../utils/participantType.js'
 import { getRoles } from '../../utils/role.js'
 
 /** One row of the admin user table (see UserTable.vue). */
@@ -10,6 +11,7 @@ export interface AdminUserRow {
   name: string
   email: string
   roles: string[]
+  participantType: ParticipantType
   emailVerified: boolean
   banned: boolean
   hasPassword: boolean
@@ -36,6 +38,7 @@ export async function loadAdminUserList(): Promise<AdminUserRow[]> {
       name: user.name,
       email: user.email,
       role: user.role,
+      participantType: user.participantType,
       emailVerified: user.emailVerified,
       banned: user.banned,
       createdAt: user.createdAt,
@@ -55,6 +58,7 @@ export async function loadAdminUserList(): Promise<AdminUserRow[]> {
     name: r.name,
     email: r.email,
     roles: getRoles(r),
+    participantType: r.participantType,
     emailVerified: r.emailVerified,
     banned: r.banned ?? false,
     hasPassword: r.hasPassword,

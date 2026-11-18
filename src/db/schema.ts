@@ -4,6 +4,7 @@ import {
   customType,
   index,
   integer,
+  pgEnum,
   pgTable,
   primaryKey,
   text,
@@ -11,6 +12,10 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
+
+import { PARTICIPANT_TYPES } from '../utils/participantType.js'
+
+export const participantTypeEnum = pgEnum('participant_type', PARTICIPANT_TYPES)
 
 // Below is a schema for better-auth using Drizzle ORM with PostgreSQL.
 export const user = pgTable('user', {
@@ -20,6 +25,11 @@ export const user = pgTable('user', {
   // Declared in better-auth user.additionalFields (src/lib/create_auth.ts).
   // Set from CMT when the paper import creates the account; user-editable.
   affiliation: text('affiliation'),
+  // Registration rate category. Also in additionalFields, with input: false
+  // so users cannot change it; admins set it from the user list.
+  participantType: participantTypeEnum('participant_type')
+    .default('general')
+    .notNull(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -97,6 +107,7 @@ export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   papers: many(paperUser),
+  billingAddresses: many(billingAddress),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -111,6 +122,39 @@ export const accountRelations = relations(account, ({ one }) => ({
     fields: [account.userId],
     references: [user.id],
   }),
+}))
+
+// ---------------- Billing addresses ----------------
+// Addresses a user can bill registration to; one user may keep several.
+// Rules such as when tax_id/branch are required live in the backend.
+// Receipts/invoices should copy the address they were issued with rather
+// than reference this row, since users may edit or delete it later.
+export const billingAddress = pgTable(
+  'billing_address',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    affiliation: text('affiliation'),
+    address: text('address').notNull(), // multi-line, printed as entered
+    phone: text('phone').notNull(),
+    // Text, not a number: keeps leading zeros and non-Thai formats.
+    taxId: text('tax_id'),
+    // Thai tax invoice branch, e.g. "สำนักงานใหญ่" or "00001".
+    branch: text('branch'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index('billing_address_user_id_idx').on(table.userId)]
+)
+
+export const billingAddressRelations = relations(billingAddress, ({ one }) => ({
+  user: one(user, { fields: [billingAddress.userId], references: [user.id] }),
 }))
 
 // ---------------- Facebook post cache ----------------

@@ -4,6 +4,7 @@ import { admin, magicLink } from 'better-auth/plugins'
 
 import { dbClient } from '../db/client.js'
 import { requireBetterAuthEnv } from '../utils/env.js'
+import { PARTICIPANT_TYPES } from '../utils/participantType.js'
 
 type SendMagicLink = Parameters<typeof magicLink>[0]['sendMagicLink']
 
@@ -33,6 +34,13 @@ export function createAuth({ sendMagicLink }: { sendMagicLink: SendMagicLink }) 
       additionalFields: {
         // Set by the CMT paper import; users may edit it (updateUser).
         affiliation: { type: 'string', required: false, input: true },
+        // Rate category; admin-only (input: false blocks updateUser).
+        participantType: {
+          type: [...PARTICIPANT_TYPES],
+          required: false,
+          defaultValue: 'general',
+          input: false,
+        },
       },
     },
     plugins: [admin(), magicLink({ sendMagicLink, disableSignUp: true })],
