@@ -1,7 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro'
 import { getLocale } from '@utils/locale'
-import PageAccount from '@components/user/PageAccount.astro'
+import PageUserDetails from '@components/user/PageUserDetails.astro'
 
 // SSR: protected by src/middleware.ts (logged-in users).
 export const prerender = false
@@ -10,5 +10,5 @@ const locale = getLocale(Astro)
 ---
 
 <Layout title="My Account">
-  <PageAccount locale={locale} />
+  <PageUserDetails locale={locale} />
 </Layout>
