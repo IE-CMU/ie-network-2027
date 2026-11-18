@@ -1,6 +1,6 @@
 ---
 import { type Locale } from '@utils/locale'
-import Placeholder from '@components/common/Placeholder.astro'
+import ComingSoon from '@components/common/ComingSoon.astro'
 
 interface Props {
   locale: Locale
@@ -8,7 +8,7 @@ interface Props {
 const { locale } = Astro.props
 ---
 
-<Placeholder
+<ComingSoon
   locale={locale}
   section={{ en: 'Participant', th: 'ผู้เข้างาน' }}
   title={{ en: 'Register', th: 'ลงทะเบียน' }}
