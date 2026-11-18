@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm'
 
-import { dbClient } from '../db/client.js'
-import { user } from '../db/schema.js'
-import { createAuth } from './create_auth.js'
-import { addEmailQueue } from './queue/producer.js'
+import { dbClient } from '../../db/client.js'
+import { user } from '../../db/schema.js'
+import { createAuth } from './create.js'
+import { addEmailQueue } from '../queue/producer.js'
 
 export const auth = createAuth({
   sendMagicLink: async ({ email, url }) => {
@@ -31,7 +31,7 @@ export const auth = createAuth({
 })
 
 // Session type definition
-// Do no use this type in client code, use the one from auth-client.ts instead
+// Do no use this type in client code, use the one from auth/client.ts instead
 export type Session = typeof auth.$Infer.Session
 
 // Function to get session with error handling

@@ -1,4 +1,4 @@
-import { getSession } from '@lib/auth'
+import { getSession } from '@lib/auth/server'
 import { localeList } from '@utils/locale'
 import { isAdmin } from '@utils/role'
 import { defineMiddleware } from 'astro:middleware'

@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth'
+import { auth } from '@lib/auth/server'
 import { z } from 'astro/zod'
 import { ActionError, defineAction } from 'astro:actions'
 import { APIError } from 'better-auth/api'

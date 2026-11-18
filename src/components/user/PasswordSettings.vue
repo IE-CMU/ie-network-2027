@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@lib/auth/client'
 import { actions } from 'astro:actions'
 import { computed, ref } from 'vue'
 

@@ -2,7 +2,7 @@ import { and, eq, inArray, notInArray, sql } from 'drizzle-orm'
 
 import { dbClient } from '../../db/client.js'
 import { paper, paperUser, user } from '../../db/schema.js'
-import { auth } from '../auth.js'
+import { auth } from '../auth/server.js'
 import type { CmtAuthor, CmtPaper, CmtParseResult } from './cmt.js'
 
 /**

@@ -1,4 +1,4 @@
-import { planImport } from '@/lib/papers/import'
+import { planImport } from '@/lib/paper/import'
 import { defineAction } from 'astro:actions'
 import { requireAdmin } from '../_guards'
 import { paperListInput, parsePaperList } from './_cmtUpload'

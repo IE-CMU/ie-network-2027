@@ -2,9 +2,9 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { admin, magicLink } from 'better-auth/plugins'
 
-import { dbClient } from '../db/client.js'
-import { requireBetterAuthEnv } from '../utils/env.js'
-import { PARTICIPANT_TYPES } from '../utils/participantType.js'
+import { dbClient } from '../../db/client.js'
+import { requireBetterAuthEnv } from '../../utils/env.js'
+import { PARTICIPANT_TYPES } from '../../utils/participantType.js'
 
 type SendMagicLink = Parameters<typeof magicLink>[0]['sendMagicLink']
 

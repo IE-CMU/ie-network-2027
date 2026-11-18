@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminUserRow } from '@lib/users/admin'
+import type { AdminUserRow } from '@lib/user/admin'
 import { PARTICIPANT_TYPES, type ParticipantType } from '@utils/participantType'
 import { computed, ref } from 'vue'
 

@@ -22,7 +22,7 @@ export const user = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
-  // Declared in better-auth user.additionalFields (src/lib/create_auth.ts).
+  // Declared in better-auth user.additionalFields (src/lib/auth/create.ts).
   // Set from CMT when the paper import creates the account; user-editable.
   affiliation: text('affiliation'),
   // Registration rate category. Also in additionalFields, with input: false
@@ -185,7 +185,7 @@ export const facebookPost = pgTable(
 )
 
 // ---------------- Accepted papers (imported from CMT) ----------------
-// Replaced by each admin import of the CMT paper list (src/lib/papers/import.ts).
+// Replaced by each admin import of the CMT paper list (src/lib/paper/import.ts).
 
 export const paper = pgTable(
   'paper',

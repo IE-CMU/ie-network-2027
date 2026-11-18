@@ -2,7 +2,7 @@ import 'dotenv/config'
 import fs from 'fs'
 
 import { dbConn } from '../db/client.js'
-import { createAuth } from '../lib/create_auth.js'
+import { createAuth } from '../lib/auth/create.js'
 
 // Same config as the app; the seed never sends magic links, so no Redis needed.
 const auth = createAuth({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AdminPaperRow } from '@lib/papers/admin'
+import type { AdminPaperRow } from '@lib/paper/admin'
 import { computed, ref } from 'vue'
 
 interface Props {

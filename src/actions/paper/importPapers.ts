@@ -1,4 +1,4 @@
-import { ImportRefusedError, applyImport } from '@/lib/papers/import'
+import { ImportRefusedError, applyImport } from '@/lib/paper/import'
 import { ActionError, defineAction } from 'astro:actions'
 import { requireAdmin } from '../_guards'
 import { paperListInput, parsePaperList } from './_cmtUpload'

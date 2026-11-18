@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { authClient } from '@lib/auth-client'
+import { authClient } from '@lib/auth/client'
 import { navigate } from 'astro:transitions/client'
 import { ref } from 'vue'
 
