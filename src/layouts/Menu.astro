@@ -56,7 +56,7 @@ if (user) {
     children: [
       {
         label: { en: 'Register', th: 'ลงทะเบียน' },
-        url: url('/participant/register'),
+        url: url('/register'),
       },
     ],
   })
@@ -83,7 +83,7 @@ const account: AccountMenu = {
       }
     : null,
   links: [
-    { label: { en: 'My Account', th: 'บัญชีของฉัน' }, url: url('/account') },
+    { label: { en: 'My Account', th: 'บัญชีของฉัน' }, url: url('/user/account') },
   ],
   logout: {
     label: { en: 'Logout', th: 'ออกจากระบบ' },

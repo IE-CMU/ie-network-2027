@@ -5,7 +5,7 @@ import { defineMiddleware } from 'astro:middleware'
 
 // Route prefixes are locale-less; '/en/...' variants are matched automatically.
 // Any logged-in user (user or admin).
-const authRoutes = ['/account', '/participant']
+const authRoutes = ['/user', '/register']
 // Logged-in admins only.
 const adminRoutes = ['/admin']
 

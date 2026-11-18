@@ -7,7 +7,7 @@ interface Props {
 }
 const { locale } = Astro.props
 
-// Middleware guarantees a user on /account, but guard anyway.
+// Middleware guarantees a user on /user/account, but guard anyway.
 const user = Astro.locals.user
 
 const t = (th: string, en: string) => (locale === 'th' ? th : en)

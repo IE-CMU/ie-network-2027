@@ -3,7 +3,7 @@ import Layout from '@layouts/Layout.astro'
 import { getLocale } from '@utils/locale'
 import PageAccount from '@components/user/PageAccount.astro'
 
-// This page needs to be SSR becuase of the session data for the menu.
+// SSR: protected by src/middleware.ts (logged-in users).
 export const prerender = false
 
 const locale = getLocale(Astro)
