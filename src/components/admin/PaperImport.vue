@@ -16,7 +16,7 @@ type Summary = {
   reactivatedPapers: number[]
   unchangedPapers: number
   deactivatedPapers: { id: number; title: string }[]
-  newUsers: { email: string; name: string }[]
+  newUsers: { email: string; name: string; affiliation: string | null }[]
   authorLinks: number
   warnings: string[]
 }
@@ -253,7 +253,7 @@ const stats = computed(() => {
         </summary>
         <ul class="mt-2 ml-5 list-disc">
           <li v-for="u in summary.newUsers" :key="u.email" class="break-all">
-            {{ u.name }} &lt;{{ u.email }}&gt;
+            {{ u.name }} &lt;{{ u.email }}&gt;<span v-if="u.affiliation" class="text-base-content/70"> · {{ u.affiliation }}</span>
           </li>
         </ul>
       </details>

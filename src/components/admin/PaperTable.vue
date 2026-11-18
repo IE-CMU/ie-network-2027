@@ -1,18 +1,5 @@
-<script lang="ts">
-export interface AdminPaperRow {
-  id: number
-  title: string
-  primarySubjectArea: string | null
-  status: string
-  isActive: boolean
-  primaryContact: { name: string; email: string } | null
-  authorCount: number
-  // Every author's name and email, lowercased, for searching.
-  authorSearch: string
-}
-</script>
-
 <script setup lang="ts">
+import type { AdminPaperRow } from '@lib/papers/admin'
 import { computed, ref } from 'vue'
 
 interface Props {

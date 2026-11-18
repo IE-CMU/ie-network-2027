@@ -1,6 +1,6 @@
 ---
-import PaperTable, { type AdminPaperRow } from '@components/admin/PaperTable.vue'
-import { dbClient } from '@db/client'
+import PaperTable from '@components/admin/PaperTable.vue'
+import { type AdminPaperList, loadAdminPaperList } from '@lib/papers/admin'
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 
@@ -12,46 +12,16 @@ const { locale } = Astro.props
 const t = (th: string, en: string) => (locale === 'th' ? th : en)
 const importUrl = getRelativeLocaleUrl(locale, '/admin/papers/import')
 
-let papers: AdminPaperRow[] = []
-let lastImport: Date | null = null
-let activeCount = 0
-let authorCount = 0
+let list: AdminPaperList = { papers: [], activeCount: 0, authorCount: 0, lastImport: null }
 let loadError = false
 
 try {
-  const rows = await dbClient.query.paper.findMany({
-    orderBy: (p, { asc }) => [asc(p.id)],
-    with: { authors: { orderBy: (a, { asc }) => [asc(a.authorOrder)] } },
-  })
-
-  papers = rows.map((p) => {
-    const contact = p.authors.find((a) => a.isPrimaryContact)
-    return {
-      id: p.id,
-      title: p.title,
-      primarySubjectArea: p.primarySubjectArea,
-      status: p.status,
-      isActive: p.isActive,
-      primaryContact: contact ? { name: contact.authorName, email: contact.email } : null,
-      authorCount: p.authors.length,
-      authorSearch: p.authors
-        .map((a) => `${a.authorName} ${a.email}`)
-        .join(' ')
-        .toLowerCase(),
-    }
-  })
-
-  const active = rows.filter((p) => p.isActive)
-  activeCount = active.length
-  authorCount = new Set(active.flatMap((p) => p.authors.map((a) => a.email))).size
-  lastImport = rows.reduce<Date | null>(
-    (max, p) => (!max || p.importedAt > max ? p.importedAt : max),
-    null
-  )
+  list = await loadAdminPaperList()
 } catch (error) {
   console.error('Error loading papers:', error)
   loadError = true
 }
+const { papers, activeCount, authorCount, lastImport } = list
 
 const formatDateTime = (date: Date | null) =>
   date

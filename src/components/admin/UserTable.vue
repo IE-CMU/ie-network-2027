@@ -1,18 +1,5 @@
-<script lang="ts">
-export interface AdminUserRow {
-  id: string
-  name: string
-  email: string
-  roles: string[]
-  emailVerified: boolean
-  banned: boolean
-  hasPassword: boolean
-  paperCount: number
-  createdAt: string // ISO
-}
-</script>
-
 <script setup lang="ts">
+import type { AdminUserRow } from '@lib/users/admin'
 import { computed, ref } from 'vue'
 
 interface Props {

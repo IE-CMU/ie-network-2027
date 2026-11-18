@@ -29,6 +29,12 @@ export function createAuth({ sendMagicLink }: { sendMagicLink: SendMagicLink }) 
       enabled: true,
       disableSignUp: true,
     },
+    user: {
+      additionalFields: {
+        // Set by the CMT paper import; users may edit it (updateUser).
+        affiliation: { type: 'string', required: false, input: true },
+      },
+    },
     plugins: [admin(), magicLink({ sendMagicLink, disableSignUp: true })],
   })
 }

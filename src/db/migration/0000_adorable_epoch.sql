@@ -33,7 +33,6 @@ CREATE TABLE "paper" (
 	"secondary_subject_areas" text,
 	"track_name" text,
 	"status" text NOT NULL,
-	"author_list" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"cmt_created_at" timestamp with time zone,
 	"cmt_modified_at" timestamp with time zone,
 	"is_active" boolean DEFAULT true NOT NULL,
@@ -45,12 +44,9 @@ CREATE TABLE "paper" (
 CREATE TABLE "paper_user" (
 	"paper_id" integer NOT NULL,
 	"user_id" text NOT NULL,
-	"email" text NOT NULL,
 	"is_primary_contact" boolean DEFAULT false NOT NULL,
 	"author_order" integer NOT NULL,
-	"author_name" text NOT NULL,
-	"affiliation" text,
-	CONSTRAINT "paper_user_paper_id_email_pk" PRIMARY KEY("paper_id","email")
+	CONSTRAINT "paper_user_paper_id_user_id_pk" PRIMARY KEY("paper_id","user_id")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -70,6 +66,7 @@ CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL,
+	"affiliation" text,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -98,6 +95,5 @@ CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> state
 CREATE INDEX "facebook_post_created_time_idx" ON "facebook_post" USING btree ("created_time");--> statement-breakpoint
 CREATE INDEX "paper_is_active_idx" ON "paper" USING btree ("is_active");--> statement-breakpoint
 CREATE INDEX "paper_user_user_id_idx" ON "paper_user" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "paper_user_email_idx" ON "paper_user" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");

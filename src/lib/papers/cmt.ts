@@ -1,6 +1,5 @@
 import { XMLParser } from 'fast-xml-parser'
 
-import type { PaperAuthor } from '../../db/schema.js'
 import { formatAffiliation, formatAuthorName } from './format.js'
 
 /**
@@ -14,6 +13,8 @@ import { formatAffiliation, formatAuthorName } from './format.js'
 
 export interface CmtAuthor {
   email: string // trimmed + lowercased
+  // Formatted for display (see format.ts). Used only when the import creates
+  // the author's account; existing accounts keep their own name/affiliation.
   name: string
   affiliation: string | null
   isPrimaryContact: boolean
@@ -28,7 +29,6 @@ export interface CmtPaper {
   secondarySubjectAreas: string | null
   trackName: string | null
   status: string
-  authorList: PaperAuthor[] // every author, for display
   cmtCreatedAt: Date | null
   cmtModifiedAt: Date | null
   authors: CmtAuthor[]
@@ -167,39 +167,6 @@ export function isAcceptedStatus(status: string): boolean {
   return status.toLowerCase().includes('accept')
 }
 
-/**
- * Display list from the "Authors" column, which includes authors whose email
- * was invalid. If that column can't be split reliably (entry count differs
- * from "Author Emails", e.g. a ';' inside an affiliation), fall back to the
- * email-based author list. Names and affiliations are formatted for display
- * (see format.ts); paper_user keeps them as typed.
- */
-function parseAuthorList(
-  authorsCell: string,
-  emailCount: number,
-  fallback: CmtAuthor[]
-): PaperAuthor[] {
-  const entries = splitList(authorsCell)
-  const list: PaperAuthor[] =
-    entries.length === 0 || entries.length !== emailCount
-      ? fallback.map(({ order, name, affiliation, isPrimaryContact }) => ({
-          order,
-          name,
-          affiliation,
-          isPrimaryContact,
-        }))
-      : entries.map((entry, i) => {
-          const { text, star } = stripStar(entry)
-          const { name, affiliation } = splitAffiliation(text)
-          return { order: i + 1, name, affiliation, isPrimaryContact: star }
-        })
-  return list.map((a) => ({
-    ...a,
-    name: formatAuthorName(a.name),
-    affiliation: a.affiliation && formatAffiliation(a.affiliation),
-  }))
-}
-
 function parseAuthors(
   paperId: number,
   emailsCell: string,
@@ -245,10 +212,11 @@ function parseAuthors(
       (useAuthors && authors[i].name) ||
       (useNames && names[i]) ||
       email.split('@')[0]
+    const affiliation = useAuthors ? authors[i].affiliation : null
     const author: CmtAuthor = {
       email,
-      name,
-      affiliation: useAuthors ? authors[i].affiliation : null,
+      name: formatAuthorName(name),
+      affiliation: affiliation && formatAffiliation(affiliation),
       isPrimaryContact: star,
       order: result.length + 1,
     }
@@ -325,12 +293,10 @@ export function parseCmtPaperList(content: string): CmtParseResult {
     const title = col(row, COL.title)
     if (!title) warnings.push(`Paper ${id}: empty title.`)
 
-    const authorsCell = col(row, COL.authors)
-    const emailsCell = col(row, COL.authorEmails)
     const authors = parseAuthors(
       id,
-      emailsCell,
-      authorsCell,
+      col(row, COL.authorEmails),
+      col(row, COL.authors),
       col(row, COL.authorNames),
       warnings
     )
@@ -345,11 +311,6 @@ export function parseCmtPaperList(content: string): CmtParseResult {
       secondarySubjectAreas: orNull(col(row, COL.secondarySubjects)),
       trackName: orNull(col(row, COL.track)),
       status,
-      authorList: parseAuthorList(
-        authorsCell,
-        splitList(emailsCell).length,
-        authors
-      ),
       cmtCreatedAt: parseCmtDate(col(row, COL.created)),
       cmtModifiedAt: parseCmtDate(col(row, COL.modified)),
       authors,

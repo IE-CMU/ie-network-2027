@@ -1,7 +1,7 @@
 import { and, eq, inArray, notInArray, sql } from 'drizzle-orm'
 
 import { dbClient } from '../../db/client.js'
-import { type PaperAuthor, paper, paperUser, user } from '../../db/schema.js'
+import { paper, paperUser, user } from '../../db/schema.js'
 import { auth } from '../auth.js'
 import type { CmtAuthor, CmtPaper, CmtParseResult } from './cmt.js'
 
@@ -13,8 +13,9 @@ import type { CmtAuthor, CmtPaper, CmtParseResult } from './cmt.js'
  * - Active papers missing from the file are soft-deactivated (is_active=false);
  *   a deactivated paper that appears again is reactivated.
  * - Author emails without an account get one (role "user", no password,
- *   unverified), like participants created by the seed. Existing accounts are
- *   linked as-is (their names are not changed).
+ *   unverified), like participants created by the seed, with the formatted
+ *   name and affiliation from CMT. Existing accounts are linked as-is: the
+ *   user owns their name and affiliation, and later imports never change them.
  */
 
 export interface ImportSummary {
@@ -25,7 +26,7 @@ export interface ImportSummary {
   reactivatedPapers: number[]
   unchangedPapers: number
   deactivatedPapers: { id: number; title: string }[]
-  newUsers: { email: string; name: string }[]
+  newUsers: { email: string; name: string; affiliation: string | null }[]
   authorLinks: number
   warnings: string[]
 }
@@ -35,20 +36,10 @@ type ExistingPaper = typeof paper.$inferSelect
 const sameTime = (a: Date | null, b: Date | null) =>
   (a?.getTime() ?? null) === (b?.getTime() ?? null)
 
+// Only the link is compared: names and affiliations live on `user`.
 const authorKey = (
-  a: Pick<
-    CmtAuthor,
-    'email' | 'isPrimaryContact' | 'order' | 'name' | 'affiliation'
-  >
-) =>
-  JSON.stringify([a.email, a.isPrimaryContact, a.order, a.name, a.affiliation])
-
-// Field by field: jsonb does not keep key order, so JSON.stringify of the
-// stored value can differ from a freshly parsed one.
-const authorListKey = (list: PaperAuthor[]) =>
-  JSON.stringify(
-    list.map((a) => [a.order, a.name, a.affiliation, a.isPrimaryContact])
-  )
+  a: Pick<CmtAuthor, 'email' | 'isPrimaryContact' | 'order'>
+) => JSON.stringify([a.email, a.isPrimaryContact, a.order])
 
 function paperChanged(
   p: CmtPaper,
@@ -62,7 +53,6 @@ function paperChanged(
     p.secondarySubjectAreas !== old.secondarySubjectAreas ||
     p.trackName !== old.trackName ||
     p.status !== old.status ||
-    authorListKey(p.authorList) !== authorListKey(old.authorList) ||
     !sameTime(p.cmtCreatedAt, old.cmtCreatedAt) ||
     !sameTime(p.cmtModifiedAt, old.cmtModifiedAt) ||
     p.authors.map(authorKey).join('\n') !== oldAuthors.join('\n')
@@ -91,23 +81,21 @@ export async function planImport(
 
   const existingAuthors = ids.length
     ? await dbClient
-        .select()
+        .select({
+          paperId: paperUser.paperId,
+          email: user.email,
+          isPrimaryContact: paperUser.isPrimaryContact,
+          order: paperUser.authorOrder,
+        })
         .from(paperUser)
+        .innerJoin(user, eq(user.id, paperUser.userId))
         .where(inArray(paperUser.paperId, ids))
         .orderBy(paperUser.paperId, paperUser.authorOrder)
     : []
   const authorsByPaper = new Map<number, string[]>()
   for (const a of existingAuthors) {
     const list = authorsByPaper.get(a.paperId) ?? []
-    list.push(
-      authorKey({
-        email: a.email,
-        isPrimaryContact: a.isPrimaryContact,
-        order: a.authorOrder,
-        name: a.authorName,
-        affiliation: a.affiliation,
-      })
-    )
+    list.push(authorKey({ ...a, email: a.email.toLowerCase() }))
     authorsByPaper.set(a.paperId, list)
   }
 
@@ -140,15 +128,16 @@ export async function planImport(
     .map((p) => ({ id: p.id, title: p.title }))
     .sort((a, b) => a.id - b.id)
 
-  // First name seen for each email is used for the new account.
-  const nameByEmail = new Map<string, string>()
+  // The first paper listing an email gives the new account its name and
+  // affiliation.
+  const firstByEmail = new Map<string, CmtAuthor>()
   for (const p of papers)
     for (const a of p.authors)
-      if (!nameByEmail.has(a.email)) nameByEmail.set(a.email, a.name)
-  const known = await findUsers([...nameByEmail.keys()])
-  summary.newUsers = [...nameByEmail]
-    .filter(([email]) => !known.has(email))
-    .map(([email, name]) => ({ email, name }))
+      if (!firstByEmail.has(a.email)) firstByEmail.set(a.email, a)
+  const known = await findUsers([...firstByEmail.keys()])
+  summary.newUsers = [...firstByEmail.values()]
+    .filter((a) => !known.has(a.email))
+    .map(({ email, name, affiliation }) => ({ email, name, affiliation }))
 
   return summary
 }
@@ -177,7 +166,7 @@ export async function applyImport(
           email: u.email,
           name: u.name,
           role: 'user',
-          data: { emailVerified: false },
+          data: { emailVerified: false, affiliation: u.affiliation },
         },
       })
     } catch (e: any) {
@@ -217,7 +206,6 @@ export async function applyImport(
         secondarySubjectAreas: p.secondarySubjectAreas,
         trackName: p.trackName,
         status: p.status,
-        authorList: p.authorList,
         cmtCreatedAt: p.cmtCreatedAt,
         cmtModifiedAt: p.cmtModifiedAt,
         isActive: true,
@@ -237,7 +225,6 @@ export async function applyImport(
             secondarySubjectAreas: sql`excluded.secondary_subject_areas`,
             trackName: sql`excluded.track_name`,
             status: sql`excluded.status`,
-            authorList: sql`excluded.author_list`,
             cmtCreatedAt: sql`excluded.cmt_created_at`,
             cmtModifiedAt: sql`excluded.cmt_modified_at`,
             isActive: sql`excluded.is_active`,
@@ -260,11 +247,8 @@ export async function applyImport(
       p.authors.map((a) => ({
         paperId: p.id,
         userId: userIds.get(a.email)!,
-        email: a.email,
         isPrimaryContact: a.isPrimaryContact,
         authorOrder: a.order,
-        authorName: a.name,
-        affiliation: a.affiliation,
       }))
     )
     if (links.length) await tx.insert(paperUser).values(links)

@@ -1,10 +1,7 @@
 ---
-import UserTable, { type AdminUserRow } from '@components/admin/UserTable.vue'
-import { dbClient } from '@db/client'
-import { account, paper, paperUser, user } from '@db/schema'
+import UserTable from '@components/admin/UserTable.vue'
+import { type AdminUserRow, loadAdminUserList } from '@lib/users/admin'
 import { type Locale } from '@utils/locale'
-import { getRoles } from '@utils/role'
-import { and, eq, sql } from 'drizzle-orm'
 
 interface Props {
   locale: Locale
@@ -17,48 +14,7 @@ let users: AdminUserRow[] = []
 let loadError = false
 
 try {
-  // Active papers per user (deactivated papers are not counted).
-  const paperCounts = dbClient
-    .select({
-      userId: paperUser.userId,
-      count: sql<number>`count(*)::int`.as('count'),
-    })
-    .from(paperUser)
-    .innerJoin(paper, and(eq(paper.id, paperUser.paperId), eq(paper.isActive, true)))
-    .groupBy(paperUser.userId)
-    .as('paper_counts')
-
-  const rows = await dbClient
-    .select({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      emailVerified: user.emailVerified,
-      banned: user.banned,
-      createdAt: user.createdAt,
-      paperCount: sql<number>`coalesce(${paperCounts.count}, 0)`,
-      // A 'credential' account means the user has set a password.
-      hasPassword: sql<boolean>`exists (
-        select 1 from ${account}
-        where ${account.userId} = ${user.id} and ${account.providerId} = 'credential'
-      )`,
-    })
-    .from(user)
-    .leftJoin(paperCounts, eq(paperCounts.userId, user.id))
-    .orderBy(user.name)
-
-  users = rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    email: r.email,
-    roles: getRoles(r),
-    emailVerified: r.emailVerified,
-    banned: r.banned ?? false,
-    hasPassword: r.hasPassword,
-    paperCount: r.paperCount,
-    createdAt: r.createdAt.toISOString(),
-  }))
+  users = await loadAdminUserList()
 } catch (error) {
   console.error('Error loading users:', error)
   loadError = true
