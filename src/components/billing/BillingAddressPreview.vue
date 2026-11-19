@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { BillingAddressInput } from '@utils/billingAddress'
+import type { BillingField } from '@utils/billingAddress'
 import { computed } from 'vue'
 
 // How the address will be printed on the receipt, so users can spot typos.
 // Used live beside the form, in the confirm dialog, and on the list cards.
 interface Props {
   locale: 'th' | 'en'
-  value: Partial<BillingAddressInput> & { [k: string]: unknown }
+  /** Form values (strings) or a saved row (optional columns are null). */
+  value: { [K in BillingField]?: string | null }
   /** Show placeholders for empty required fields (form preview). */
   placeholders?: boolean
 }
