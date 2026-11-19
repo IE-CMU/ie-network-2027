@@ -1,7 +1,7 @@
 import { requireGmailEnv } from '@utils/env'
-import nodemailer from 'nodemailer'
+import nodemailer, { type SendMailOptions } from 'nodemailer'
 
-export type SendEmailPayload = nodemailer.SendMailOptions
+export type SendEmailPayload = SendMailOptions
 
 // Runs when the worker imports this module, so missing Gmail env stops the
 // worker at startup instead of failing the first email job.

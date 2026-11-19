@@ -1,19 +1,15 @@
-import {
-  gmailUser,
-  googleClientId,
-  googleClientSecret,
-  googleRefreshToken,
-} from '@utils/env'
+// Standalone Gmail test: builds its own transporter so it can be run without
+// the queue or the worker. Auth matches src/lib/email/sent.ts (App Password).
+import { requireGmailEnv } from '@utils/env'
 import nodemailer from 'nodemailer'
+
+const gmail = requireGmailEnv()
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    type: 'OAuth2',
-    user: gmailUser,
-    clientId: googleClientId,
-    clientSecret: googleClientSecret,
-    refreshToken: googleRefreshToken,
+    user: gmail.gmailUser,
+    pass: gmail.gmailAppPassword,
   },
 })
 
@@ -28,20 +24,20 @@ export async function sendEmail({
 }) {
   try {
     await transporter.sendMail({
-      from: gmailUser,
+      from: gmail.gmailUser,
       to: recipientEmail,
-      replyTo: gmailUser,
+      replyTo: gmail.gmailUser,
       subject: `Test Email from IE Network 2027`,
-      text: `Dear ${name},\n\n${message}\n\nBest regards,\nIE Network 2017 Committee`,
+      text: `Dear ${name},\n\n${message}\n\nBest regards,\nIE Network 2027 Committee`,
       html: `
-        <h1>Dear ${name},</h1>
+        <p><b>Dear ${escapeHtml(name)},</b></p>
         <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
-        <p>Best regards,<br>IE Network 2017 Committee</p>
+        <p>Best regards,<br>IE Network 2027 Committee</p>
       `,
     })
   } catch (error) {
-    console.error('Error sending email:', error)
-    throw new Error('Failed to send email')
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(`Failed to send email: ${reason}`, { cause: error })
   }
 }
 
@@ -53,46 +49,3 @@ function escapeHtml(value: string) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 }
-
-// Old implementation
-
-// import { google } from 'googleapis'
-// const OAuth2 = google.auth.OAuth2
-
-// export const createTransporter = async () => {
-//   const oauth2Client = new OAuth2(
-//     googleClientId,
-//     googleClientSecret,
-//     'https://developers.google.com/oauthplayground'
-//   )
-
-//   oauth2Client.setCredentials({
-//     refresh_token: googleRefreshToken,
-//   })
-
-//   const accessToken = await new Promise((resolve, reject) => {
-//     oauth2Client.getAccessToken((err, token) => {
-//       if (err) {
-//         console.error('Failed to create access token :(', err)
-//         reject('Failed to create access token :(')
-//       }
-//       resolve(token)
-//     })
-//   })
-
-//   console.log('Access Token:', accessToken)
-
-//   const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//       type: 'OAuth2',
-//       user: gmailUser,
-//       accessToken,
-//       clientId: googleClientId,
-//       clientSecret: googleClientSecret,
-//       refreshToken: googleRefreshToken,
-//     },
-//   })
-
-//   return transporter
-// }
