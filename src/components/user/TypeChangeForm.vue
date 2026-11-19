@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@lib/forms/standardSchema'
-import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
+import { STUDENT_STATUS_LABELS } from '@utils/participantType'
 import {
   EVIDENCE_MAX_BYTES,
   EVIDENCE_MIME_TYPES,
@@ -45,7 +45,7 @@ const text = {
       FILE_TOO_LARGE: `ไฟล์ต้องมีขนาดไม่เกิน ${MAX_MB} MB`,
       FILE_TYPE: 'รองรับเฉพาะไฟล์ JPG, PNG, WebP หรือ PDF',
       COMMENT_TOO_LONG: `หมายเหตุต้องไม่เกิน ${REQUESTER_COMMENT_MAX} ตัวอักษร`,
-      NOT_GENERAL: 'ประเภทผู้เข้าร่วมของคุณถูกเปลี่ยนแล้ว กรุณาตรวจสอบที่หน้าบัญชีของคุณ',
+      NOT_ELIGIBLE: 'คุณได้รับสิทธิ์นักศึกษาแล้ว กรุณาตรวจสอบที่หน้าบัญชีของคุณ',
       ALREADY_PENDING: 'คุณมีคำขอที่รอการตรวจสอบอยู่แล้ว',
       ALREADY_APPROVED: 'คำขอของคุณได้รับการอนุมัติแล้ว',
       session: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่',
@@ -74,7 +74,7 @@ const text = {
       FILE_TOO_LARGE: `The file must be ${MAX_MB} MB or smaller.`,
       FILE_TYPE: 'Only JPG, PNG, WebP or PDF files are accepted.',
       COMMENT_TOO_LONG: `The comment must be at most ${REQUESTER_COMMENT_MAX} characters.`,
-      NOT_GENERAL: 'Your participant type has already been changed. Please check your account page.',
+      NOT_ELIGIBLE: 'You already have a student discount. Please check your account page.',
       ALREADY_PENDING: 'You already have a request waiting for review.',
       ALREADY_APPROVED: 'Your request has already been approved.',
       session: 'Your session has expired. Please sign in again.',
@@ -83,7 +83,7 @@ const text = {
   },
 } as const
 const t = computed(() => text[props.locale])
-const typeLabels = computed(() => PARTICIPANT_TYPE_LABELS[props.locale])
+const typeLabels = computed(() => STUDENT_STATUS_LABELS[props.locale])
 
 const ACCEPT = EVIDENCE_MIME_TYPES.join(',')
 const FILE_ERROR_CODES = ['FILE_EMPTY', 'FILE_TOO_LARGE', 'FILE_TYPE'] as const

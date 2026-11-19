@@ -1,20 +1,20 @@
 // Shared constants for participant type change requests
 // (`type_change_request` table). Kept free of DB imports so client
 // components can use them.
-import type { ParticipantType } from './participantType.js'
+import { STUDENT_STATUSES, type StudentStatus } from './participantType.js'
 
 //   pending  – waiting for an admin
-//   approved – user.participant_type was changed to the requested type
+//   approved – user.participant_type got the requested student discount
 //   rejected – the user may submit a new request
 export const TYPE_CHANGE_STATUSES = ['pending', 'approved', 'rejected'] as const
 
 export type TypeChangeStatus = (typeof TYPE_CHANGE_STATUSES)[number]
 
-// Types a user can ask for. 'general' is the default, so asking for it
-// makes no sense.
-export const REQUESTABLE_TYPES = ['student', 'ie_student'] as const satisfies readonly ParticipantType[]
+// What a user can ask for: a student discount on top of their base type
+// (participant or author). Approval keeps the base, see withStudentStatus.
+export const REQUESTABLE_TYPES = STUDENT_STATUSES
 
-export type RequestableType = (typeof REQUESTABLE_TYPES)[number]
+export type RequestableType = StudentStatus
 
 // Evidence upload (ID card etc.). The server checks the file's first bytes,
 // not just the type the browser reports.

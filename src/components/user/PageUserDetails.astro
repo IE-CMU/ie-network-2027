@@ -1,7 +1,7 @@
 ---
 import { getTypeChangeState, type TypeChangeState } from '@lib/typeChange/requests'
 import { type Locale } from '@utils/locale'
-import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
+import { PARTICIPANT_TYPE_LABELS, withStudentStatus } from '@utils/participantType'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 interface Props {
   locale: Locale
@@ -45,9 +45,10 @@ if (user) {
   }
 }
 const typeLabels = PARTICIPANT_TYPE_LABELS[locale]
-const participantType = typeState?.participantType ?? user?.participantType ?? 'general'
+const participantType = typeState?.participantType ?? user?.participantType ?? 'participant'
 const request = typeState?.latest ?? null
-const requestedLabel = request ? typeLabels[request.requestedType] : ''
+// The type the request gives: same base (participant/author), plus the discount.
+const requestedLabel = request ? typeLabels[withStudentStatus(participantType, request.requestedType)] : ''
 const evidenceUrl = request?.hasEvidence ? `/api/type-change-request/${request.id}/evidence` : null
 ---
 

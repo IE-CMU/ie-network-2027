@@ -10,7 +10,7 @@ export const prerender = false
 
 const locale = getLocale(Astro)
 
-// Only users who may submit a request see the form (type is 'general', no
+// Only users who may submit a request see the form (type has no student discount yet, no
 // pending or approved request). Others go back to their account page,
 // which shows the request status.
 const user = Astro.locals.user

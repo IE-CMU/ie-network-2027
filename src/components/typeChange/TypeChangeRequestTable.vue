@@ -8,7 +8,7 @@ import {
 } from '@components/hook/useAppTable'
 import type { AdminTypeChangeRow } from '@lib/typeChange/requests'
 import { FlexRender, type SortFn } from '@tanstack/vue-table'
-import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
+import { PARTICIPANT_TYPE_LABELS, withStudentStatus } from '@utils/participantType'
 import { REVIEWER_COMMENT_MAX, type TypeChangeStatus } from '@utils/typeChangeRequest'
 import { actions } from 'astro:actions'
 import { computed, ref, watch } from 'vue'
@@ -94,6 +94,9 @@ const text = {
 } as const
 const t = computed(() => text[props.locale])
 const typeLabels = computed(() => PARTICIPANT_TYPE_LABELS[props.locale])
+// The type the requester gets (or got) on approval: same base, plus the discount.
+const targetType = (r: AdminTypeChangeRow) =>
+  withStudentStatus(r.requester.participantType, r.requestedType)
 
 // Local copy so reviewed rows update without a reload. Rows are replaced, not
 // mutated, so the table sees the change and re-filters/re-sorts.
@@ -224,7 +227,7 @@ async function submitReview() {
       reviewer: data.reviewer,
       requester:
         data.status === 'approved'
-          ? { ...r.requester, participantType: r.requestedType }
+          ? { ...r.requester, participantType: targetType(r) }
           : r.requester,
     }
     rows.value = rows.value.map((x) => (x.id === r.id ? updated : x))
@@ -284,10 +287,10 @@ async function submitReview() {
                   typeLabels[row.original.requester.participantType]
                 }}</span>
                 <span v-if="row.original.status === 'pending'">
-                  → <span class="font-semibold">{{ typeLabels[row.original.requestedType] }}</span>
+                  → <span class="font-semibold">{{ typeLabels[targetType(row.original)] }}</span>
                 </span>
                 <div v-else class="text-xs text-base-content/70">
-                  {{ t.change }}: {{ typeLabels[row.original.requestedType] }}
+                  {{ t.change }}: {{ typeLabels[targetType(row.original)] }}
                 </div>
               </td>
               <td v-else-if="cell.column.id === 'evidence'" class="min-w-40">
@@ -366,7 +369,7 @@ async function submitReview() {
             t.dialogBody(
               reviewing.requester.name,
               typeLabels[reviewing.requester.participantType],
-              typeLabels[reviewing.requestedType]
+              typeLabels[targetType(reviewing)]
             )
           }}
         </p>

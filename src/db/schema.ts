@@ -14,10 +14,11 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 
-import { PARTICIPANT_TYPES } from '../utils/participantType.js'
+import { PARTICIPANT_TYPES, STUDENT_STATUSES } from '../utils/participantType.js'
 import { TYPE_CHANGE_STATUSES } from '../utils/typeChangeRequest.js'
 
 export const participantTypeEnum = pgEnum('participant_type', PARTICIPANT_TYPES)
+export const studentStatusEnum = pgEnum('student_status', STUDENT_STATUSES)
 export const typeChangeStatusEnum = pgEnum('type_change_request_status', TYPE_CHANGE_STATUSES)
 
 // Below is a schema for better-auth using Drizzle ORM with PostgreSQL.
@@ -28,10 +29,11 @@ export const user = pgTable('user', {
   // Declared in better-auth user.additionalFields (src/lib/auth/create.ts).
   // Set from CMT when the paper import creates the account; user-editable.
   affiliation: text('affiliation'),
-  // Registration rate category. Also in additionalFields, with input: false
-  // so users cannot change it; admins set it from the user list.
+  // Registration rate category (src/utils/participantType.ts). Also in
+  // additionalFields, with input: false so users cannot change it.
+  // Self sign-ups get the default; the paper import makes users authors.
   participantType: participantTypeEnum('participant_type')
-    .default('general')
+    .default('participant')
     .notNull(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
@@ -167,8 +169,9 @@ const bytea = customType<{ data: Buffer; driverData: Buffer }>({
 })
 
 // ---------------- Participant type change requests ----------------
-// A user asks to change user.participant_type (e.g. to student) and uploads
-// evidence; an admin approves or rejects. Rules (src/lib/typeChange/):
+// A user asks for a student discount on user.participant_type and uploads
+// evidence; an admin approves or rejects. Approving keeps the user's base
+// (participant/author), e.g. author + ie_student → author_student_ie. Rules (src/lib/typeChange/):
 // at most one pending request per user (enforced by the index below),
 // no new requests after one is approved, new ones allowed after a rejection.
 export const typeChangeRequest = pgTable(
@@ -178,7 +181,7 @@ export const typeChangeRequest = pgTable(
     requesterId: text('requester_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    requestedType: participantTypeEnum('requested_type').notNull(),
+    requestedType: studentStatusEnum('requested_type').notNull(),
     requesterComment: text('requester_comment'),
     status: typeChangeStatusEnum('status').default('pending').notNull(),
     submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),

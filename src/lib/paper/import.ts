@@ -16,6 +16,8 @@ import type { CmtAuthor, CmtPaper, CmtParseResult } from './cmt.js'
  *   unverified), like participants created by the seed, with the formatted
  *   name and affiliation from CMT. Existing accounts are linked as-is: the
  *   user owns their name and affiliation, and later imports never change them.
+ * - Every author's participant type becomes author*, keeping any student
+ *   discount (participant → author, participant_student → author_student, ...).
  */
 
 export interface ImportSummary {
@@ -166,7 +168,11 @@ export async function applyImport(
           email: u.email,
           name: u.name,
           role: 'user',
-          data: { emailVerified: false, affiliation: u.affiliation },
+          data: {
+            emailVerified: false,
+            affiliation: u.affiliation,
+            participantType: 'author',
+          },
         },
       })
     } catch (e: any) {
@@ -252,6 +258,25 @@ export async function applyImport(
       }))
     )
     if (links.length) await tx.insert(paperUser).values(links)
+
+    // Existing accounts of authors in the file (e.g. people who signed up
+    // themselves before this import) become authors, keeping any student
+    // discount (participant_student → author_student). Also catches accounts
+    // from an earlier import attempt that failed before this point.
+    const authorIds = [...new Set(userIds.values())]
+    if (authorIds.length) {
+      await tx
+        .update(user)
+        .set({
+          participantType: sql`replace(${user.participantType}::text, 'participant', 'author')::participant_type`,
+        })
+        .where(
+          and(
+            inArray(user.id, authorIds),
+            sql`${user.participantType}::text like 'participant%'`
+          )
+        )
+    }
 
     // No longer accepted (or missing from the file): soft-deactivate.
     await tx

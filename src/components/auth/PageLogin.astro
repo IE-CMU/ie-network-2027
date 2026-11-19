@@ -11,7 +11,6 @@ const { locale } = Astro.props
 
 const t = (th: string, en: string) => (locale === 'th' ? th : en)
 const homeUrl = getRelativeLocaleUrl(locale, '/')
-const signupUrl = getRelativeLocaleUrl(locale, '/signup')
 const loginUrl = getRelativeLocaleUrl(locale, '/login')
 ---
 
@@ -37,7 +36,8 @@ const loginUrl = getRelativeLocaleUrl(locale, '/login')
     <!-- Card -->
     <div class="card border border-base-300 bg-base-100 shadow-lg">
       <div class="card-body gap-6 p-6 sm:p-8">
-        <!-- Magic link first: participants have no password until they set one. -->
+        <!-- Magic link first: users have no password until they set one.
+             Also the sign-up: an unknown email gets a participant account. -->
         <MagicLink
           client:load
           locale={locale}
@@ -52,16 +52,5 @@ const loginUrl = getRelativeLocaleUrl(locale, '/login')
         <LoginForm client:load locale={locale} redirectUrl={homeUrl} />
       </div>
     </div>
-
-    <!-- Footer -->
-    <!-- <p class="mt-6 text-center text-sm text-gray-600">
-      {t('ยังไม่มีบัญชี?', "Don't have an account?")}
-      <a
-        href={signupUrl}
-        class="font-semibold text-[#7E5A94] hover:underline"
-      >
-        {t('สมัครสมาชิก', 'Create an account')}
-      </a>
-    </p> -->
   </div>
 </main>

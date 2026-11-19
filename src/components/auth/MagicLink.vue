@@ -2,8 +2,9 @@
 import { authClient } from '@lib/auth/client'
 import { toTypedSchema } from '@lib/forms/standardSchema'
 import { z } from 'astro/zod'
+import { actions } from 'astro:actions'
 import { useForm } from 'vee-validate'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 interface Props {
   locale: 'th' | 'en'
@@ -19,37 +20,48 @@ const RESEND_COOLDOWN_S = 60
 
 const text = {
   th: {
-    intro: 'เข้าสู่ระบบครั้งแรก? กรอกอีเมลที่ลงทะเบียนไว้ เราจะส่งลิงก์สำหรับเข้าสู่ระบบให้ทางอีเมล ไม่ต้องใช้รหัสผ่าน',
+    intro: 'กรอกอีเมลของคุณ เราจะส่งลิงก์สำหรับเข้าสู่ระบบให้ทางอีเมล ไม่ต้องใช้รหัสผ่าน หากยังไม่มีบัญชี ระบบจะสร้างบัญชีให้เมื่อคุณคลิกลิงก์',
     email: 'อีเมล',
     emailPlaceholder: 'you@example.com',
     submit: 'ส่งลิงก์เข้าสู่ระบบ',
     submitting: 'กำลังส่ง...',
     resendIn: (s: number) => `ส่งอีกครั้งได้ใน ${s} วินาที`,
-    sent: 'หากอีเมลนี้ลงทะเบียนไว้ในระบบ เราได้ส่งลิงก์เข้าสู่ระบบไปแล้ว กรุณาตรวจสอบกล่องจดหมาย (และโฟลเดอร์สแปม)',
+    sent: (email: string) =>
+      `เราได้ส่งลิงก์เข้าสู่ระบบไปที่ ${email} แล้ว กรุณาตรวจสอบกล่องจดหมาย (และโฟลเดอร์สแปม)`,
+    notAuthor: {
+      title: 'อีเมลนี้ไม่ได้เชื่อมโยงกับบทความใด',
+      body: 'หากคุณเป็นผู้แต่งบทความ กรุณาใช้อีเมลเดียวกับที่ใช้ในระบบ Microsoft CMT เพื่อลงทะเบียนในฐานะผู้แต่งบทความ หากดำเนินการต่อ บัญชีนี้จะลงทะเบียนในฐานะผู้เข้าร่วมงานเท่านั้น',
+      proceed: 'ดำเนินการต่อในฐานะผู้เข้าร่วมงาน',
+      change: 'ใช้อีเมลอื่น',
+    },
     errors: {
       required: 'กรุณากรอกอีเมล',
       invalidEmail: 'รูปแบบอีเมลไม่ถูกต้อง',
       invalidLink: 'ลิงก์เข้าสู่ระบบไม่ถูกต้องหรือหมดอายุแล้ว กรุณาขอลิงก์ใหม่',
-      notRegistered: 'ไม่พบอีเมลนี้ในระบบ กรุณาใช้อีเมลที่ลงทะเบียนไว้ หรือติดต่อผู้จัดงาน',
       tooMany: 'มีการขอลิงก์หลายครั้งเกินไป กรุณาลองใหม่ภายหลัง',
       unexpected: 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง',
     },
   },
   en: {
     intro:
-      "First time signing in? Enter your registered email and we'll send you a sign-in link. No password needed.",
+      "Enter your email and we'll send you a sign-in link. No password needed. If you don't have an account yet, one is created when you click the link.",
     email: 'Email',
     emailPlaceholder: 'you@example.com',
     submit: 'Email me a sign-in link',
     submitting: 'Sending...',
     resendIn: (s: number) => `You can resend in ${s}s`,
-    sent: "If this email is registered, we've sent a sign-in link. Please check your inbox (and spam folder).",
+    sent: (email: string) =>
+      `We've sent a sign-in link to ${email}. Please check your inbox (and spam folder).`,
+    notAuthor: {
+      title: 'This email is not associated with any paper',
+      body: 'If you are an author of a paper, please use the email from the Microsoft CMT system so that you can register as an author. If you continue, this account will be registered as a participant only.',
+      proceed: 'Continue as participant',
+      change: 'Use a different email',
+    },
     errors: {
       required: 'Please enter your email.',
       invalidEmail: 'Please enter a valid email address.',
       invalidLink: 'This sign-in link is invalid or has expired. Please request a new one.',
-      notRegistered:
-        "We couldn't find this email. Please use the email you registered with, or contact the organizers.",
       tooMany: 'Too many requests. Please try again later.',
       unexpected: 'Something went wrong. Please try again.',
     },
@@ -57,10 +69,14 @@ const text = {
 } as const
 const t = computed(() => text[locale])
 
-const sent = ref(false)
+// Email the last link was sent to (shown in the success banner).
+const sentTo = ref('')
+// Email with no account, waiting for the user to confirm the participant sign-up.
+const unknownEmail = ref('')
 // Banner for server/link errors. Field errors live in vee-validate.
 const errorMessage = ref('')
 const cooldown = ref(0)
+const sending = ref(false)
 let timer: ReturnType<typeof setInterval> | undefined
 
 // Rebuilt when the locale (messages) changes.
@@ -93,6 +109,13 @@ const [email, emailAttrs] = defineField('email', () => {
   }
 })
 
+const busy = computed(() => isSubmitting.value || sending.value)
+
+// The warning is about one specific email; editing it starts over.
+watch(email, (v) => {
+  if (unknownEmail.value && v?.trim() !== unknownEmail.value) unknownEmail.value = ''
+})
+
 function startCooldown() {
   cooldown.value = RESEND_COOLDOWN_S
   clearInterval(timer)
@@ -109,11 +132,7 @@ onMounted(() => {
   if (!code) return
   const e = t.value.errors
   errorMessage.value =
-    code === 'new_user_signup_disabled'
-      ? e.notRegistered
-      : code === 'INVALID_TOKEN' || code === 'EXPIRED_TOKEN'
-        ? e.invalidLink
-        : e.unexpected
+    code === 'INVALID_TOKEN' || code === 'EXPIRED_TOKEN' ? e.invalidLink : e.unexpected
   // Drop the error from the URL so a refresh doesn't show it again.
   params.delete('error')
   params.delete('error_description')
@@ -121,36 +140,74 @@ onMounted(() => {
   window.history.replaceState(null, '', window.location.pathname + (query ? `?${query}` : ''))
 })
 
+/** Send the link. For an email without an account, the account
+ *  (participant) is created when the link is clicked. */
+async function sendLink(address: string) {
+  sending.value = true
+  try {
+    const { error } = await authClient.signIn.magicLink({
+      email: address,
+      callbackURL: redirectUrl,
+      errorCallbackURL: errorUrl,
+    })
+    if (error) {
+      console.error('Magic link error:', error)
+      errorMessage.value = error.status === 429 ? t.value.errors.tooMany : t.value.errors.unexpected
+      return
+    }
+    unknownEmail.value = ''
+    sentTo.value = address
+    startCooldown()
+  } catch (error) {
+    console.error('Magic link error:', error)
+    errorMessage.value = t.value.errors.unexpected
+  } finally {
+    sending.value = false
+  }
+}
+
+// Step 1: known email (e.g. an imported author) → send the link straight away.
+// Unknown email → show the warning; step 2 is confirmParticipant().
 const handleMagicLink = handleSubmit(
   async (values) => {
     if (cooldown.value > 0) return
     errorMessage.value = ''
-    sent.value = false
+    sentTo.value = ''
+    unknownEmail.value = ''
     try {
-      const { error } = await authClient.signIn.magicLink({
-        email: values.email,
-        callbackURL: redirectUrl,
-        errorCallbackURL: errorUrl,
-      })
+      const { data, error } = await actions.user.checkEmail({ email: values.email })
       if (error) {
-        console.error('Magic link error:', error)
-        errorMessage.value = error.status === 429 ? t.value.errors.tooMany : t.value.errors.unexpected
+        console.error('Check email error:', error)
+        errorMessage.value =
+          error.code === 'TOO_MANY_REQUESTS' ? t.value.errors.tooMany : t.value.errors.unexpected
         return
       }
-      // Same message whether or not the email exists (no account enumeration).
-      sent.value = true
-      startCooldown()
+      if (data.exists) await sendLink(values.email)
+      else unknownEmail.value = values.email
     } catch (error) {
-      console.error('Magic link error:', error)
+      console.error('Check email failed:', error)
       errorMessage.value = t.value.errors.unexpected
     }
   },
   () => {
     // Clear stale banners when the user retries with invalid input.
     errorMessage.value = ''
-    sent.value = false
+    sentTo.value = ''
+    unknownEmail.value = ''
   }
 )
+
+async function confirmParticipant() {
+  if (!unknownEmail.value || cooldown.value > 0 || busy.value) return
+  errorMessage.value = ''
+  await sendLink(unknownEmail.value)
+}
+
+function useDifferentEmail() {
+  unknownEmail.value = ''
+  email.value = ''
+  document.getElementById('magic-email')?.focus()
+}
 </script>
 
 <template>
@@ -160,8 +217,8 @@ const handleMagicLink = handleSubmit(
     <div v-if="errorMessage" role="alert" class="alert alert-error alert-soft text-sm">
       <span>{{ errorMessage }}</span>
     </div>
-    <div v-if="sent" role="status" class="alert alert-success alert-soft text-sm">
-      <span>{{ t.sent }}</span>
+    <div v-if="sentTo" role="status" class="alert alert-success alert-soft text-sm">
+      <span>{{ t.sent(sentTo) }}</span>
     </div>
 
     <fieldset class="fieldset gap-1 p-0">
@@ -178,20 +235,46 @@ const handleMagicLink = handleSubmit(
         :class="{ 'input-error': errors.email }"
         :aria-invalid="!!errors.email"
         :aria-describedby="errors.email ? 'magic-email-error' : undefined"
-        :disabled="isSubmitting"
+        :disabled="busy"
       />
       <p v-if="errors.email" id="magic-email-error" class="label text-xs text-error">
         {{ errors.email }}
       </p>
     </fieldset>
 
+    <div
+      v-if="unknownEmail"
+      role="alert"
+      class="alert alert-warning alert-soft flex flex-col items-stretch gap-3 text-sm"
+    >
+      <div>
+        <p class="font-semibold">{{ t.notAuthor.title }}</p>
+        <p class="mt-1">{{ t.notAuthor.body }}</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button
+          type="button"
+          class="btn btn-sm border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"
+          :disabled="busy || cooldown > 0"
+          @click="confirmParticipant"
+        >
+          <span v-if="sending" class="loading loading-spinner loading-sm" />
+          {{ sending ? t.submitting : cooldown > 0 ? t.resendIn(cooldown) : t.notAuthor.proceed }}
+        </button>
+        <button type="button" class="btn btn-sm btn-ghost" :disabled="busy" @click="useDifferentEmail">
+          {{ t.notAuthor.change }}
+        </button>
+      </div>
+    </div>
+
     <button
+      v-else
       type="submit"
       class="btn w-full border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"
-      :disabled="isSubmitting || cooldown > 0"
+      :disabled="busy || cooldown > 0"
     >
-      <span v-if="isSubmitting" class="loading loading-spinner loading-sm" />
-      {{ isSubmitting ? t.submitting : cooldown > 0 ? t.resendIn(cooldown) : t.submit }}
+      <span v-if="busy" class="loading loading-spinner loading-sm" />
+      {{ busy ? t.submitting : cooldown > 0 ? t.resendIn(cooldown) : t.submit }}
     </button>
   </form>
 </template>

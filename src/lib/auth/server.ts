@@ -1,26 +1,10 @@
-import { eq } from 'drizzle-orm'
-
-import { dbClient } from '../../db/client.js'
-import { user } from '../../db/schema.js'
 import { createAuth } from './create.js'
 import { addEmailQueue } from '../queue/producer.js'
 
 export const auth = createAuth({
+  // Sent for unknown emails too: clicking the link creates a 'participant'
+  // account (magic-link sign-up, see create.ts).
   sendMagicLink: async ({ email, url }) => {
-    // Sign-up is disabled, so a link for an unknown email could never be used.
-    // Skip sending it, so the site can't be used to email arbitrary addresses.
-    // The UI shows the same message either way, so this doesn't reveal which
-    // emails are registered.
-    const existing = await dbClient
-      .select({ id: user.id })
-      .from(user)
-      .where(eq(user.email, email.toLowerCase()))
-      .limit(1)
-    if (existing.length === 0) {
-      console.warn('Magic link requested for unknown email; not sent.')
-      return
-    }
-
     await addEmailQueue({
       name: email,
       recipientEmail: email,

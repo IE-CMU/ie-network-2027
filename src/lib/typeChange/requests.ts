@@ -3,7 +3,11 @@ import { alias } from 'drizzle-orm/pg-core'
 
 import { dbClient } from '../../db/client.js'
 import { typeChangeEvidence, typeChangeRequest, user } from '../../db/schema.js'
-import type { ParticipantType } from '../../utils/participantType.js'
+import {
+  isBaseType,
+  withStudentStatus,
+  type ParticipantType,
+} from '../../utils/participantType.js'
 import {
   EVIDENCE_MAX_BYTES,
   REQUESTER_COMMENT_MAX,
@@ -15,7 +19,7 @@ import { cleanFileName, detectEvidenceType } from './evidence.js'
 
 // Codes are sent to the browser as the ActionError message and translated there.
 export type TypeChangeErrorCode =
-  | 'NOT_GENERAL' // user's type is no longer 'general'
+  | 'NOT_ELIGIBLE' // user already has a student discount
   | 'ALREADY_PENDING'
   | 'ALREADY_APPROVED'
   | 'FILE_EMPTY'
@@ -47,7 +51,7 @@ const cleanComment = (comment: string | null | undefined, max: number) => {
 
 export interface TypeChangeRequestSummary {
   id: string
-  requestedType: ParticipantType
+  requestedType: RequestableType
   status: TypeChangeStatus
   requesterComment: string | null
   reviewerComment: string | null
@@ -99,7 +103,7 @@ export async function getTypeChangeState(userId: string): Promise<TypeChangeStat
     participantType: u.participantType,
     latest: summary,
     canRequest:
-      u.participantType === 'general' &&
+      isBaseType(u.participantType) &&
       summary?.status !== 'pending' &&
       summary?.status !== 'approved',
   }
@@ -129,7 +133,7 @@ export async function submitTypeChangeRequest(userId: string, input: SubmitTypeC
         .from(user)
         .where(eq(user.id, userId))
         .for('update')
-      if (!u || u.participantType !== 'general') throw new TypeChangeError('NOT_GENERAL')
+      if (!u || !isBaseType(u.participantType)) throw new TypeChangeError('NOT_ELIGIBLE')
 
       const [latest] = await tx
         .select({ status: typeChangeRequest.status })
@@ -165,7 +169,7 @@ export async function submitTypeChangeRequest(userId: string, input: SubmitTypeC
 export interface AdminTypeChangeRow {
   id: string
   requester: { id: string; name: string; email: string; participantType: ParticipantType }
-  requestedType: ParticipantType
+  requestedType: RequestableType
   requesterComment: string | null
   status: TypeChangeStatus
   submittedAt: string // ISO
@@ -225,8 +229,10 @@ export async function loadAdminTypeChangeRequests(): Promise<AdminTypeChangeRow[
 export type ReviewDecision = 'approved' | 'rejected'
 
 /**
- * Approve or reject a pending request. Approving also sets the user's
- * participant type, in the same transaction.
+ * Approve or reject a pending request. Approving also adds the student
+ * discount to the user's participant type, in the same transaction. The
+ * base is read at approval time, so a participant who became an author
+ * (paper import) while the request was pending ends up author_student*.
  */
 export async function reviewTypeChangeRequest(
   reviewerId: string,
@@ -259,10 +265,17 @@ export async function reviewTypeChangeRequest(
     }
 
     if (decision === 'approved') {
-      await tx
-        .update(user)
-        .set({ participantType: updated.requestedType })
+      const [u] = await tx
+        .select({ participantType: user.participantType })
+        .from(user)
         .where(eq(user.id, updated.requesterId))
+        .for('update')
+      if (u) {
+        await tx
+          .update(user)
+          .set({ participantType: withStudentStatus(u.participantType, updated.requestedType) })
+          .where(eq(user.id, updated.requesterId))
+      }
     }
 
     return {
