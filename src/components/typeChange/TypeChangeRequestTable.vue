@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import AppTableHead from '@components/common/AppTableHead.vue'
+import {
+  createAppColumnHelper,
+  rowSearch,
+  useAppTable,
+  useSelectFilter,
+} from '@components/hook/useAppTable'
 import type { AdminTypeChangeRow } from '@lib/typeChange/requests'
+import { FlexRender, type SortFn } from '@tanstack/vue-table'
 import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
 import { REVIEWER_COMMENT_MAX, type TypeChangeStatus } from '@utils/typeChangeRequest'
 import { actions } from 'astro:actions'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 interface Props {
   locale: 'th' | 'en'
@@ -87,30 +95,57 @@ const text = {
 const t = computed(() => text[props.locale])
 const typeLabels = computed(() => PARTICIPANT_TYPE_LABELS[props.locale])
 
-// Local copy so reviewed rows update without a reload.
+// Local copy so reviewed rows update without a reload. Rows are replaced, not
+// mutated, so the table sees the change and re-filters/re-sorts.
 const rows = ref<AdminTypeChangeRow[]>(props.requests.map((r) => ({ ...r })))
 
-const query = ref('')
-const statusFilter = ref<'all' | TypeChangeStatus>('pending')
+// ---------------------------------------------------------------------------
+// Columns. The order is fixed (no header toggles): pending requests oldest
+// first (first come, first served), everything else newest first.
+// ---------------------------------------------------------------------------
+const col = createAppColumnHelper<AdminTypeChangeRow>()
 
-const filtered = computed(() => {
-  const q = query.value.trim().toLowerCase()
-  return rows.value
-    .filter(
-      (r) =>
-        (statusFilter.value === 'all' || r.status === statusFilter.value) &&
-        (!q ||
-          r.requester.name.toLowerCase().includes(q) ||
-          r.requester.email.toLowerCase().includes(q))
-    )
-    .sort((a, b) =>
-      // Pending: oldest first (first come, first served). Others: newest first.
-      a.status === 'pending' && b.status === 'pending'
-        ? a.submittedAt.localeCompare(b.submittedAt)
-        : b.submittedAt.localeCompare(a.submittedAt)
-    )
+const reviewOrder: SortFn<any, AdminTypeChangeRow> = (a, b) =>
+  a.original.status === 'pending' && b.original.status === 'pending'
+    ? a.original.submittedAt.localeCompare(b.original.submittedAt)
+    : b.original.submittedAt.localeCompare(a.original.submittedAt)
+
+const columns = col.columns([
+  col.accessor('submittedAt', {
+    header: () => t.value.submitted,
+    sortFn: reviewOrder,
+  }),
+  col.accessor('requester.name', { id: 'requester', header: () => t.value.requester }),
+  col.display({ id: 'change', header: () => t.value.change }),
+  col.display({ id: 'evidence', header: () => t.value.evidence }),
+  col.accessor('requesterComment', { header: () => t.value.comment }),
+  col.accessor('status', {
+    header: () => t.value.review,
+    filterFn: 'equals',
+  }),
+])
+
+const table = useAppTable({
+  columns,
+  data: rows,
+  initialState: {
+    sorting: [{ id: 'submittedAt', desc: false }],
+    columnFilters: [{ id: 'status', value: 'pending' }],
+  },
+  ...rowSearch<AdminTypeChangeRow>(
+    (r, q) =>
+      r.requester.name.toLowerCase().includes(q) ||
+      r.requester.email.toLowerCase().includes(q),
+    'requester'
+  ),
 })
 
+const query = ref('')
+watch(query, (q) => table.setGlobalFilter(q.trim() || undefined))
+
+const statusFilter = useSelectFilter<'all' | TypeChangeStatus>(() => table.getColumn('status'))
+
+const visibleRows = computed(() => table.getRowModel().rows)
 const pendingCount = computed(() => rows.value.filter((r) => r.status === 'pending').length)
 
 // th-TH uses the Buddhist calendar.
@@ -181,11 +216,18 @@ async function submitReview() {
       errorMessage.value = errorFor(error.code, error.message)
       return
     }
-    r.status = data.status
-    r.reviewerComment = data.reviewerComment
-    r.statusChangedAt = data.statusChangedAt
-    r.reviewer = data.reviewer
-    if (data.status === 'approved') r.requester.participantType = r.requestedType
+    const updated: AdminTypeChangeRow = {
+      ...r,
+      status: data.status,
+      reviewerComment: data.reviewerComment,
+      statusChangedAt: data.statusChangedAt,
+      reviewer: data.reviewer,
+      requester:
+        data.status === 'approved'
+          ? { ...r.requester, participantType: r.requestedType }
+          : r.requester,
+    }
+    rows.value = rows.value.map((x) => (x.id === r.id ? updated : x))
     dialog.value?.close()
   } catch (e) {
     console.error('Type change review failed:', e)
@@ -213,88 +255,103 @@ async function submitReview() {
     </div>
 
     <p class="text-sm text-base-content/70">
-      {{ t.showing(filtered.length, rows.length) }}
+      {{ t.showing(visibleRows.length, rows.length) }}
     </p>
 
     <div class="overflow-x-auto rounded-box border border-base-300">
       <table class="table table-sm">
-        <thead>
-          <tr>
-            <th>{{ t.submitted }}</th>
-            <th>{{ t.requester }}</th>
-            <th>{{ t.change }}</th>
-            <th>{{ t.evidence }}</th>
-            <th>{{ t.comment }}</th>
-            <th>{{ t.review }}</th>
-          </tr>
-        </thead>
+        <AppTableHead :header-groups="table.getHeaderGroups()" :sortable="false" />
         <tbody>
-          <tr v-if="filtered.length === 0">
-            <td colspan="6" class="text-center text-base-content/70 py-6">{{ t.empty }}</td>
+          <tr v-if="visibleRows.length === 0">
+            <td
+              :colspan="table.getVisibleLeafColumns().length"
+              class="text-center text-base-content/70 py-6"
+            >
+              {{ t.empty }}
+            </td>
           </tr>
-          <tr v-for="r in filtered" :key="r.id" class="align-top">
-            <td class="whitespace-nowrap">{{ formatDate(r.submittedAt) }}</td>
-            <td class="min-w-48">
-              <div class="font-semibold">{{ r.requester.name }}</div>
-              <div class="text-base-content/70 break-all">{{ r.requester.email }}</div>
-            </td>
-            <td class="whitespace-nowrap">
-              <span class="text-base-content/70">{{ typeLabels[r.requester.participantType] }}</span>
-              <span v-if="r.status === 'pending'">
-                → <span class="font-semibold">{{ typeLabels[r.requestedType] }}</span>
-              </span>
-              <div v-else class="text-xs text-base-content/70">
-                {{ t.change }}: {{ typeLabels[r.requestedType] }}
-              </div>
-            </td>
-            <td class="min-w-40">
-              <a
-                v-if="r.evidence"
-                :href="evidenceUrl(r)"
-                target="_blank"
-                rel="noopener"
-                class="link link-primary break-all"
+          <tr v-for="row in visibleRows" :key="row.original.id" class="align-top">
+            <template v-for="cell in row.getVisibleCells()" :key="cell.id">
+              <td v-if="cell.column.id === 'submittedAt'" class="whitespace-nowrap">
+                {{ formatDate(row.original.submittedAt) }}
+              </td>
+              <td v-else-if="cell.column.id === 'requester'" class="min-w-48">
+                <div class="font-semibold">{{ row.original.requester.name }}</div>
+                <div class="text-base-content/70 break-all">{{ row.original.requester.email }}</div>
+              </td>
+              <td v-else-if="cell.column.id === 'change'" class="whitespace-nowrap">
+                <span class="text-base-content/70">{{
+                  typeLabels[row.original.requester.participantType]
+                }}</span>
+                <span v-if="row.original.status === 'pending'">
+                  → <span class="font-semibold">{{ typeLabels[row.original.requestedType] }}</span>
+                </span>
+                <div v-else class="text-xs text-base-content/70">
+                  {{ t.change }}: {{ typeLabels[row.original.requestedType] }}
+                </div>
+              </td>
+              <td v-else-if="cell.column.id === 'evidence'" class="min-w-40">
+                <template v-if="row.original.evidence">
+                  <a
+                    :href="evidenceUrl(row.original)"
+                    target="_blank"
+                    rel="noopener"
+                    class="link link-primary break-all"
+                  >
+                    {{ row.original.evidence.fileName }}
+                  </a>
+                  <div class="text-xs text-base-content/70">
+                    {{ formatSize(row.original.evidence.size) }}
+                  </div>
+                </template>
+                <span v-else class="text-base-content/50">{{ t.noEvidence }}</span>
+              </td>
+              <td
+                v-else-if="cell.column.id === 'requesterComment'"
+                class="min-w-48 max-w-xs whitespace-pre-line break-words"
               >
-                {{ r.evidence.fileName }}
-              </a>
-              <div v-if="r.evidence" class="text-xs text-base-content/70">
-                {{ formatSize(r.evidence.size) }}
-              </div>
-              <span v-else class="text-base-content/50">{{ t.noEvidence }}</span>
-            </td>
-            <td class="min-w-48 max-w-xs whitespace-pre-line break-words">
-              {{ r.requesterComment || '-' }}
-            </td>
-            <td class="min-w-56">
-              <div v-if="r.status === 'pending'" class="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-success btn-soft"
-                  @click="openReview(r, 'approved')"
-                >
-                  {{ t.approve }}
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-error btn-soft"
-                  @click="openReview(r, 'rejected')"
-                >
-                  {{ t.reject }}
-                </button>
-              </div>
-              <div v-else class="flex flex-col gap-1">
-                <span class="badge badge-sm badge-soft w-fit" :class="statusClass[r.status]">
-                  {{ t.statuses[r.status] }}
-                </span>
-                <span class="text-xs text-base-content/70">
-                  {{ formatDate(r.statusChangedAt) }}
-                  <template v-if="r.reviewer">{{ t.by }} {{ r.reviewer.name }}</template>
-                </span>
-                <span v-if="r.reviewerComment" class="text-sm whitespace-pre-line break-words">
-                  {{ r.reviewerComment }}
-                </span>
-              </div>
-            </td>
+                {{ row.original.requesterComment || '-' }}
+              </td>
+              <td v-else-if="cell.column.id === 'status'" class="min-w-56">
+                <div v-if="row.original.status === 'pending'" class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-success btn-soft"
+                    @click="openReview(row.original, 'approved')"
+                  >
+                    {{ t.approve }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-error btn-soft"
+                    @click="openReview(row.original, 'rejected')"
+                  >
+                    {{ t.reject }}
+                  </button>
+                </div>
+                <div v-else class="flex flex-col gap-1">
+                  <span
+                    class="badge badge-sm badge-soft w-fit"
+                    :class="statusClass[row.original.status]"
+                  >
+                    {{ t.statuses[row.original.status] }}
+                  </span>
+                  <span class="text-xs text-base-content/70">
+                    {{ formatDate(row.original.statusChangedAt) }}
+                    <template v-if="row.original.reviewer">
+                      {{ t.by }} {{ row.original.reviewer.name }}
+                    </template>
+                  </span>
+                  <span
+                    v-if="row.original.reviewerComment"
+                    class="text-sm whitespace-pre-line break-words"
+                  >
+                    {{ row.original.reviewerComment }}
+                  </span>
+                </div>
+              </td>
+              <td v-else><FlexRender :cell="cell" /></td>
+            </template>
           </tr>
         </tbody>
       </table>

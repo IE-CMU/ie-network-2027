@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppTableHead from '@components/common/AppTableHead.vue'
 import {
   createAppColumnHelper,
   localeSortFn,
@@ -117,6 +118,7 @@ const columns = computed(() => {
     }),
     col.accessor('paperCount', {
       header: () => t.value.papers,
+      meta: { headerClass: 'text-right' },
       // Most papers first is the more useful default.
       sortDescFirst: true,
       sortFn: numberSortFn(loc, byName),
@@ -152,8 +154,6 @@ const paperFilter = useSelectFilter<'all' | 'with' | 'without'>(() => table.getC
 const typeFilter = useSelectFilter<'all' | ParticipantType>(() => table.getColumn('participantType'))
 
 const rows = computed(() => table.getRowModel().rows)
-const sortMark = (dir: false | 'asc' | 'desc') =>
-  dir === 'asc' ? ' ▲' : dir === 'desc' ? ' ▼' : ''
 
 // th-TH uses the Buddhist calendar.
 const dateFormat = computed(
@@ -221,38 +221,18 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
 
     <div class="overflow-x-auto rounded-box border border-base-300">
       <table class="table table-sm">
-        <thead>
-          <tr v-for="hg in table.getHeaderGroups()" :key="hg.id">
-            <th
-              v-for="header in hg.headers"
-              :key="header.id"
-              :class="{ 'text-right': header.column.id === 'paperCount' }"
-            >
-              <button
-                v-if="header.column.getCanSort()"
-                type="button"
-                class="cursor-pointer"
-                @click="header.column.getToggleSortingHandler()?.($event)"
-              >
-                <FlexRender :header="header" />{{
-                  sortMark(header.column.getIsSorted())
-                }}
-              </button>
-              <FlexRender v-else :header="header" />
-            </th>
-          </tr>
-        </thead>
+        <AppTableHead :header-groups="table.getHeaderGroups()" />
         <tbody>
           <tr v-if="rows.length === 0">
             <td
-              :colspan="table.getAllLeafColumns().length"
+              :colspan="table.getVisibleLeafColumns().length"
               class="text-center text-base-content/70 py-6"
             >
               {{ t.empty }}
             </td>
           </tr>
           <tr v-for="row in rows" :key="row.original.id">
-            <template v-for="cell in row.getAllCells()" :key="cell.id">
+            <template v-for="cell in row.getVisibleCells()" :key="cell.id">
               <td v-if="cell.column.id === 'name'" class="min-w-40">
                 {{ row.original.name }}
                 <span
