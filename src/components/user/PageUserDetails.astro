@@ -102,6 +102,11 @@ const billingBlock = billingReason ? TYPE_CHANGE_BILLING_MESSAGES[locale][billin
             <dd class="break-words">{user.name || '-'}</dd>
 
             <dt class="font-semibold text-base-content/70">
+              {t('หน่วยงาน', 'Affiliation')}
+            </dt>
+            <dd class="break-words">{user.affiliation || '-'}</dd>
+
+            <dt class="font-semibold text-base-content/70">
               {t('อีเมล', 'Email')}
             </dt>
             <dd class="flex flex-wrap items-center gap-2 break-all">

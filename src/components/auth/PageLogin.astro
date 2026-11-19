@@ -3,6 +3,7 @@ import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 import LoginForm from '@components/auth/LoginForm.vue'
 import MagicLink from '@components/auth/MagicLink.vue'
+import { allowExternalUser } from '@utils/env'
 
 interface Props {
   locale: Locale
@@ -36,18 +37,33 @@ const loginUrl = getRelativeLocaleUrl(locale, '/login')
     <!-- Card -->
     <div class="card border border-base-300 bg-base-100 shadow-lg">
       <div class="card-body gap-6 p-6 sm:p-8">
-        <!-- Magic link first: users have no password until they set one.
-             Also the sign-up: an unknown email gets a participant account. -->
-        <MagicLink
-          client:load
-          locale={locale}
-          redirectUrl={homeUrl}
-          errorUrl={loginUrl}
-        />
-
-        <div class="divider my-0 text-sm text-gray-500">
-          {t('หรือเข้าสู่ระบบด้วยรหัสผ่าน', 'or sign in with a password')}
-        </div>
+        {
+          allowExternalUser ? (
+            <>
+              {/* Magic link first: users have no password until they set one.
+                  Also the sign-up: an unknown email gets a participant account. */}
+              <MagicLink
+                client:load
+                locale={locale}
+                redirectUrl={homeUrl}
+                errorUrl={loginUrl}
+              />
+              <div class="divider my-0 text-sm text-gray-500">
+                {t('หรือเข้าสู่ระบบด้วยรหัสผ่าน', 'or sign in with a password')}
+              </div>
+            </>
+          ) : (
+            // Pre-launch (ALLOW_EXTERNAL_USER off): password sign-in only.
+            <div role="status" class="alert alert-info alert-soft text-sm">
+              <span>
+                {t(
+                  'ระบบลงทะเบียนจะเปิดให้ใช้งานเร็ว ๆ นี้ ขณะนี้เข้าสู่ระบบได้เฉพาะบัญชีที่ลงทะเบียนไว้ล่วงหน้าเท่านั้น',
+                  'Registration opens soon. Sign-in is currently limited to pre-registered accounts.'
+                )}
+              </span>
+            </div>
+          )
+        }
 
         <LoginForm client:load locale={locale} redirectUrl={homeUrl} />
       </div>

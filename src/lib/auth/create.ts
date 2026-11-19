@@ -3,8 +3,10 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { admin, magicLink } from 'better-auth/plugins'
 
 import { dbClient } from '../../db/client.js'
-import { requireBetterAuthEnv } from '../../utils/env.js'
+import { allowExternalUser, requireBetterAuthEnv } from '../../utils/env.js'
 import { PARTICIPANT_TYPES } from '../../utils/participantType.js'
+import { MAGIC_LINK_EXPIRES_S, USER_NAME_MAX } from '../../utils/userProfile.js'
+import { deletePendingSignup, getPendingAffiliation } from './pendingSignup.js'
 
 type SendMagicLink = Parameters<typeof magicLink>[0]['sendMagicLink']
 
@@ -31,22 +33,41 @@ export function createAuth({ sendMagicLink }: { sendMagicLink: SendMagicLink }) 
       enabled: true,
       disableSignUp: true,
     },
+    // Name and affiliation are set once, at account creation, and never
+    // changed by users (src/utils/userProfile.ts). /update-user is the only
+    // endpoint that could change them; nothing in the app uses it.
+    // ALLOW_EXTERNAL_USER off (pre-launch): no magic-link sign-in or
+    // sign-up at all, including links already sent.
+    disabledPaths: [
+      '/update-user',
+      ...(allowExternalUser ? [] : ['/sign-in/magic-link', '/magic-link/verify']),
+    ],
     databaseHooks: {
       user: {
         create: {
-          // Magic-link sign-ups arrive without a name: use the part of the
-          // email before the @. The user can change it later.
+          // Magic-link sign-ups: the name comes from the link (typed on the
+          // sign-up form, but not trusted: trimmed and capped here), the
+          // affiliation from pending_signup. Imports/seeds pass both, so
+          // nothing is looked up for them.
           before: async (u) => {
-            if (u.name?.trim()) return
-            return { data: { ...u, name: u.email.split('@')[0] } }
+            const name =
+              (u.name ?? '').trim().slice(0, USER_NAME_MAX) || u.email.split('@')[0]
+            const affiliation =
+              (u as { affiliation?: string | null }).affiliation ||
+              (await getPendingAffiliation(u.email))
+            return { data: { ...u, name, affiliation } }
+          },
+          after: async (u) => {
+            await deletePendingSignup(u.email)
           },
         },
       },
     },
     user: {
       additionalFields: {
-        // Set by the CMT paper import; users may edit it (updateUser).
-        affiliation: { type: 'string', required: false, input: true },
+        // From CMT (paper import) or the sign-up form; not user-editable.
+        // Server-side createUser calls (import, seed) still set it.
+        affiliation: { type: 'string', required: false, input: false },
         // Rate category; not user-editable (input: false blocks updateUser).
         participantType: {
           type: [...PARTICIPANT_TYPES],
@@ -58,6 +79,6 @@ export function createAuth({ sendMagicLink }: { sendMagicLink: SendMagicLink }) 
     },
     // Sign-up allowed: an unknown email gets a 'participant' account when the
     // link is clicked. The login form warns first (see checkEmail action).
-    plugins: [admin(), magicLink({ sendMagicLink })],
+    plugins: [admin(), magicLink({ sendMagicLink, expiresIn: MAGIC_LINK_EXPIRES_S })],
   })
 }

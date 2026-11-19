@@ -1,6 +1,7 @@
 import { dbClient } from '@/db/client'
 import { user } from '@/db/schema'
 import { clientIp, hit } from '@/lib/rateLimit'
+import { allowExternalUser } from '@/utils/env'
 import { z } from 'astro/zod'
 import { ActionError, defineAction } from 'astro:actions'
 import { eq, sql } from 'drizzle-orm'
@@ -20,6 +21,8 @@ const WINDOW_S = 10 * 60
 export const checkEmail = defineAction({
   input: z.object({ email: z.string().trim().email() }),
   handler: async ({ email }, context) => {
+    // Magic link is off before launch (ALLOW_EXTERNAL_USER); nothing to check or start.
+    if (!allowExternalUser) throw new ActionError({ code: 'FORBIDDEN', message: 'SIGNUP_CLOSED' })
     const ip = clientIp(context.request.headers, context.clientAddress)
     if (!(await hit(`check-email:${ip}`, LIMIT, WINDOW_S))) {
       throw new ActionError({ code: 'TOO_MANY_REQUESTS', message: 'TOO_MANY_REQUESTS' })

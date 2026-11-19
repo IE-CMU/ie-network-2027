@@ -93,6 +93,12 @@ export function requireBetterAuthEnv() {
   return { betterAuthSecret, betterAuthUrl }
 }
 
+// Pre-launch switch. Anything but "true" (including unset) keeps the site
+// closed: magic link is off, so only accounts with a password (seeded
+// admins/users) can sign in, and no account can be created or imported
+// author sign in. Read once at startup; restart to change.
+export const allowExternalUser = getEnv('ALLOW_EXTERNAL_USER')?.toLowerCase() === 'true'
+
 //--------------- Redis ----------------
 
 const redisPort = getEnv('REDIS_PORT')

@@ -108,6 +108,17 @@ export const verification = pgTable(
   (table) => [index('verification_identifier_idx').on(table.identifier)]
 )
 
+// Sign-up details waiting for a magic link to be clicked. better-auth's
+// link carries only the name, so the affiliation waits here and is copied
+// onto the new account by the user.create hook (src/lib/auth/create.ts).
+// One row per email (latest form wins); expires with the link.
+export const pendingSignup = pgTable('pending_signup', {
+  email: text('email').primaryKey(), // lowercased
+  affiliation: text('affiliation').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
