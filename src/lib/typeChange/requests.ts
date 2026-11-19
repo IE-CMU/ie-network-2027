@@ -3,12 +3,9 @@ import { alias } from 'drizzle-orm/pg-core'
 
 import { dbClient } from '../../db/client.js'
 import { typeChangeEvidence, typeChangeRequest, user } from '../../db/schema.js'
+import { withStudentStatus, type ParticipantType } from '../../utils/participantType.js'
 import {
-  isBaseType,
-  withStudentStatus,
-  type ParticipantType,
-} from '../../utils/participantType.js'
-import {
+  canRequestDiscount,
   EVIDENCE_MAX_BYTES,
   REQUESTER_COMMENT_MAX,
   REVIEWER_COMMENT_MAX,
@@ -19,7 +16,7 @@ import { cleanFileName, detectEvidenceType } from './evidence.js'
 
 // Codes are sent to the browser as the ActionError message and translated there.
 export type TypeChangeErrorCode =
-  | 'NOT_ELIGIBLE' // user already has a student discount
+  | 'NOT_ELIGIBLE' // already has a discount, or base not in DISCOUNT_ELIGIBLE_BASES
   | 'ALREADY_PENDING'
   | 'ALREADY_APPROVED'
   | 'FILE_EMPTY'
@@ -103,7 +100,7 @@ export async function getTypeChangeState(userId: string): Promise<TypeChangeStat
     participantType: u.participantType,
     latest: summary,
     canRequest:
-      isBaseType(u.participantType) &&
+      canRequestDiscount(u.participantType) &&
       summary?.status !== 'pending' &&
       summary?.status !== 'approved',
   }
@@ -133,7 +130,7 @@ export async function submitTypeChangeRequest(userId: string, input: SubmitTypeC
         .from(user)
         .where(eq(user.id, userId))
         .for('update')
-      if (!u || !isBaseType(u.participantType)) throw new TypeChangeError('NOT_ELIGIBLE')
+      if (!u || !canRequestDiscount(u.participantType)) throw new TypeChangeError('NOT_ELIGIBLE')
 
       const [latest] = await tx
         .select({ status: typeChangeRequest.status })
