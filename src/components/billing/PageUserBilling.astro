@@ -1,0 +1,129 @@
+---
+import BillingAddressDeleteButton from '@components/billing/BillingAddressDeleteButton.vue'
+import BillingAddressPreview from '@components/billing/BillingAddressPreview.vue'
+import { listBillingAddresses, type BillingAddressWithPermissions } from '@lib/billing/addresses'
+import { BILLING_ADDRESS_LIMIT, BILLING_LOCK_REASON_LABELS } from '@utils/billingAddress'
+import { type Locale } from '@utils/locale'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+// Middleware guarantees a user on /user/*, but guard anyway.
+const user = Astro.locals.user
+let addresses: BillingAddressWithPermissions[] = []
+let loadError = false
+if (user) {
+  try {
+    addresses = await listBillingAddresses(user)
+  } catch (error) {
+    console.error('Error loading billing addresses:', error)
+    loadError = true
+  }
+}
+
+const atLimit = addresses.length >= BILLING_ADDRESS_LIMIT
+const newUrl = getRelativeLocaleUrl(locale, '/user/billing/new')
+const editUrl = (id: string) => getRelativeLocaleUrl(locale, `/user/billing/${id}/edit`)
+const duplicateUrl = (id: string) => `${newUrl}?from=${encodeURIComponent(id)}`
+const reasonLabels = BILLING_LOCK_REASON_LABELS[locale]
+---
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h1 class="text-4xl font-bold mb-4 text-center">
+    {t('ที่อยู่สำหรับออกใบเสร็จ', 'Billing Addresses')}
+  </h1>
+  <p class="text-center text-base-content/70 mb-10">
+    {t(
+      'ใช้สำหรับออกใบเสร็จรับเงินเพื่อเบิกค่าลงทะเบียน',
+      'Used to issue receipts for reimbursing your registration fee.'
+    )}
+  </p>
+
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <span class="text-sm text-base-content/70">
+      {t(
+        `${addresses.length} จาก ${BILLING_ADDRESS_LIMIT} ที่อยู่`,
+        `${addresses.length} of ${BILLING_ADDRESS_LIMIT} addresses`
+      )}
+    </span>
+    {
+      atLimit ? (
+        <span class="text-sm text-base-content/70">
+          {t(
+            'ครบจำนวนสูงสุดแล้ว ลบที่อยู่ที่ไม่ใช้เพื่อเพิ่มใหม่',
+            'Limit reached. Delete an unused address to add a new one.'
+          )}
+        </span>
+      ) : (
+        <a href={newUrl} class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]">
+          + {t('เพิ่มที่อยู่', 'Add address')}
+        </a>
+      )
+    }
+  </div>
+
+  {
+    loadError && (
+      <div role="alert" class="alert alert-error alert-soft text-sm mb-6">
+        {t('โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'Could not load your addresses. Please try again.')}
+      </div>
+    )
+  }
+
+  {
+    !loadError && addresses.length === 0 && (
+      <div class="card bg-base-100 border border-dashed border-base-300">
+        <div class="card-body items-center text-center text-base-content/70">
+          <p>{t('ยังไม่มีที่อยู่สำหรับออกใบเสร็จ', 'You have no billing addresses yet.')}</p>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="grid gap-6 md:grid-cols-2">
+    {
+      addresses.map((a) => {
+        const locked = !a.permissions.canEdit || !a.permissions.canDelete
+        return (
+          <section class="card bg-base-100 border border-base-300 shadow-sm">
+            <div class="card-body gap-4">
+              {locked && (
+                <div class="flex flex-col gap-1">
+                  <span class="badge badge-sm badge-warning badge-soft w-fit">
+                    🔒 {t('ล็อกแล้ว', 'Locked')}
+                  </span>
+                  {a.permissions.reasons.map((r) => (
+                    <span class="text-xs text-base-content/70">{reasonLabels[r]}</span>
+                  ))}
+                </div>
+              )}
+              <BillingAddressPreview locale={locale} value={a} />
+              <div class="card-actions justify-end items-center mt-auto">
+                {!atLimit && (
+                  <a href={duplicateUrl(a.id)} class="btn btn-sm btn-ghost">
+                    {t('ทำสำเนา', 'Duplicate')}
+                  </a>
+                )}
+                {a.permissions.canDelete && (
+                  <BillingAddressDeleteButton client:visible locale={locale} id={a.id} name={a.name} />
+                )}
+                {a.permissions.canEdit && (
+                  <a
+                    href={editUrl(a.id)}
+                    class="btn btn-sm btn-outline border-[#9E76B4] text-[#6B4A80] hover:bg-[#F3E5F5]"
+                  >
+                    {t('แก้ไข', 'Edit')}
+                  </a>
+                )}
+              </div>
+            </div>
+          </section>
+        )
+      })
+    }
+  </div>
+</main>

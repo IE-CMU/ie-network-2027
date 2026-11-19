@@ -1,0 +1,41 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { getLocale } from '@utils/locale'
+import { countBillingAddresses, getBillingAddress } from '@lib/billing/addresses'
+import { BILLING_ADDRESS_LIMIT, type BillingAddressInput } from '@utils/billingAddress'
+import PageUserBillingForm from '@components/billing/PageUserBillingForm.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+// SSR: protected by src/middleware.ts (logged-in users).
+export const prerender = false
+
+const locale = getLocale(Astro)
+const listUrl = getRelativeLocaleUrl(locale, '/user/billing')
+
+// At the limit: back to the list, which explains it. The create action
+// also refuses, so this only avoids showing a form that cannot be saved.
+const user = Astro.locals.user
+if (!user || (await countBillingAddresses(user.id)) >= BILLING_ADDRESS_LIMIT) {
+  return Astro.redirect(listUrl)
+}
+
+// ?from=<id>: start from a copy of one of the user's own addresses,
+// e.g. to fix a locked one for future registrations.
+let initial: Partial<BillingAddressInput> | undefined
+const from = Astro.url.searchParams.get('from')
+const source = from ? await getBillingAddress(user, from) : null
+if (source) {
+  initial = {
+    name: source.name,
+    affiliation: source.affiliation ?? '',
+    address: source.address,
+    phone: source.phone,
+    taxId: source.taxId ?? '',
+    branch: source.branch ?? '',
+  }
+}
+---
+
+<Layout title="New Billing Address">
+  <PageUserBillingForm locale={locale} initial={initial} />
+</Layout>

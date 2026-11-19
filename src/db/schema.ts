@@ -113,6 +113,7 @@ export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   papers: many(paperUser),
   billingAddresses: many(billingAddress),
+  registrations: many(registration),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -130,10 +131,11 @@ export const accountRelations = relations(account, ({ one }) => ({
 }))
 
 // ---------------- Billing addresses ----------------
-// Addresses a user can bill registration to; one user may keep several.
-// Rules such as when tax_id/branch are required live in the backend.
-// Receipts/invoices should copy the address they were issued with rather
-// than reference this row, since users may edit or delete it later.
+// Addresses a user can bill registration to; up to BILLING_ADDRESS_LIMIT
+// per user (src/utils/billingAddress.ts). This row is the single source of
+// truth: registrations/receipts reference it, they do not copy it. That is
+// why an address is locked (no edit, no delete) once something uses it;
+// the rules are in src/lib/billing/policy.ts.
 export const billingAddress = pgTable(
   'billing_address',
   {
@@ -158,8 +160,46 @@ export const billingAddress = pgTable(
   (table) => [index('billing_address_user_id_idx').on(table.userId)]
 )
 
-export const billingAddressRelations = relations(billingAddress, ({ one }) => ({
+export const billingAddressRelations = relations(billingAddress, ({ one, many }) => ({
   user: one(user, { fields: [billingAddress.userId], references: [user.id] }),
+  registrations: many(registration),
+}))
+
+// ---------------- Registrations (minimal) ----------------
+// Placeholder for the registration flow; for now it only links a user to
+// the billing address used for reimbursement. Deleting a billing address
+// that a registration uses fails in the database (on delete no action),
+// as a backstop for the lock in src/lib/billing/policy.ts. "No action"
+// rather than "restrict" so deleting a user, which cascades to both
+// tables, still works.
+export const registration = pgTable(
+  'registration',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    billingAddressId: uuid('billing_address_id').references(() => billingAddress.id, {
+      onDelete: 'no action',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('registration_user_id_idx').on(table.userId),
+    index('registration_billing_address_id_idx').on(table.billingAddressId),
+  ]
+)
+
+export const registrationRelations = relations(registration, ({ one }) => ({
+  user: one(user, { fields: [registration.userId], references: [user.id] }),
+  billingAddress: one(billingAddress, {
+    fields: [registration.billingAddressId],
+    references: [billingAddress.id],
+  }),
 }))
 
 const bytea = customType<{ data: Buffer; driverData: Buffer }>({

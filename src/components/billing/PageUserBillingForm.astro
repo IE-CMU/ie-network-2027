@@ -1,0 +1,36 @@
+---
+import BillingAddressForm from '@components/billing/BillingAddressForm.vue'
+import type { BillingAddressInput } from '@utils/billingAddress'
+import { type Locale } from '@utils/locale'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+interface Props {
+  locale: Locale
+  /** Edit mode when set. */
+  id?: string
+  initial?: Partial<BillingAddressInput>
+}
+const { locale, id, initial } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+const listUrl = getRelativeLocaleUrl(locale, '/user/billing')
+---
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <a href={listUrl} class="link link-hover text-base-content/70 text-sm">
+    ← {t('กลับไปที่รายการที่อยู่', 'Back to billing addresses')}
+  </a>
+
+  <h1 class="text-4xl font-bold mt-4 mb-12 text-center">
+    {
+      id
+        ? t('แก้ไขที่อยู่สำหรับออกใบเสร็จ', 'Edit Billing Address')
+        : t('เพิ่มที่อยู่สำหรับออกใบเสร็จ', 'New Billing Address')
+    }
+  </h1>
+
+  <section class="card bg-base-100 border border-base-300 shadow-sm">
+    <div class="card-body">
+      <BillingAddressForm client:load locale={locale} id={id} initial={initial} listUrl={listUrl} />
+    </div>
+  </section>
+</main>

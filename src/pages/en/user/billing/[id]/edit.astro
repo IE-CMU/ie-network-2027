@@ -1,0 +1,35 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { getLocale } from '@utils/locale'
+import { getBillingAddress } from '@lib/billing/addresses'
+import PageUserBillingForm from '@components/billing/PageUserBillingForm.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
+
+// SSR: protected by src/middleware.ts (logged-in users).
+export const prerender = false
+
+const locale = getLocale(Astro)
+
+// Only the owner, and only while the policy allows editing
+// (src/lib/billing/policy.ts). Otherwise back to the list, which shows
+// why an address is locked. The update action checks again.
+const user = Astro.locals.user
+const id = Astro.params.id
+const address = user && id ? await getBillingAddress(user, id) : null
+if (!address?.permissions.canEdit) {
+  return Astro.redirect(getRelativeLocaleUrl(locale, '/user/billing'))
+}
+
+const initial = {
+  name: address.name,
+  affiliation: address.affiliation ?? '',
+  address: address.address,
+  phone: address.phone,
+  taxId: address.taxId ?? '',
+  branch: address.branch ?? '',
+}
+---
+
+<Layout title="Edit Billing Address">
+  <PageUserBillingForm locale={locale} id={address.id} initial={initial} />
+</Layout>
