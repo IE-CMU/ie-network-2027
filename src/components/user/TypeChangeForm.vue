@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@lib/forms/standardSchema'
 import { PARTICIPANT_TYPE_LABELS } from '@utils/participantType'
 import {
   EVIDENCE_MAX_BYTES,
@@ -7,7 +8,9 @@ import {
   REQUESTER_COMMENT_MAX,
   type RequestableType,
 } from '@utils/typeChangeRequest'
+import { z } from 'astro/zod'
 import { actions } from 'astro:actions'
+import { useForm } from 'vee-validate'
 import { computed, ref } from 'vue'
 
 interface Props {
@@ -82,26 +85,63 @@ const text = {
 const t = computed(() => text[props.locale])
 const typeLabels = computed(() => PARTICIPANT_TYPE_LABELS[props.locale])
 
-const requestedType = ref<RequestableType | ''>('')
-const file = ref<File | null>(null)
-const comment = ref('')
-const loading = ref(false)
-const errorMessage = ref('')
-
 const ACCEPT = EVIDENCE_MIME_TYPES.join(',')
+const FILE_ERROR_CODES = ['FILE_EMPTY', 'FILE_TOO_LARGE', 'FILE_TYPE'] as const
+
+// Banner for server/session errors. Field errors live in vee-validate.
+const errorMessage = ref('')
+// Stays true after a successful submit until the page navigates away.
+const redirecting = ref(false)
+
+// Rebuilt when the locale (messages) changes. The browser-reported type and
+// size are quick checks for a friendlier message; the server checks the bytes.
+const schema = computed(() => {
+  const e = t.value.errors
+  return toTypedSchema(
+    z.object({
+      requestedType: z.enum(REQUESTABLE_TYPES, { error: e.noType }),
+      file: z
+        .custom<File | null>()
+        .superRefine((f, ctx) => {
+          if (!f) ctx.addIssue({ code: 'custom', message: e.noFile })
+          else if (!(EVIDENCE_MIME_TYPES as readonly string[]).includes(f.type))
+            ctx.addIssue({ code: 'custom', message: e.FILE_TYPE })
+          else if (f.size === 0)
+            ctx.addIssue({ code: 'custom', message: e.FILE_EMPTY })
+          else if (f.size > EVIDENCE_MAX_BYTES)
+            ctx.addIssue({ code: 'custom', message: e.FILE_TOO_LARGE })
+        })
+        .transform((f) => f as File),
+      comment: z.string().max(REQUESTER_COMMENT_MAX, e.COMMENT_TOO_LONG),
+    })
+  )
+})
+
+const { defineField, handleSubmit, errors, isSubmitting, submitCount, setFieldError } =
+  useForm({
+    validationSchema: schema,
+    initialValues: { file: null, comment: '' },
+  })
+
+// Lazy until the first submit attempt, then validate as the user changes a field.
+const fieldConfig = () => {
+  const eager = submitCount.value > 0
+  return {
+    validateOnModelUpdate: eager,
+    validateOnBlur: eager,
+    validateOnChange: eager,
+  }
+}
+const [requestedType, requestedTypeAttrs] = defineField('requestedType', fieldConfig)
+const [comment, commentAttrs] = defineField('comment', fieldConfig)
+// Check the file as soon as it is picked, so a wrong type/size shows right away.
+const [file] = defineField('file', { validateOnModelUpdate: true })
+
+const busy = computed(() => isSubmitting.value || redirecting.value)
 
 function onFileChange(e: Event) {
-  errorMessage.value = ''
   const input = e.target as HTMLInputElement
-  const f = input.files?.[0] ?? null
-  file.value = f
-  if (!f) return
-  // Quick checks for a friendlier message; the server checks the bytes.
-  if (!(EVIDENCE_MIME_TYPES as readonly string[]).includes(f.type)) {
-    errorMessage.value = t.value.errors.FILE_TYPE
-  } else if (f.size > EVIDENCE_MAX_BYTES) {
-    errorMessage.value = t.value.errors.FILE_TOO_LARGE
-  }
+  file.value = input.files?.[0] ?? null
 }
 
 function errorFor(code?: string, message?: string): string {
@@ -111,77 +151,86 @@ function errorFor(code?: string, message?: string): string {
   return (message && e[message]) || t.value.errors.unexpected
 }
 
-async function handleSubmit() {
-  if (loading.value) return
-  errorMessage.value = ''
-  if (!requestedType.value) {
-    errorMessage.value = t.value.errors.noType
-    return
-  }
-  if (!file.value) {
-    errorMessage.value = t.value.errors.noFile
-    return
-  }
-  if (file.value.size > EVIDENCE_MAX_BYTES) {
-    errorMessage.value = t.value.errors.FILE_TOO_LARGE
-    return
-  }
-  if (comment.value.length > REQUESTER_COMMENT_MAX) {
-    errorMessage.value = t.value.errors.COMMENT_TOO_LONG
-    return
-  }
-
-  loading.value = true
-  try {
-    const form = new FormData()
-    form.append('requestedType', requestedType.value)
-    form.append('file', file.value)
-    form.append('comment', comment.value)
-    const { error } = await actions.typeChange.submit(form)
-    if (error) {
-      console.error('Type change submit error:', error)
-      errorMessage.value = errorFor(error.code, error.message)
-      loading.value = false
-      return
-    }
-    // The account page shows the new pending request.
-    window.location.assign(props.detailsUrl)
-  } catch (e) {
-    console.error('Type change submit failed:', e)
-    errorMessage.value = t.value.errors.unexpected
-    loading.value = false
-  }
+/** Show a server error on the relevant field when there is one, otherwise in the banner. */
+function showServerError(code?: string, message?: string) {
+  const msg = errorFor(code, message)
+  if (
+    code === 'PAYLOAD_TOO_LARGE' ||
+    code === 'CONTENT_TOO_LARGE' ||
+    (FILE_ERROR_CODES as readonly (string | undefined)[]).includes(message)
+  )
+    setFieldError('file', msg)
+  else if (message === 'COMMENT_TOO_LONG') setFieldError('comment', msg)
+  else errorMessage.value = msg
 }
+
+const onSubmit = handleSubmit(
+  async (values) => {
+    if (redirecting.value) return
+    errorMessage.value = ''
+    try {
+      const form = new FormData()
+      form.append('requestedType', values.requestedType)
+      form.append('file', values.file)
+      form.append('comment', values.comment)
+      const { error } = await actions.typeChange.submit(form)
+      if (error) {
+        console.error('Type change submit error:', error)
+        showServerError(error.code, error.message)
+        return
+      }
+      redirecting.value = true
+      // The account page shows the new pending request.
+      window.location.assign(props.detailsUrl)
+    } catch (e) {
+      console.error('Type change submit failed:', e)
+      errorMessage.value = t.value.errors.unexpected
+    }
+  },
+  () => {
+    // Clear a stale server error when the user retries with invalid input.
+    errorMessage.value = ''
+  }
+)
 </script>
 
 <template>
-  <form class="flex flex-col gap-5" novalidate @submit.prevent="handleSubmit">
+  <form class="flex flex-col gap-5" novalidate @submit="onSubmit">
     <p class="text-sm text-base-content/70">{{ t.intro }}</p>
 
     <div v-if="errorMessage" role="alert" class="alert alert-error alert-soft text-sm">
       <span>{{ errorMessage }}</span>
     </div>
 
-    <fieldset class="fieldset gap-2 p-0">
+    <fieldset
+      class="fieldset gap-2 p-0"
+      :aria-invalid="!!errors.requestedType"
+      :aria-describedby="errors.requestedType ? 'tc-type-error' : undefined"
+    >
       <legend class="fieldset-legend pb-1 text-sm">{{ t.type }}</legend>
       <label
         v-for="pt in REQUESTABLE_TYPES"
         :key="pt"
-        class="flex items-start gap-3 rounded-box border border-base-300 p-3 cursor-pointer has-[:checked]:border-[#9E76B4] has-[:checked]:bg-[#F3E5F5]/50"
+        class="flex items-start gap-3 rounded-box border p-3 cursor-pointer has-[:checked]:border-[#9E76B4] has-[:checked]:bg-[#F3E5F5]/50"
+        :class="errors.requestedType ? 'border-error' : 'border-base-300'"
       >
         <input
           v-model="requestedType"
+          v-bind="requestedTypeAttrs"
           type="radio"
           name="requestedType"
           :value="pt"
           class="radio radio-sm mt-0.5"
-          :disabled="loading"
+          :disabled="busy"
         />
         <span class="flex flex-col">
           <span class="font-semibold text-base-content">{{ typeLabels[pt] }}</span>
           <span class="text-xs text-base-content/70">{{ t.typeHints[pt] }}</span>
         </span>
       </label>
+      <p v-if="errors.requestedType" id="tc-type-error" class="label text-xs text-error">
+        {{ errors.requestedType }}
+      </p>
     </fieldset>
 
     <fieldset class="fieldset gap-1 p-0">
@@ -189,12 +238,19 @@ async function handleSubmit() {
       <input
         id="tc-file"
         type="file"
+        name="file"
         :accept="ACCEPT"
         class="file-input w-full"
-        :disabled="loading"
+        :class="{ 'file-input-error': errors.file }"
+        :aria-invalid="!!errors.file"
+        :aria-describedby="errors.file ? 'tc-file-error' : 'tc-file-hint'"
+        :disabled="busy"
         @change="onFileChange"
       />
-      <p class="label text-xs">{{ t.fileHint }}</p>
+      <p v-if="errors.file" id="tc-file-error" class="label text-xs text-error">
+        {{ errors.file }}
+      </p>
+      <p v-else id="tc-file-hint" class="label text-xs">{{ t.fileHint }}</p>
       <p class="label text-xs">{{ t.privacy }}</p>
     </fieldset>
 
@@ -203,22 +259,32 @@ async function handleSubmit() {
       <textarea
         id="tc-comment"
         v-model="comment"
+        v-bind="commentAttrs"
+        name="comment"
         rows="3"
         :maxlength="REQUESTER_COMMENT_MAX"
         class="textarea w-full"
-        :disabled="loading"
+        :class="{ 'textarea-error': errors.comment }"
+        :aria-invalid="!!errors.comment"
+        :aria-describedby="errors.comment ? 'tc-comment-error' : 'tc-comment-hint'"
+        :disabled="busy"
       />
-      <p class="label text-xs">{{ t.commentHint(comment.length) }}</p>
+      <p v-if="errors.comment" id="tc-comment-error" class="label text-xs text-error">
+        {{ errors.comment }}
+      </p>
+      <p v-else id="tc-comment-hint" class="label text-xs">
+        {{ t.commentHint(comment?.length ?? 0) }}
+      </p>
     </fieldset>
 
     <div>
       <button
         type="submit"
         class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]"
-        :disabled="loading"
+        :disabled="busy"
       >
-        <span v-if="loading" class="loading loading-spinner loading-sm" />
-        {{ loading ? t.sending : t.submit }}
+        <span v-if="busy" class="loading loading-spinner loading-sm" />
+        {{ busy ? t.sending : t.submit }}
       </button>
     </div>
   </form>
