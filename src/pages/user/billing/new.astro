@@ -1,8 +1,8 @@
 ---
 import Layout from '@layouts/Layout.astro'
 import { getLocale } from '@utils/locale'
-import { countBillingAddresses, getBillingAddress } from '@lib/billing/addresses'
-import { BILLING_ADDRESS_LIMIT, type BillingAddressInput } from '@utils/billingAddress'
+import { getBillingAddress, getCreatePermissions } from '@lib/billing/addresses'
+import { type BillingAddressInput } from '@utils/billingAddress'
 import PageUserBillingForm from '@components/billing/PageUserBillingForm.astro'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 
@@ -15,7 +15,7 @@ const listUrl = getRelativeLocaleUrl(locale, '/user/billing')
 // At the limit: back to the list, which explains it. The create action
 // also refuses, so this only avoids showing a form that cannot be saved.
 const user = Astro.locals.user
-if (!user || (await countBillingAddresses(user.id)) >= BILLING_ADDRESS_LIMIT) {
+if (!user || !(await getCreatePermissions(user.id))?.canCreate) {
   return Astro.redirect(listUrl)
 }
 

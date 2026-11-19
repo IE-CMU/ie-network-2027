@@ -3,20 +3,25 @@ import { and, asc, count, eq } from 'drizzle-orm'
 import { dbClient } from '../../db/client.js'
 import { billingAddress, user as userTable } from '../../db/schema.js'
 import {
-  BILLING_ADDRESS_LIMIT,
   BILLING_FIELD_MAX,
   BILLING_REQUIRED_FIELDS,
   type BillingAddressInput,
+  type BillingCreateBlockReason,
   type BillingField,
   type BillingLockReason,
   type BillingPermissions,
 } from '../../utils/billingAddress.js'
-import { evaluateBillingPermissions, loadBillingPolicyContext, type PolicyUser } from './policy.js'
+import {
+  evaluateBillingPermissions,
+  getBillingCreatePermissions,
+  loadBillingPolicyContext,
+  type PolicyUser,
+} from './policy.js'
 
 // Codes are sent to the browser as the ActionError message and translated there.
 export type BillingErrorCode =
   | 'NOT_FOUND' // missing, or another user's address
-  | 'LIMIT_REACHED'
+  | BillingCreateBlockReason // LIMIT_REACHED, STUDENT_LIMIT
   | 'LOCKED'
   | 'INVALID'
 
@@ -86,13 +91,8 @@ export function cleanBillingInput(input: BillingAddressInput) {
 
 // ---------------- Reads ----------------
 
-export async function countBillingAddresses(userId: string): Promise<number> {
-  const [{ n }] = await dbClient
-    .select({ n: count() })
-    .from(billingAddress)
-    .where(eq(billingAddress.userId, userId))
-  return n
-}
+/** Whether the user may add another address, and their limit. */
+export const getCreatePermissions = (userId: string) => getBillingCreatePermissions(dbClient, userId)
 
 /** The user's addresses, oldest first, each with what the user may do to it. */
 export async function listBillingAddresses(
@@ -139,12 +139,12 @@ export async function createBillingAddress(user: PolicyUser, input: BillingAddre
   const values = cleanBillingInput(input)
   return dbClient.transaction(async (tx) => {
     // Lock the user row so two creates at once cannot both pass the limit.
+    // Submitting a type change request takes the same lock, so a student's
+    // count of one cannot change while they submit.
     await tx.select({ id: userTable.id }).from(userTable).where(eq(userTable.id, user.id)).for('update')
-    const [{ n }] = await tx
-      .select({ n: count() })
-      .from(billingAddress)
-      .where(eq(billingAddress.userId, user.id))
-    if (n >= BILLING_ADDRESS_LIMIT) throw new BillingError('LIMIT_REACHED')
+    const permissions = await getBillingCreatePermissions(tx, user.id)
+    if (!permissions) throw new BillingError('NOT_FOUND')
+    if (!permissions.canCreate) throw new BillingError(permissions.reason ?? 'LIMIT_REACHED')
 
     const [row] = await tx
       .insert(billingAddress)
@@ -203,7 +203,8 @@ export async function deleteBillingAddress(user: PolicyUser, addressId: string) 
     })
   } catch (e) {
     // Backstop: the database refuses to delete a referenced address.
-    if (isForeignKeyViolation(e)) throw new BillingError('LOCKED', ['IN_USE'])
+    // Something references the row that the policy did not know about.
+    if (isForeignKeyViolation(e)) throw new BillingError('LOCKED', [])
     throw e
   }
 }

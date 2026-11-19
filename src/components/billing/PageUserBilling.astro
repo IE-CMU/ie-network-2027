@@ -1,8 +1,17 @@
 ---
 import BillingAddressDeleteButton from '@components/billing/BillingAddressDeleteButton.vue'
 import BillingAddressPreview from '@components/billing/BillingAddressPreview.vue'
-import { listBillingAddresses, type BillingAddressWithPermissions } from '@lib/billing/addresses'
-import { BILLING_ADDRESS_LIMIT, BILLING_LOCK_REASON_LABELS } from '@utils/billingAddress'
+import {
+  getCreatePermissions,
+  listBillingAddresses,
+  type BillingAddressWithPermissions,
+} from '@lib/billing/addresses'
+import {
+  BILLING_ADDRESS_LIMIT,
+  BILLING_CREATE_BLOCK_LABELS,
+  BILLING_LOCK_REASON_LABELS,
+  type BillingCreatePermissions,
+} from '@utils/billingAddress'
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 interface Props {
@@ -15,17 +24,23 @@ const t = (th: string, en: string) => (locale === 'th' ? th : en)
 // Middleware guarantees a user on /user/*, but guard anyway.
 const user = Astro.locals.user
 let addresses: BillingAddressWithPermissions[] = []
+let create: BillingCreatePermissions | null = null
 let loadError = false
 if (user) {
   try {
-    addresses = await listBillingAddresses(user)
+    ;[addresses, create] = await Promise.all([
+      listBillingAddresses(user),
+      getCreatePermissions(user.id),
+    ])
   } catch (error) {
     console.error('Error loading billing addresses:', error)
     loadError = true
   }
 }
 
-const atLimit = addresses.length >= BILLING_ADDRESS_LIMIT
+const limit = create?.limit ?? BILLING_ADDRESS_LIMIT
+const atLimit = !create?.canCreate
+const createBlocked = create?.reason ? BILLING_CREATE_BLOCK_LABELS[locale][create.reason] : ''
 const newUrl = getRelativeLocaleUrl(locale, '/user/billing/new')
 const editUrl = (id: string) => getRelativeLocaleUrl(locale, `/user/billing/${id}/edit`)
 const duplicateUrl = (id: string) => `${newUrl}?from=${encodeURIComponent(id)}`
@@ -46,18 +61,13 @@ const reasonLabels = BILLING_LOCK_REASON_LABELS[locale]
   <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
     <span class="text-sm text-base-content/70">
       {t(
-        `${addresses.length} จาก ${BILLING_ADDRESS_LIMIT} ที่อยู่`,
-        `${addresses.length} of ${BILLING_ADDRESS_LIMIT} addresses`
+        `${addresses.length} จาก ${limit} ที่อยู่`,
+        `${addresses.length} of ${limit} ${limit === 1 ? 'address' : 'addresses'}`
       )}
     </span>
     {
       atLimit ? (
-        <span class="text-sm text-base-content/70">
-          {t(
-            'ครบจำนวนสูงสุดแล้ว ลบที่อยู่ที่ไม่ใช้เพื่อเพิ่มใหม่',
-            'Limit reached. Delete an unused address to add a new one.'
-          )}
-        </span>
+        <span class="text-sm text-base-content/70">{createBlocked}</span>
       ) : (
         <a href={newUrl} class="btn border-0 bg-[#9E76B4] text-white hover:bg-[#8A62A0]">
           + {t('เพิ่มที่อยู่', 'Add address')}

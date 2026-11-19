@@ -32,6 +32,43 @@ export const DISCOUNT_ELIGIBLE_BASES: readonly BaseType[] = ['author']
 export const canRequestDiscount = (t: ParticipantType): boolean =>
   isBaseType(t) && DISCOUNT_ELIGIBLE_BASES.includes(t)
 
+// Why a user cannot request a discount right now (src/lib/typeChange/policy.ts).
+//   NOT_ELIGIBLE               – already has a discount, or base not eligible
+//   ALREADY_PENDING / _APPROVED – see TYPE_CHANGE_STATUSES
+//   NO_BILLING_ADDRESS / TOO_MANY_BILLING_ADDRESSES – the request needs
+//     exactly one billing address, so the admin knows which one to check
+//     for the student's name (financial regulation).
+export const TYPE_CHANGE_BLOCK_REASONS = [
+  'NOT_ELIGIBLE',
+  'ALREADY_PENDING',
+  'ALREADY_APPROVED',
+  'NO_BILLING_ADDRESS',
+  'TOO_MANY_BILLING_ADDRESSES',
+] as const
+
+export type TypeChangeBlockReason = (typeof TYPE_CHANGE_BLOCK_REASONS)[number]
+
+/** Reasons the user can fix on the billing address page. */
+export const BILLING_BLOCK_REASONS: readonly TypeChangeBlockReason[] = [
+  'NO_BILLING_ADDRESS',
+  'TOO_MANY_BILLING_ADDRESSES',
+]
+
+export const TYPE_CHANGE_BILLING_MESSAGES = {
+  th: {
+    NO_BILLING_ADDRESS:
+      'ก่อนขอสิทธิ์นักศึกษา กรุณาเพิ่มที่อยู่สำหรับออกใบเสร็จในชื่อของนักศึกษา 1 รายการ',
+    TOO_MANY_BILLING_ADDRESSES:
+      'ก่อนขอสิทธิ์นักศึกษา คุณต้องมีที่อยู่สำหรับออกใบเสร็จเพียง 1 รายการ (ในชื่อของนักศึกษา) กรุณาลบรายการอื่น',
+  },
+  en: {
+    NO_BILLING_ADDRESS:
+      "Before requesting a student discount, please add one billing address in the student's name.",
+    TOO_MANY_BILLING_ADDRESSES:
+      "To request a student discount you must have exactly one billing address (in the student's name). Please delete the others.",
+  },
+} as const
+
 // Evidence upload (ID card etc.). The server checks the file's first bytes,
 // not just the type the browser reports.
 export const EVIDENCE_MAX_BYTES = 10 * 1024 * 1024 // 10 MB

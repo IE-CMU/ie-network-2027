@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BillingAddressPreview from '@components/billing/BillingAddressPreview.vue'
 import AppTableHead from '@components/common/AppTableHead.vue'
 import {
   createAppColumnHelper,
@@ -32,6 +33,9 @@ const text = {
     change: 'เปลี่ยนประเภท',
     evidence: 'หลักฐาน',
     noEvidence: 'ไม่มีไฟล์',
+    billing: 'ที่อยู่ออกใบเสร็จ',
+    checkName:
+      'ก่อนอนุมัติ ตรวจสอบว่าชื่อบนบัตรหรือเอกสารหลักฐานตรงกับชื่อบนที่อยู่สำหรับออกใบเสร็จ และบัตรที่แนบเป็นบัตรนักศึกษา',
     comment: 'หมายเหตุผู้ขอ',
     review: 'ผลการตรวจสอบ',
     by: 'โดย',
@@ -65,6 +69,9 @@ const text = {
     change: 'Change',
     evidence: 'Evidence',
     noEvidence: 'No file',
+    billing: 'Billing address',
+    checkName:
+      'Before approving, check that the name on the ID/evidence matches the name on the billing address and that the ID is the student ID.',
     comment: 'Requester comment',
     review: 'Review',
     by: 'by',
@@ -121,6 +128,7 @@ const columns = col.columns([
   col.accessor('requester.name', { id: 'requester', header: () => t.value.requester }),
   col.display({ id: 'change', header: () => t.value.change }),
   col.display({ id: 'evidence', header: () => t.value.evidence }),
+  col.display({ id: 'billing', header: () => t.value.billing }),
   col.accessor('requesterComment', { header: () => t.value.comment }),
   col.accessor('status', {
     header: () => t.value.review,
@@ -309,6 +317,9 @@ async function submitReview() {
                 </template>
                 <span v-else class="text-base-content/50">{{ t.noEvidence }}</span>
               </td>
+              <td v-else-if="cell.column.id === 'billing'" class="min-w-56 max-w-xs">
+                <BillingAddressPreview :locale="locale" :value="row.original.billingAddress" />
+              </td>
               <td
                 v-else-if="cell.column.id === 'requesterComment'"
                 class="min-w-48 max-w-xs whitespace-pre-line break-words"
@@ -374,6 +385,11 @@ async function submitReview() {
           }}
         </p>
         <p v-if="decision === 'approved'" class="text-sm text-base-content/70">{{ t.approveNote }}</p>
+
+        <div class="rounded-box border border-base-300 bg-base-200/50 p-3">
+          <BillingAddressPreview :locale="locale" :value="reviewing.billingAddress" />
+        </div>
+        <p v-if="decision === 'approved'" class="text-sm font-semibold">{{ t.checkName }}</p>
 
         <div v-if="errorMessage" role="alert" class="alert alert-error alert-soft text-sm">
           <span>{{ errorMessage }}</span>

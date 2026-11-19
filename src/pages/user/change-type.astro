@@ -2,6 +2,7 @@
 import Layout from '@layouts/Layout.astro'
 import { getLocale } from '@utils/locale'
 import { getTypeChangeState } from '@lib/typeChange/requests'
+import { getBillingAddress } from '@lib/billing/addresses'
 import PageUserChangeType from '@components/user/PageUserChangeType.astro'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 
@@ -10,16 +11,20 @@ export const prerender = false
 
 const locale = getLocale(Astro)
 
-// Only users who may submit a request see the form (canRequestDiscount: an author with no student discount yet, no
-// pending or approved request). Others go back to their account page,
-// which shows the request status.
+// Only users who may submit a request see the form (src/lib/typeChange/policy.ts:
+// an eligible type, no pending or approved request, exactly one billing
+// address). Others go back to their account page, which shows why.
 const user = Astro.locals.user
 const state = user ? await getTypeChangeState(user.id) : null
-if (!state?.canRequest) {
+const billingAddress =
+  user && state?.canRequest && state.billingAddressId
+    ? await getBillingAddress(user, state.billingAddressId)
+    : null
+if (!billingAddress) {
   return Astro.redirect(getRelativeLocaleUrl(locale, '/user/details'))
 }
 ---
 
 <Layout title="Change Participant Type">
-  <PageUserChangeType locale={locale} />
+  <PageUserChangeType locale={locale} billingAddress={billingAddress} />
 </Layout>

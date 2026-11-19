@@ -2,23 +2,26 @@ import { and, desc, eq, getTableColumns } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/pg-core'
 
 import { dbClient } from '../../db/client.js'
-import { typeChangeEvidence, typeChangeRequest, user } from '../../db/schema.js'
+import { billingAddress, typeChangeEvidence, typeChangeRequest, user } from '../../db/schema.js'
 import { withStudentStatus, type ParticipantType } from '../../utils/participantType.js'
 import {
-  canRequestDiscount,
   EVIDENCE_MAX_BYTES,
   REQUESTER_COMMENT_MAX,
   REVIEWER_COMMENT_MAX,
   type RequestableType,
+  type TypeChangeBlockReason,
   type TypeChangeStatus,
 } from '../../utils/typeChangeRequest.js'
 import { cleanFileName, detectEvidenceType } from './evidence.js'
+import {
+  evaluateTypeChangePermissions,
+  loadTypeChangePolicyContext,
+  type TypeChangePermissions,
+} from './policy.js'
 
 // Codes are sent to the browser as the ActionError message and translated there.
 export type TypeChangeErrorCode =
-  | 'NOT_ELIGIBLE' // already has a discount, or base not in DISCOUNT_ELIGIBLE_BASES
-  | 'ALREADY_PENDING'
-  | 'ALREADY_APPROVED'
+  | TypeChangeBlockReason // see src/lib/typeChange/policy.ts
   | 'FILE_EMPTY'
   | 'FILE_TOO_LARGE'
   | 'FILE_TYPE'
@@ -57,21 +60,17 @@ export interface TypeChangeRequestSummary {
   hasEvidence: boolean
 }
 
-export interface TypeChangeState {
+export interface TypeChangeState extends TypeChangePermissions {
   participantType: ParticipantType
   /** Most recent request. Pending/approved ones are always the latest,
    *  since no request can be made after them. */
   latest: TypeChangeRequestSummary | null
-  canRequest: boolean
 }
 
 /** What /user/details and /user/change-type need to know about a user. */
 export async function getTypeChangeState(userId: string): Promise<TypeChangeState | null> {
-  const [u] = await dbClient
-    .select({ participantType: user.participantType })
-    .from(user)
-    .where(eq(user.id, userId))
-  if (!u) return null
+  const ctx = await loadTypeChangePolicyContext(dbClient, userId)
+  if (!ctx) return null
 
   const [latest] = await dbClient
     .select({
@@ -97,12 +96,9 @@ export async function getTypeChangeState(userId: string): Promise<TypeChangeStat
   }
 
   return {
-    participantType: u.participantType,
+    participantType: ctx.participantType,
     latest: summary,
-    canRequest:
-      canRequestDiscount(u.participantType) &&
-      summary?.status !== 'pending' &&
-      summary?.status !== 'approved',
+    ...evaluateTypeChangePermissions(ctx),
   }
 }
 
@@ -123,27 +119,21 @@ export async function submitTypeChangeRequest(userId: string, input: SubmitTypeC
 
   try {
     return await dbClient.transaction(async (tx) => {
-      // Lock the user row so concurrent submits/reviews for this user run one
-      // at a time; the checks below then see each other's results.
-      const [u] = await tx
-        .select({ participantType: user.participantType })
-        .from(user)
-        .where(eq(user.id, userId))
-        .for('update')
-      if (!u || !canRequestDiscount(u.participantType)) throw new TypeChangeError('NOT_ELIGIBLE')
-
-      const [latest] = await tx
-        .select({ status: typeChangeRequest.status })
-        .from(typeChangeRequest)
-        .where(eq(typeChangeRequest.requesterId, userId))
-        .orderBy(desc(typeChangeRequest.submittedAt))
-        .limit(1)
-      if (latest?.status === 'pending') throw new TypeChangeError('ALREADY_PENDING')
-      if (latest?.status === 'approved') throw new TypeChangeError('ALREADY_APPROVED')
+      // Locks the user row (concurrent submits/reviews/address creates for
+      // this user run one at a time) and the user's billing addresses.
+      const ctx = await loadTypeChangePolicyContext(tx, userId, { lock: true })
+      if (!ctx) throw new TypeChangeError('NOT_ELIGIBLE')
+      const permissions = evaluateTypeChangePermissions(ctx)
+      if (!permissions.canRequest) throw new TypeChangeError(permissions.reasons[0])
 
       const [request] = await tx
         .insert(typeChangeRequest)
-        .values({ requesterId: userId, requestedType: input.requestedType, requesterComment: comment })
+        .values({
+          requesterId: userId,
+          requestedType: input.requestedType,
+          requesterComment: comment,
+          billingAddressId: permissions.billingAddressId!,
+        })
         .returning({ id: typeChangeRequest.id })
       await tx.insert(typeChangeEvidence).values({
         requestId: request.id,
@@ -174,6 +164,16 @@ export interface AdminTypeChangeRow {
   reviewer: { name: string; email: string } | null
   reviewerComment: string | null
   evidence: { fileName: string; mimeType: string; size: number } | null
+  /** The address to check for the student's name (current values; it is
+   *  locked while pending and after approval). */
+  billingAddress: {
+    name: string
+    affiliation: string | null
+    address: string
+    phone: string
+    taxId: string | null
+    branch: string | null
+  }
 }
 
 /** All requests, newest first (the table sorts/filters on the client). */
@@ -191,9 +191,18 @@ export async function loadAdminTypeChangeRequests(): Promise<AdminTypeChangeRow[
       fileName: typeChangeEvidence.fileName,
       mimeType: typeChangeEvidence.mimeType,
       size: typeChangeEvidence.size,
+      billingAddress: {
+        name: billingAddress.name,
+        affiliation: billingAddress.affiliation,
+        address: billingAddress.address,
+        phone: billingAddress.phone,
+        taxId: billingAddress.taxId,
+        branch: billingAddress.branch,
+      },
     })
     .from(typeChangeRequest)
     .innerJoin(user, eq(user.id, typeChangeRequest.requesterId))
+    .innerJoin(billingAddress, eq(billingAddress.id, typeChangeRequest.billingAddressId))
     .leftJoin(reviewer, eq(reviewer.id, typeChangeRequest.reviewerId))
     .leftJoin(typeChangeEvidence, eq(typeChangeEvidence.requestId, typeChangeRequest.id))
     .orderBy(desc(typeChangeRequest.submittedAt))
@@ -220,6 +229,7 @@ export async function loadAdminTypeChangeRequests(): Promise<AdminTypeChangeRow[
       r.fileName !== null && r.mimeType !== null && r.size !== null
         ? { fileName: r.fileName, mimeType: r.mimeType, size: r.size }
         : null,
+    billingAddress: r.billingAddress,
   }))
 }
 

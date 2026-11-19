@@ -213,7 +213,8 @@ const bytea = customType<{ data: Buffer; driverData: Buffer }>({
 // evidence; an admin approves or rejects. Approving keeps the user's base
 // (participant/author), e.g. author + ie_student → author_student_ie. Rules (src/lib/typeChange/):
 // at most one pending request per user (enforced by the index below),
-// no new requests after one is approved, new ones allowed after a rejection.
+// no new requests after one is approved, new ones allowed after a rejection,
+// and exactly one billing address (src/lib/typeChange/policy.ts).
 export const typeChangeRequest = pgTable(
   'type_change_request',
   {
@@ -222,6 +223,12 @@ export const typeChangeRequest = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     requestedType: studentStatusEnum('requested_type').notNull(),
+    // The requester's only billing address when they submitted; the admin
+    // checks it carries the student's name. Referenced, not copied: the
+    // billing policy locks it while pending and for good once approved.
+    billingAddressId: uuid('billing_address_id')
+      .notNull()
+      .references(() => billingAddress.id, { onDelete: 'no action' }),
     requesterComment: text('requester_comment'),
     status: typeChangeStatusEnum('status').default('pending').notNull(),
     submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
@@ -235,6 +242,7 @@ export const typeChangeRequest = pgTable(
   (table) => [
     index('type_change_request_requester_id_idx').on(table.requesterId),
     index('type_change_request_status_idx').on(table.status),
+    index('type_change_request_billing_address_id_idx').on(table.billingAddressId),
     uniqueIndex('type_change_request_one_pending_idx')
       .on(table.requesterId)
       .where(sql`${table.status} = 'pending'`),

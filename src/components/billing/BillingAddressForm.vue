@@ -2,8 +2,9 @@
 import BillingAddressPreview from '@components/billing/BillingAddressPreview.vue'
 import { toTypedSchema } from '@lib/forms/standardSchema'
 import {
+  BILLING_CREATE_BLOCK_LABELS,
   BILLING_FIELD_MAX,
-  BILLING_LOCK_REASON_LABELS,
+  lockedMessage,
   type BillingAddressInput,
   type BillingField,
 } from '@utils/billingAddress'
@@ -53,7 +54,6 @@ const text = {
     errors: {
       required: 'กรุณากรอกข้อมูลนี้',
       tooLong: (n: number) => `ต้องไม่เกิน ${n} ตัวอักษร`,
-      LIMIT_REACHED: 'คุณมีที่อยู่ครบจำนวนสูงสุดแล้ว',
       NOT_FOUND: 'ไม่พบที่อยู่นี้ อาจถูกลบไปแล้ว',
       session: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่',
       unexpected: 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง',
@@ -89,7 +89,6 @@ const text = {
     errors: {
       required: 'Please fill in this field.',
       tooLong: (n: number) => `Must be at most ${n} characters.`,
-      LIMIT_REACHED: 'You already have the maximum number of addresses.',
       NOT_FOUND: 'This address was not found. It may have been deleted.',
       session: 'Your session has expired. Please sign in again.',
       unexpected: 'Something went wrong. Please try again.',
@@ -176,9 +175,11 @@ function closeConfirm() {
 function errorFor(code?: string, message?: string): string {
   const e = t.value.errors
   if (code === 'UNAUTHORIZED') return e.session
-  // The only lock reason today; the edit page already hides locked addresses.
-  if (message === 'LOCKED') return BILLING_LOCK_REASON_LABELS[props.locale].IN_USE
-  if (message === 'LIMIT_REACHED') return e.LIMIT_REACHED
+  // Rare: the edit page already redirects for locked addresses.
+  const locked = lockedMessage(props.locale, message)
+  if (locked) return locked
+  if (message === 'LIMIT_REACHED' || message === 'STUDENT_LIMIT')
+    return BILLING_CREATE_BLOCK_LABELS[props.locale][message]
   if (message === 'NOT_FOUND') return e.NOT_FOUND
   return e.unexpected
 }

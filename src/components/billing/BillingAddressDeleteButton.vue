@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BILLING_LOCK_REASON_LABELS } from '@utils/billingAddress'
+import { lockedMessage } from '@utils/billingAddress'
 import { actions } from 'astro:actions'
 import { computed, ref } from 'vue'
 
@@ -58,11 +58,8 @@ async function confirmDelete() {
       errorMessage.value =
         error.code === 'UNAUTHORIZED'
           ? t.value.session
-          : error.message === 'LOCKED'
-            ? BILLING_LOCK_REASON_LABELS[props.locale].IN_USE
-            : error.message === 'NOT_FOUND'
-              ? t.value.NOT_FOUND
-              : t.value.unexpected
+          : (lockedMessage(props.locale, error.message) ??
+            (error.message === 'NOT_FOUND' ? t.value.NOT_FOUND : t.value.unexpected))
       busy.value = false
       return
     }

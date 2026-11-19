@@ -1,46 +1,61 @@
-// Who may edit or delete a billing address, and when.
+// What a user may do with their billing addresses.
 //
-// The one place these rules live. It is used to render the list and edit
-// pages, and again inside the update/delete transactions
+// The one place these rules live. It is used to render the list, new and
+// edit pages, and again inside the create/update/delete transactions
 // (src/lib/billing/addresses.ts), which is what actually enforces it.
 //
-// To add a rule: load what it needs in loadBillingPolicyContext, decide in
-// evaluateBillingPermissions, and add its reason to BILLING_LOCK_REASONS
-// (src/utils/billingAddress.ts) with a label.
-import { count, eq } from 'drizzle-orm'
+// To add a rule: load what it needs in a load* function, decide in the
+// matching evaluate* function, and add its reason to src/utils/billingAddress.ts
+// with a label.
+import { and, count, eq, inArray } from 'drizzle-orm'
 
-import { registration } from '../../db/schema.js'
-import type {
-  BillingLockReason,
-  BillingPermissions,
+import { billingAddress, registration, typeChangeRequest, user } from '../../db/schema.js'
+import { hasStudentDiscount, type ParticipantType } from '../../utils/participantType.js'
+import {
+  BILLING_ADDRESS_LIMIT,
+  STUDENT_BILLING_ADDRESS_LIMIT,
+  type BillingCreatePermissions,
+  type BillingLockReason,
+  type BillingPermissions,
 } from '../../utils/billingAddress.js'
-import type { Db } from './db.js'
+import type { Db } from '../../db/client.js'
 
 /** The signed-in user, as far as the rules need to know. */
 export interface PolicyUser {
   id: string
   role?: string | null
-  participantType?: string | null
 }
+
+// ---------------- Edit / delete one address ----------------
 
 /** Everything the rules decide on, for one address. */
 export interface BillingPolicyContext {
   user: PolicyUser
   /** Number of registrations billed to this address. */
   registrationCount: number
+  /** Student discount requests that reference this address, by status. */
+  hasPendingTypeChange: boolean
+  hasApprovedTypeChange: boolean
 }
 
 /** Pure decision from the loaded context; no database access. */
 export function evaluateBillingPermissions(ctx: BillingPolicyContext): BillingPermissions {
+  // Each rule here locks both edit and delete. Keep the two lists apart
+  // anyway, so a rule that locks only one of them is a one-line change.
   const editLocks: BillingLockReason[] = []
   const deleteLocks: BillingLockReason[] = []
+  const lockBoth = (r: BillingLockReason) => {
+    editLocks.push(r)
+    deleteLocks.push(r)
+  }
 
   // Registrations reference the address directly (no copy), so changing or
   // removing it would change their billing details. Applies to admins too.
-  if (ctx.registrationCount > 0) {
-    editLocks.push('IN_USE')
-    deleteLocks.push('IN_USE')
-  }
+  if (ctx.registrationCount > 0) lockBoth('IN_USE')
+  // The admin checks this address for the student's name: keep it as it
+  // was while they look, and for good once approved. A rejection unlocks it.
+  if (ctx.hasPendingTypeChange) lockBoth('UNDER_REVIEW')
+  if (ctx.hasApprovedTypeChange) lockBoth('DISCOUNT_VERIFIED')
 
   return {
     canEdit: editLocks.length === 0,
@@ -63,7 +78,23 @@ export async function loadBillingPolicyContext(
     .select({ n: count() })
     .from(registration)
     .where(eq(registration.billingAddressId, addressId))
-  return { user, registrationCount: usage?.n ?? 0 }
+
+  const requests = await db
+    .select({ status: typeChangeRequest.status })
+    .from(typeChangeRequest)
+    .where(
+      and(
+        eq(typeChangeRequest.billingAddressId, addressId),
+        inArray(typeChangeRequest.status, ['pending', 'approved'])
+      )
+    )
+
+  return {
+    user,
+    registrationCount: usage?.n ?? 0,
+    hasPendingTypeChange: requests.some((r) => r.status === 'pending'),
+    hasApprovedTypeChange: requests.some((r) => r.status === 'approved'),
+  }
 }
 
 export async function getBillingPermissions(
@@ -72,4 +103,60 @@ export async function getBillingPermissions(
   addressId: string
 ): Promise<BillingPermissions> {
   return evaluateBillingPermissions(await loadBillingPolicyContext(db, user, addressId))
+}
+
+// ---------------- Add an address ----------------
+
+export interface BillingCreateContext {
+  /** Read from the database, not the session, so a just-approved
+   *  discount counts straight away. */
+  participantType: ParticipantType
+  addressCount: number
+  hasPendingTypeChange: boolean
+}
+
+export function evaluateBillingCreate(ctx: BillingCreateContext): BillingCreatePermissions {
+  const student = hasStudentDiscount(ctx.participantType) || ctx.hasPendingTypeChange
+  const limit = student ? STUDENT_BILLING_ADDRESS_LIMIT : BILLING_ADDRESS_LIMIT
+  const full = ctx.addressCount >= limit
+  return {
+    canCreate: !full,
+    limit,
+    count: ctx.addressCount,
+    reason: full ? (student ? 'STUDENT_LIMIT' : 'LIMIT_REACHED') : null,
+  }
+}
+
+/** Null if the user no longer exists. Inside a transaction, lock the user
+ *  row first (as createBillingAddress does) so the count stays true. */
+export async function loadBillingCreateContext(
+  db: Db,
+  userId: string
+): Promise<BillingCreateContext | null> {
+  const [u] = await db
+    .select({ participantType: user.participantType })
+    .from(user)
+    .where(eq(user.id, userId))
+  if (!u) return null
+
+  const [{ n }] = await db
+    .select({ n: count() })
+    .from(billingAddress)
+    .where(eq(billingAddress.userId, userId))
+
+  const [pending] = await db
+    .select({ id: typeChangeRequest.id })
+    .from(typeChangeRequest)
+    .where(and(eq(typeChangeRequest.requesterId, userId), eq(typeChangeRequest.status, 'pending')))
+    .limit(1)
+
+  return { participantType: u.participantType, addressCount: n, hasPendingTypeChange: !!pending }
+}
+
+export async function getBillingCreatePermissions(
+  db: Db,
+  userId: string
+): Promise<BillingCreatePermissions | null> {
+  const ctx = await loadBillingCreateContext(db, userId)
+  return ctx && evaluateBillingCreate(ctx)
 }

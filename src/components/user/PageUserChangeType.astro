@@ -1,15 +1,20 @@
 ---
+import BillingAddressPreview from '@components/billing/BillingAddressPreview.vue'
 import TypeChangeForm from '@components/user/TypeChangeForm.vue'
+import type { BillingAddressView } from '@lib/billing/addresses'
 import { type Locale } from '@utils/locale'
 import { getRelativeLocaleUrl } from 'astro:i18n'
 interface Props {
   locale: Locale
+  /** The user's only billing address, which the request will refer to. */
+  billingAddress: BillingAddressView
 }
-const { locale } = Astro.props
+const { locale, billingAddress } = Astro.props
 
 const t = (th: string, en: string) => (locale === 'th' ? th : en)
 
 const detailsUrl = getRelativeLocaleUrl(locale, '/user/details')
+const billingUrl = getRelativeLocaleUrl(locale, '/user/billing')
 ---
 
 <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -20,6 +25,32 @@ const detailsUrl = getRelativeLocaleUrl(locale, '/user/details')
   <h1 class="text-4xl font-bold mt-4 mb-12 text-center">
     {t('ขอเปลี่ยนประเภทผู้เข้าร่วม', 'Change Participant Type')}
   </h1>
+
+  <section class="card bg-base-100 border border-base-300 shadow-sm mb-6">
+    <div class="card-body gap-3">
+      <h2 class="font-semibold">{t('ที่อยู่สำหรับออกใบเสร็จ', 'Billing address')}</h2>
+      <div role="note" class="alert alert-warning alert-soft text-sm">
+        <span class="font-semibold">
+          {t(
+            'ชื่อบนบัตรหรือเอกสารหลักฐานต้องตรงกับชื่อบนที่อยู่สำหรับออกใบเสร็จ จึงจะได้รับการอนุมัติ',
+            'The name on your ID/evidence must match the name on the billing address for the request to be approved.'
+          )}
+        </span>
+      </div>
+      <p class="text-sm text-base-content/70">
+        {t(
+          'ผู้ดูแลระบบจะตรวจสอบว่าที่อยู่นี้ออกในชื่อของนักศึกษา ตามระเบียบการเงิน หลังส่งคำขอ ที่อยู่นี้จะแก้ไขหรือลบไม่ได้ระหว่างตรวจสอบ และจะล็อกถาวรหากได้รับอนุมัติ',
+          "An administrator will check that this address is in the student's name, as required by financial regulations. After you submit, it cannot be edited or deleted while under review, and it stays locked if approved."
+        )}
+      </p>
+      <div class="rounded-box border border-base-300 bg-base-200/50 p-4">
+        <BillingAddressPreview locale={locale} value={billingAddress} />
+      </div>
+      <a href={billingUrl} class="link link-hover text-sm w-fit">
+        {t('แก้ไขที่อยู่ก่อนส่งคำขอ', 'Edit the address before submitting')}
+      </a>
+    </div>
+  </section>
 
   <section class="card bg-base-100 border border-base-300 shadow-sm">
     <div class="card-body">

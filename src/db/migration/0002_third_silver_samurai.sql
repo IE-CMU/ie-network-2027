@@ -1,0 +1,3 @@
+ALTER TABLE "type_change_request" ADD COLUMN "billing_address_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "type_change_request" ADD CONSTRAINT "type_change_request_billing_address_id_billing_address_id_fk" FOREIGN KEY ("billing_address_id") REFERENCES "public"."billing_address"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "type_change_request_billing_address_id_idx" ON "type_change_request" USING btree ("billing_address_id");

@@ -33,7 +33,10 @@ export type StudentStatus = (typeof STUDENT_STATUSES)[number]
 export const isBaseType = (t: ParticipantType): t is BaseType =>
   (BASE_TYPES as readonly string[]).includes(t)
 
-export const baseOf = (t: ParticipantType): BaseType =>
+/** Has a student discount (approved type change request). */
+export const hasStudentDiscount = (t: ParticipantType): boolean => !isBaseType(t)
+
+export const baseOf =(t: ParticipantType): BaseType =>
   t.startsWith('author') ? 'author' : 'participant'
 
 /** Same base, with the given discount. e.g. ('author', 'ie_student') → 'author_student_ie'. */

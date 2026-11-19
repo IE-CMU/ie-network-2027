@@ -6,6 +6,7 @@ import {
   EVIDENCE_MIME_TYPES,
   REQUESTABLE_TYPES,
   REQUESTER_COMMENT_MAX,
+  TYPE_CHANGE_BILLING_MESSAGES,
   type RequestableType,
 } from '@utils/typeChangeRequest'
 import { z } from 'astro/zod'
@@ -48,6 +49,7 @@ const text = {
       NOT_ELIGIBLE: 'ประเภทผู้เข้าร่วมของคุณไม่สามารถขอสิทธิ์นักศึกษาได้ กรุณาตรวจสอบที่หน้าบัญชีของคุณ',
       ALREADY_PENDING: 'คุณมีคำขอที่รอการตรวจสอบอยู่แล้ว',
       ALREADY_APPROVED: 'คำขอของคุณได้รับการอนุมัติแล้ว',
+      ...TYPE_CHANGE_BILLING_MESSAGES.th,
       session: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่',
       unexpected: 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง',
     },
@@ -77,6 +79,7 @@ const text = {
       NOT_ELIGIBLE: 'Your participant type cannot request a student discount. Please check your account page.',
       ALREADY_PENDING: 'You already have a request waiting for review.',
       ALREADY_APPROVED: 'Your request has already been approved.',
+      ...TYPE_CHANGE_BILLING_MESSAGES.en,
       session: 'Your session has expired. Please sign in again.',
       unexpected: 'Something went wrong. Please try again.',
     },
