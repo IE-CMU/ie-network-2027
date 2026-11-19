@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import {
+  createAppColumnHelper,
+  localeSortFn,
+  numberSortFn,
+  useAppTable,
+  useSelectFilter,
+} from '@components/hook/useAppTable'
 import type { AdminUserRow } from '@lib/user/admin'
+import { FlexRender } from '@tanstack/vue-table'
 import { PARTICIPANT_TYPE_LABELS, PARTICIPANT_TYPES, type ParticipantType } from '@utils/participantType'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 interface Props {
   locale: 'th' | 'en'
@@ -61,54 +69,91 @@ const text = {
 } as const
 const t = computed(() => text[props.locale])
 
-const query = ref('')
-const roleFilter = ref<'all' | 'admin' | 'user'>('all')
-const verifiedFilter = ref<'all' | 'yes' | 'no'>('all')
-const paperFilter = ref<'all' | 'with' | 'without'>('all')
-const typeFilter = ref<'all' | ParticipantType>('all')
-
-type SortKey = 'name' | 'email' | 'paperCount' | 'createdAt'
-const sortKey = ref<SortKey>('name')
-const sortAsc = ref(true)
-
-function setSort(key: SortKey) {
-  if (sortKey.value === key) sortAsc.value = !sortAsc.value
-  else {
-    sortKey.value = key
-    // Numbers/dates: largest/newest first is the more useful default.
-    sortAsc.value = key === 'name' || key === 'email'
-  }
-}
-const sortMark = (key: SortKey) =>
-  sortKey.value === key ? (sortAsc.value ? ' ▲' : ' ▼') : ''
-
 const isAdmin = (u: AdminUserRow) => u.roles.includes('admin')
 
-const filtered = computed(() => {
-  const q = query.value.trim().toLowerCase()
-  const rows = props.users.filter(
-    (u) =>
-      (!q ||
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q)) &&
-      (roleFilter.value === 'all' ||
-        (roleFilter.value === 'admin') === isAdmin(u)) &&
-      (verifiedFilter.value === 'all' ||
-        (verifiedFilter.value === 'yes') === u.emailVerified) &&
-      (paperFilter.value === 'all' ||
-        (paperFilter.value === 'with') === u.paperCount > 0) &&
-      (typeFilter.value === 'all' || typeFilter.value === u.participantType)
-  )
-  const dir = sortAsc.value ? 1 : -1
-  const key = sortKey.value
-  return rows.sort((a, b) => {
-    const cmp =
-      key === 'paperCount'
-        ? a.paperCount - b.paperCount
-        : a[key].localeCompare(b[key], props.locale === 'th' ? 'th' : 'en')
-    return cmp * dir || a.name.localeCompare(b.name)
-  })
+// ---------------------------------------------------------------------------
+// Columns: data, sorting and filtering live here; cell markup lives in the
+// template. Filterable values are strings so the built-in `equals` filter
+// works (it auto-removes falsy values, so a boolean `false` would be dropped).
+// ---------------------------------------------------------------------------
+const col = createAppColumnHelper<AdminUserRow>()
+const byName = (u: AdminUserRow) => u.name
+
+const columns = computed(() => {
+  const loc = props.locale
+  return col.columns([
+    col.accessor('name', {
+      header: () => t.value.name,
+      sortFn: localeSortFn(loc),
+    }),
+    col.accessor('email', {
+      header: () => t.value.email,
+      sortFn: localeSortFn(loc, byName),
+    }),
+    col.accessor((u) => (isAdmin(u) ? 'admin' : 'user'), {
+      id: 'role',
+      header: () => t.value.role,
+      enableSorting: false,
+      enableGlobalFilter: false,
+      filterFn: 'equals',
+    }),
+    col.accessor('participantType', {
+      header: () => t.value.type,
+      enableSorting: false,
+      enableGlobalFilter: false,
+      filterFn: 'equals',
+    }),
+    col.accessor((u) => (u.emailVerified ? 'yes' : 'no'), {
+      id: 'verified',
+      header: () => t.value.verified,
+      enableSorting: false,
+      enableGlobalFilter: false,
+      filterFn: 'equals',
+    }),
+    col.accessor('hasPassword', {
+      header: () => t.value.password,
+      enableSorting: false,
+      enableGlobalFilter: false,
+    }),
+    col.accessor('paperCount', {
+      header: () => t.value.papers,
+      // Most papers first is the more useful default.
+      sortDescFirst: true,
+      sortFn: numberSortFn(loc, byName),
+      enableGlobalFilter: false,
+      filterFn: (row, _id, value: 'with' | 'without') =>
+        (value === 'with') === row.original.paperCount > 0,
+    }),
+    col.accessor('createdAt', {
+      header: () => t.value.created,
+      // ISO strings sort chronologically; newest first by default.
+      sortDescFirst: true,
+      sortFn: localeSortFn(loc, byName),
+      enableGlobalFilter: false,
+    }),
+  ])
 })
+
+const table = useAppTable({
+  columns,
+  data: computed(() => props.users),
+  initialState: { sorting: [{ id: 'name', desc: false }] },
+  // Clicking a sorted column flips asc/desc instead of cycling to "unsorted".
+  enableSortingRemoval: false,
+})
+
+// Search: keep the raw input locally so typing spaces is not fought by trim().
+const query = ref('')
+watch(query, (q) => table.setGlobalFilter(q.trim() || undefined))
+
+const roleFilter = useSelectFilter<'all' | 'admin' | 'user'>(() => table.getColumn('role'))
+const verifiedFilter = useSelectFilter<'all' | 'yes' | 'no'>(() => table.getColumn('verified'))
+const paperFilter = useSelectFilter<'all' | 'with' | 'without'>(() => table.getColumn('paperCount'))
+const typeFilter = useSelectFilter<'all' | ParticipantType>(() => table.getColumn('participantType'))
+
+const rows = computed(() => table.getRowModel().rows)
+const sortMark = (dir: false | 'asc' | 'desc') =>
+  dir === 'asc' ? ' ▲' : dir === 'desc' ? ' ▼' : ''
 
 // th-TH uses the Buddhist calendar.
 const dateFormat = computed(
@@ -171,98 +216,103 @@ const formatDate = (iso: string) => dateFormat.value.format(new Date(iso))
     </div>
 
     <p class="text-sm text-base-content/70">
-      {{ t.showing(filtered.length, users.length) }}
+      {{ t.showing(rows.length, users.length) }}
     </p>
 
     <div class="overflow-x-auto rounded-box border border-base-300">
       <table class="table table-sm">
         <thead>
-          <tr>
-            <th>
+          <tr v-for="hg in table.getHeaderGroups()" :key="hg.id">
+            <th
+              v-for="header in hg.headers"
+              :key="header.id"
+              :class="{ 'text-right': header.column.id === 'paperCount' }"
+            >
               <button
+                v-if="header.column.getCanSort()"
                 type="button"
                 class="cursor-pointer"
-                @click="setSort('name')"
+                @click="header.column.getToggleSortingHandler()?.($event)"
               >
-                {{ t.name }}{{ sortMark('name') }}
+                <FlexRender :header="header" />{{
+                  sortMark(header.column.getIsSorted())
+                }}
               </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="cursor-pointer"
-                @click="setSort('email')"
-              >
-                {{ t.email }}{{ sortMark('email') }}
-              </button>
-            </th>
-            <th>{{ t.role }}</th>
-            <th>{{ t.type }}</th>
-            <th>{{ t.verified }}</th>
-            <th>{{ t.password }}</th>
-            <th class="text-right">
-              <button
-                type="button"
-                class="cursor-pointer"
-                @click="setSort('paperCount')"
-              >
-                {{ t.papers }}{{ sortMark('paperCount') }}
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                class="cursor-pointer"
-                @click="setSort('createdAt')"
-              >
-                {{ t.created }}{{ sortMark('createdAt') }}
-              </button>
+              <FlexRender v-else :header="header" />
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-if="filtered.length === 0">
-            <td colspan="8" class="text-center text-base-content/70 py-6">
+          <tr v-if="rows.length === 0">
+            <td
+              :colspan="table.getAllLeafColumns().length"
+              class="text-center text-base-content/70 py-6"
+            >
               {{ t.empty }}
             </td>
           </tr>
-          <tr v-for="u in filtered" :key="u.id">
-            <td class="min-w-40">
-              {{ u.name }}
-              <span
-                v-if="u.banned"
-                class="badge badge-sm badge-error badge-soft ml-1"
+          <tr v-for="row in rows" :key="row.original.id">
+            <template v-for="cell in row.getAllCells()" :key="cell.id">
+              <td v-if="cell.column.id === 'name'" class="min-w-40">
+                {{ row.original.name }}
+                <span
+                  v-if="row.original.banned"
+                  class="badge badge-sm badge-error badge-soft ml-1"
+                >
+                  {{ t.banned }}
+                </span>
+              </td>
+              <td v-else-if="cell.column.id === 'email'" class="break-all">
+                {{ row.original.email }}
+              </td>
+              <td v-else-if="cell.column.id === 'role'">
+                <span
+                  class="badge badge-sm border-0 whitespace-nowrap"
+                  :class="
+                    isAdmin(row.original)
+                      ? 'bg-[#9E76B4] text-white'
+                      : 'bg-[#F3E5F5] text-[#6B4A80]'
+                  "
+                >
+                  {{ isAdmin(row.original) ? t.admin : t.user }}
+                </span>
+              </td>
+              <td
+                v-else-if="cell.column.id === 'participantType'"
+                class="whitespace-nowrap"
               >
-                {{ t.banned }}
-              </span>
-            </td>
-            <td class="break-all">{{ u.email }}</td>
-            <td>
-              <span
-                class="badge badge-sm border-0 whitespace-nowrap"
-                :class="
-                  isAdmin(u)
-                    ? 'bg-[#9E76B4] text-white'
-                    : 'bg-[#F3E5F5] text-[#6B4A80]'
-                "
+                {{ t.types[row.original.participantType] }}
+              </td>
+              <td v-else-if="cell.column.id === 'verified'">
+                <span
+                  class="badge badge-sm badge-soft whitespace-nowrap"
+                  :class="
+                    row.original.emailVerified ? 'badge-success' : 'badge-warning'
+                  "
+                >
+                  {{ row.original.emailVerified ? t.yes : t.no }}
+                </span>
+              </td>
+              <td
+                v-else-if="cell.column.id === 'hasPassword'"
+                class="whitespace-nowrap text-base-content/70"
               >
-                {{ isAdmin(u) ? t.admin : t.user }}
-              </span>
-            </td>
-            <td class="whitespace-nowrap">{{ t.types[u.participantType] }}</td>
-            <td>
-              <span
-                class="badge badge-sm badge-soft whitespace-nowrap"
-                :class="u.emailVerified ? 'badge-success' : 'badge-warning'"
+                {{ row.original.hasPassword ? t.hasPassword : t.noPassword }}
+              </td>
+              <td
+                v-else-if="cell.column.id === 'paperCount'"
+                class="text-right tabular-nums"
               >
-                {{ u.emailVerified ? t.yes : t.no }}
-              </span>
-            </td>
-            <td class="whitespace-nowrap text-base-content/70">
-              {{ u.hasPassword ? t.hasPassword : t.noPassword }}
-            </td>
-            <td class="text-right tabular-nums">{{ u.paperCount }}</td>
-            <td class="whitespace-nowrap">{{ formatDate(u.createdAt) }}</td>
+                {{ row.original.paperCount }}
+              </td>
+              <td
+                v-else-if="cell.column.id === 'createdAt'"
+                class="whitespace-nowrap"
+              >
+                {{ formatDate(row.original.createdAt) }}
+              </td>
+              <td v-else><FlexRender :cell="cell" /></td>
+            </template>
           </tr>
         </tbody>
       </table>
