@@ -1,0 +1,47 @@
+---
+import BillingAddressTable from '@components/billing/BillingAddressTable.vue'
+import { type AdminBillingAddressRow, loadAdminBillingAddresses } from '@lib/billing/admin'
+import { type Locale } from '@utils/locale'
+
+interface Props {
+  locale: Locale
+}
+const { locale } = Astro.props
+
+const t = (th: string, en: string) => (locale === 'th' ? th : en)
+
+let addresses: AdminBillingAddressRow[] = []
+let loadError = false
+
+try {
+  addresses = await loadAdminBillingAddresses()
+} catch (error) {
+  console.error('Error loading billing addresses:', error)
+  loadError = true
+}
+---
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <p class="text-sm font-semibold text-[#9E76B4] text-center">
+    {t('แอดมิน', 'Admin')}
+  </p>
+  <h1 class="text-4xl font-bold mb-4 text-center">
+    {t('ที่อยู่สำหรับออกใบเสร็จ', 'Billing Addresses')}
+  </h1>
+  <p class="text-center text-sm text-base-content/70 mb-12">
+    {t(
+      'ดูได้อย่างเดียว ผู้ใช้เป็นผู้แก้ไขที่อยู่ของตนเอง หากที่อยู่ในคำขอสิทธิ์นักศึกษาไม่ถูกต้อง ให้ไม่อนุมัติคำขอเพื่อให้ผู้ใช้แก้ไขและส่งใหม่',
+      'Read-only. Users edit their own addresses. If the address on a student request is wrong, reject the request so the user can fix it and resubmit.'
+    )}
+  </p>
+
+  {
+    loadError ? (
+      <div role="alert" class="alert alert-error alert-soft">
+        <span>{t('ไม่สามารถโหลดรายการที่อยู่ได้', 'Could not load the addresses.')}</span>
+      </div>
+    ) : (
+      <BillingAddressTable client:load locale={locale} addresses={addresses} />
+    )
+  }
+</main>

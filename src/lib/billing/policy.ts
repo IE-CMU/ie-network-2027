@@ -74,27 +74,58 @@ export async function loadBillingPolicyContext(
   user: PolicyUser,
   addressId: string
 ): Promise<BillingPolicyContext> {
-  const [usage] = await db
-    .select({ n: count() })
+  const facts = await loadAddressFacts(db, [addressId])
+  return { user, ...facts.get(addressId)! }
+}
+
+/**
+ * Contexts for many addresses at once (the admin list), in two queries.
+ * `owners` maps each address id to its owner.
+ */
+export async function loadBillingPolicyContexts(
+  db: Db,
+  owners: Map<string, PolicyUser>
+): Promise<Map<string, BillingPolicyContext>> {
+  const facts = await loadAddressFacts(db, [...owners.keys()])
+  return new Map(
+    [...owners].map(([id, owner]) => [id, { user: owner, ...facts.get(id)! }])
+  )
+}
+
+type AddressFacts = Omit<BillingPolicyContext, 'user'>
+
+/** Registration and request usage per address; every id gets an entry. */
+async function loadAddressFacts(db: Db, addressIds: string[]): Promise<Map<string, AddressFacts>> {
+  const facts = new Map<string, AddressFacts>(
+    addressIds.map((id) => [
+      id,
+      { registrationCount: 0, hasPendingTypeChange: false, hasApprovedTypeChange: false },
+    ])
+  )
+  if (addressIds.length === 0) return facts
+
+  const usage = await db
+    .select({ id: registration.billingAddressId, n: count() })
     .from(registration)
-    .where(eq(registration.billingAddressId, addressId))
+    .where(inArray(registration.billingAddressId, addressIds))
+    .groupBy(registration.billingAddressId)
+  for (const u of usage) if (u.id) facts.get(u.id)!.registrationCount = u.n
 
   const requests = await db
-    .select({ status: typeChangeRequest.status })
+    .select({ id: typeChangeRequest.billingAddressId, status: typeChangeRequest.status })
     .from(typeChangeRequest)
     .where(
       and(
-        eq(typeChangeRequest.billingAddressId, addressId),
+        inArray(typeChangeRequest.billingAddressId, addressIds),
         inArray(typeChangeRequest.status, ['pending', 'approved'])
       )
     )
-
-  return {
-    user,
-    registrationCount: usage?.n ?? 0,
-    hasPendingTypeChange: requests.some((r) => r.status === 'pending'),
-    hasApprovedTypeChange: requests.some((r) => r.status === 'approved'),
+  for (const r of requests) {
+    const f = facts.get(r.id)!
+    if (r.status === 'pending') f.hasPendingTypeChange = true
+    if (r.status === 'approved') f.hasApprovedTypeChange = true
   }
+  return facts
 }
 
 export async function getBillingPermissions(
